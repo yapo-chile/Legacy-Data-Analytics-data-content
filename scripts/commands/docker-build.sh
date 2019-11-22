@@ -13,7 +13,7 @@ set +e
 echoTitle "Starting Docker Engine"
 if [[ $OSTYPE == "darwin"* ]]; then
     echoTitle "Starting Mac OSX Docker Daemon"
-    $DIR/docker-start-macosx.sh
+    #$DIR/docker-start-macosx.sh
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
     echoTitle "Starting Linux Docker Daemon"
     sudo start-docker-daemon
