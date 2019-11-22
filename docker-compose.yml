@@ -1,0 +1,17 @@
+version: '3'
+ 
+services:
+  pyms:
+    image: ${DOCKER_IMAGE_COMPOSE}
+    container_name: ${DOCKER_CONTAINER_NAME}
+    expose:
+      - "5000"
+    ports:
+      - "${SERVER_EXPOSED_PORT}:${SERVER_PORT}"
+    environment:
+      TZ: "America/Santiago"
+      SERVER_HOST: ${SERVER_HOST}
+      SERVER_PORT: ${SERVER_PORT}
+      SERVER_EXPOSED_PORT: ${SERVER_EXPOSED_PORT}
+      SERVER_URL: ${SERVER_URL}
+      SERVER_DEBUG: ${SERVER_DEBUG}

@@ -1,0 +1,12 @@
+FROM python:3.7.2-slim
+COPY . /app
+WORKDIR /app
+
+RUN mkdir jar
+ENV JAR_POSTGRESQL postgresql-42.2.7.jar
+RUN apt-get update
+RUN apt-get install -y curl
+RUN curl https://jdbc.postgresql.org/download/${JAR_POSTGRESQL} -o $HOME/jar/${JAR_POSTGRESQL}
+
+RUN pip install -r ${HOME}/resources/requeriments.txt
+
