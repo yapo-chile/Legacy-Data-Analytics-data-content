@@ -1,20 +1,32 @@
 # Content Evasion Moderation
+This readme is based in [Confluence documentation install argoflow](https://confluence.mpi-internal.com/display/YAPO/How+to+use+ArgoFlow+and+Kubernetes).
 
+## Requirements
+- [hyperkit](https://github.com/moby/hyperkit)
+- [kubectl](https://matthewpalmer.net/kubernetes-app-developer/articles/guide-install-kubernetes-mac.html)
+- [minikube](https://github.com/kubernetes/minikube/releases/tag/v1.6.0-beta.0)
+- [spark](https://spark.apache.org/downloads.html)
 
-### Requirements
-- https://confluence.mpi-internal.com/display/YAPO/How+to+use+ArgoFlow+and+Kubernetes
-
-### Compile docker image
+### Run minikube
 ```
+minikube start --vm-driver=hyperkit --memory 8192 --cpus 3 --disk-size=50g --kubernetes-version [KUBERNETES_VERSION]
+minikube status
+```
+
+### Kubernetes environment
+```
+kubectl create serviceaccount spark
+kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default
+```
+
+## Build docker image
+
+```
+eval $(minikube docker-env)
 make docker-build
 ```
 
-### Run docker compose
-```
-make start
-```
-
-### How to run spark job 
+### How to run test spark job
 
 ```
 spark-submit \
