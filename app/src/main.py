@@ -19,13 +19,16 @@ def getSparkSql(sparkContext, query):
 
 def getSparkSession(node='local', appName='mainSpark', jar=None):
     logger.info('sparkSession appName : %s' % appName)
-    logger.info('')
+    
     spark = SparkSession.builder \
             .master(node) \
             .config("spark.driver.extraClassPath", jar) \
             .getOrCreate()
 
+    logger.info('Create sparkContext')
     sparkContext = spark.sparkContext
+    logger.info('Successed')
+
 
 if __name__ == '__main__':
     logger = logging.getLogger('content-evasion-moderation')
@@ -35,5 +38,5 @@ if __name__ == '__main__':
     logger.info('%s' %params.getDate1())
     
     configuration = conf(params.getConfigurationFile())
-    getSparkSession(params.getAppName())
+    getSparkSession(appName=params.getAppName(), jar='/app/jar/postgresql-42.2.7.jar')
 

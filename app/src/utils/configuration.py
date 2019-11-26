@@ -15,7 +15,6 @@ class conf(object):
 
     def loadConf(self):
         try:
-            print(os.getcwdb())
             self.log.info('Load configuration read file ' + self.configFile + '.' )
             with open(self.configFile, 'r') as f:
                 for line in f.readlines():
