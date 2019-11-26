@@ -38,12 +38,6 @@ build:
 reboot: remove build
 	docker run -d --name ${APPNAME}  -p ${SERVER_EXPOSED_PORT}:${SERVER_PORT} ${DOCKER_IMAGE}:${BUILD_TAG}
 
-start-local:
-	python app/app.py
-
-mypy:
-	mypy app/app.py
-
 # Installs libraries locally
 install:
 	pip install -r app/requirements.txt
