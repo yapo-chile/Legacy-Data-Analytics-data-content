@@ -1,12 +1,13 @@
-FROM python:3.7.2-slim
+
+FROM containers.mpi-internal.com/yapo/data-spark-py:v2.4.1-hadoop-2.9.2
+
 COPY . /app
 WORKDIR /app
 ENV LOCAL_HOME /app
 
+RUN apk add curl
 RUN mkdir jar
 ENV JAR_POSTGRESQL postgresql-42.2.7.jar
-RUN apt-get update
-RUN apt-get install -y curl
 RUN curl https://jdbc.postgresql.org/download/${JAR_POSTGRESQL} -o ${LOCAL_HOME}/jar/${JAR_POSTGRESQL}
 
 RUN pip install -r ${LOCAL_HOME}/requirements.txt
