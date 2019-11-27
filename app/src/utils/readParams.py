@@ -1,6 +1,7 @@
 import sys
 import logging
 import datetime
+import os
 from datetime import timedelta
 
 class readParams(object):
@@ -25,6 +26,8 @@ class readParams(object):
         self.currentYear = ""
         self.lastYear = ""
         self.configurationFile = ""
+        self.jarPsql = ""
+        self.master = ""
         self.logger =  logging.getLogger('readParams')
         logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s'
                             , level=logging.INFO)
@@ -53,6 +56,12 @@ class readParams(object):
     def getConfigurationFile(self):
         return self.configurationFile
 
+    def getJarPsql(self):
+        return self.jarPsql
+    
+    def getMaster(self):
+        return self.master
+
     def setDate1( self, date1 ):
         self.date1 = date1
 
@@ -68,7 +77,7 @@ class readParams(object):
     def setCurrentYear( self, currentYear ):
         self.currentYear = currentYear
 
-    def set_lastYear( self, lastYear ):
+    def setLastYear( self, lastYear ):
         self.lastYear = lastYear
 
     def loadParams( self ):
@@ -106,6 +115,10 @@ class readParams(object):
                 self.appName = value
             elif ( key == '-configFile' ):
                 self.configurationFile = value
+            elif ( key == '-jarPsql' ):
+                self.jarPsql = value
+            elif ( key == '-master' ):
+                self.master = value
         except Exception as e:
             self.logger.error('%s' % e )
             exit()
@@ -133,13 +146,22 @@ class readParams(object):
                 path_appName = self.strParseParams[ 0 ].split("/")
                 appName = path_appName[len(path_appName)-1].split(".")
                 self.appName = appName[0]
+            if( self.configurationFile == '' ):
+                self.configurationFile = os.environ.get("CONFIGURATION_FILE")
+            if( self.jarPsql == '' ):
+                self.jarPsql = os.environ.get("PATH_JAR_POSTGRESQL")
+            if( self.master == '' ):
+                self.master = 'local'
 
-            self.logger.info('App Name     : %s' % self.appName)
-            self.logger.info('Date 1       : %s' % self.date1)
-            self.logger.info('Date 2       : %s' % self.date2)
-            self.logger.info('Env          : %s' % self.env)
-            self.logger.info('Current Year : %s' % self.currentYear)
-            self.logger.info('Last    Year : %s' % self.lastYear)
+            self.logger.info('App Name              : %s' % self.appName)
+            self.logger.info('Date 1                : %s' % self.date1)
+            self.logger.info('Date 2                : %s' % self.date2)
+            self.logger.info('Env                   : %s' % self.env)
+            self.logger.info('Current Year          : %s' % self.currentYear)
+            self.logger.info('Last    Year          : %s' % self.lastYear)
+            self.logger.info('Configuration File    : %s' % self.configurationFile)
+            self.logger.info('Jar psql              : %s' % self.jarPsql)
+            self.logger.info('Master node           : %s' % self.master)
 
         except Exception as e:
             self.logger.error('%s' % e)
