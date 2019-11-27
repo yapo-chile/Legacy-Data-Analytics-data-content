@@ -23,7 +23,6 @@ start: compose-up info
 docker-publish:
 	@scripts/commands/docker-publish.sh
 
-
 ## Execute the service
 remove:
 	docker stop ${APPNAME}
