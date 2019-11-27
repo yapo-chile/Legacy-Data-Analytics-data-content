@@ -18,7 +18,10 @@ class jar(object):
         return self.path
 
     def getJarConfig(self):
-        self.log.info('getJarConfig : %s '%self.jarName)
         if(self.jarName == 'JAR_POSTGRESQL'):
             self.path = os.environ.get('PATH_JAR_POSTGRESQL')
             self.driver = os.environ.get('POSTGRESQL_DRIVER')
+
+        self.log.info('getJarConfig jarName : %s' % self.jarName)
+        self.log.info('getJarConfig path    : %s' % self.path)
+        self.log.info('getJarConfig driver  : %s' % self.driver)

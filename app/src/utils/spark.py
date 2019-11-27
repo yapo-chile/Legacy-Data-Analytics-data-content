@@ -23,10 +23,29 @@ class spark(object):
                         .appName(self.appName) \
                         .config("spark.driver.extraClassPath", self.extraJar.getPath()) \
                         .getOrCreate()
+
+            self.sparkContext = self.spark.sparkContext
         except Exception as e:
+            self.log.error('%s' % e)
             self.stopSparkSession()
 
+    def getSparkSql(self, host, port, dbname, user, password, query):
+        try:
+            url = 'jdbc:postgresql://' + host + ":" + port + "/" + dbname
+            sqlContext = SQLContext(self.sparkContext)
+
+            dataFrame = sqlContext.read.format('jdbc') \
+                                .option('driver', self.extraJar.getDriver()) \
+                                .option('url', url ) \
+                                .option('dbtable', query) \
+                                .option('user', user) \
+                                .option('password', password) \
+                                .load()
+            return dataFrame
+        except Exception as e:
+            self.log.error('%s' % e)
+            self.stopSparkSession()
 
     def stopSparkSession(self):
-        self.log.info('Stop Spark AppName %s : '% self.appName)
+        self.log.info('Stop Spark AppName : %s'% self.appName)
         self.spark.stop()
