@@ -3,21 +3,34 @@ import logging
 from utils.readParams import readParams
 from utils.configuration import conf
 from utils.spark import spark
+from utils.database import database
 
 if __name__ == '__main__':
     logger = logging.getLogger('content-evasion-moderation')
-    logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s'
-                            , level=logging.INFO)
+    format = """%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"""
+    logging.basicConfig(format=format,
+                        level=logging.INFO)
+
     params = readParams(sys.argv)
-
     configuration = conf(params.getConfigurationFile())
-    appName='content-evasion-moderation-child'
-
+    rdbms = database(configuration.getSpecific('ENDPOINT.HOST'),
+                      configuration.getSpecific('ENDPOINT.PORT'),
+                      configuration.getSpecific('ENDPOINT.DATABASE'),
+                      configuration.getSpecific('ENDPOINT.USERNAME'),
+                      configuration.getSpecific('ENDPOINT.PASSWORD'))
+    rdbms.executeCommand()
+    appName = 'content-evasion-moderation-child'
     queryEvasionModeration = """
-        ( select
-          rank() over(partition by u.email order by rl.review_time::date) as review_order,
-          rank() over(partition by min(p.date_start) order by rl.review_time::date) as pack_order,
-          rank() over(partition by min(lf.purchase_date) order by rl.review_time::date) as ifee_order,
+    ( select
+          rank() over(partition by u.email
+            order by rl.review_time::date)
+          as review_order,
+          rank() over(partition by min(p.date_start)
+            order by rl.review_time::date)
+          as pack_order,
+          rank() over(partition by min(lf.purchase_date)
+            order by rl.review_time::date)
+          as ifee_order,
           u.email,
           rl.review_time::date,
           min(p.date_start) as pack_start_date,
@@ -58,7 +71,8 @@ if __name__ == '__main__':
                   from
                     packs
               )p
-              on acc.account_id = p.account_id and rl.review_time < p.date_start
+              on acc.account_id = p.account_id
+                and rl.review_time < p.date_start
               left join
               (
                 select
@@ -76,21 +90,20 @@ if __name__ == '__main__':
               )lf
               using(ad_id)
               where
-                rl.refusal_reason_text in ('Profesional INMO','Profesional Vehículos')
-                and rl.review_time::date between '""" + params.getDate1() + """'::date and '""" + params.getDate2() + """'::date
+                rl.refusal_reason_text
+                in ('Profesional INMO','Profesional Vehículos')
+                and rl.review_time::date between '"""+params.getDate1()+"""'::date and '"""+params.getDate2()+"""'::date
               group by
               4,5 ) em
       """
 
     spark = spark(appName, params.getMaster())
-    dataFrame = spark.getSparkSql(configuration.getSpecific('BLOCKETDB.HOST')
-                                , configuration.getSpecific('BLOCKETDB.PORT')
-                                , configuration.getSpecific('BLOCKETDB.DATABASE')
-                                , configuration.getSpecific('BLOCKETDB.USERNAME')
-                                , configuration.getSpecific('BLOCKETDB.PASSWORD')
-                                , queryEvasionModeration )
-
-    dataFrame.show(n=2)    
+    dataFrame = spark.getSparkSql(
+        configuration.getSpecific('BLOCKETDB.HOST'),
+        configuration.getSpecific('BLOCKETDB.PORT'),
+        configuration.getSpecific('BLOCKETDB.DATABASE'),
+        configuration.getSpecific('BLOCKETDB.USERNAME'),
+        configuration.getSpecific('BLOCKETDB.PASSWORD'),
+        queryEvasionModeration)
     spark.stopSparkSession()
     logger.info('Process ended successed.')
-
