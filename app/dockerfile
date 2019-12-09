@@ -1,20 +1,10 @@
 
-FROM sdehaes/spark-py:v2.4.1-hadoop-2.9.2
+FROM containers.mpi-internal.com/yapo/data-spark-base
 
 COPY . /app
 WORKDIR /app
-ENV LOCAL_HOME /app
 
-RUN rm $SPARK_HOME/jars/kubernetes-client-4.1.2.jar
-ADD https://repo1.maven.org/maven2/io/fabric8/kubernetes-client/4.4.2/kubernetes-client-4.4.2.jar $SPARK_HOME/jars
+ENV APP_HOME /app
+ENV CONFIGURATION_FILE ${APP_HOME}/resources/conf.properties
 
-RUN apk add --no-cache curl
-RUN mkdir jar
-ENV JAR_POSTGRESQL postgresql-42.2.7.jar
-ENV PATH_JAR_POSTGRESQL ${LOCAL_HOME}/jar/${JAR_POSTGRESQL}
-RUN curl https://jdbc.postgresql.org/download/${JAR_POSTGRESQL} -o ${LOCAL_HOME}/jar/${JAR_POSTGRESQL}
-ENV POSTGRESQL_DRIVER org.postgresql.Driver
-
-RUN pip install --no-cache-dir -r ${LOCAL_HOME}/requirements.txt
-
-ENV CONFIGURATION_FILE ${LOCAL_HOME}/src/resources/configuration.properties
+RUN python3 -m pip install --no-cache-dir -r ${APP_HOME}/requirements.txt

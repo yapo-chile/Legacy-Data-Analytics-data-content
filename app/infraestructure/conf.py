@@ -2,7 +2,7 @@ import logging
 import os
 
 
-class conf(object):
+class configFile(object):
     def __init__(self, configFile):
         self.log = logging.getLogger('conf')
         format = """%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"""

@@ -1,1 +1,2 @@
-pyspark==2.4.4
+psycopg2-binary==2.8.4
+environ-config==19.1.0

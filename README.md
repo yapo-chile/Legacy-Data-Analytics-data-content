@@ -38,7 +38,18 @@ spark-submit \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     --conf spark.kubernetes.pyspark.pythonVersion=3 \
     --jars /app/jar/postgresql-42.2.7.jar \
-    /app/src/main.py -master=k8s://https://$(minikube ip):8443
+    /app/main.py -master=k8s://https://$(minikube ip):8443
+
+spark-submit \
+    --master k8s://https://$(minikube ip):8443 \
+    --deploy-mode cluster \
+    --name content-evasion-moderation \
+    --conf spark.executor.instances=1 \
+    --conf spark.kubernetes.container.image=containers.mpi-internal.com/yapo/content-evasion-moderation:feat_pyspark-integration \
+    --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+    --conf spark.kubernetes.pyspark.pythonVersion=3 \
+    --jars /app/jar/postgresql-42.2.7.jar \
+    /app/test.py -master=k8s://https://$(minikube ip):8443
 ```
 
 ### How to run on kubernetes reg

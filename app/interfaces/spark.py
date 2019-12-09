@@ -1,7 +1,7 @@
 import os
 import logging
 from pyspark.sql import SparkSession, SQLContext, DataFrame
-from utils.jar import jar
+from infraestructure.jar import jar
 
 class spark(object):
     def __init__(self, appName, masterNode ):

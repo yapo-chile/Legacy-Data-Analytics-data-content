@@ -34,19 +34,19 @@ export SERVER_NAME=$(shell expr `hostname`)
 export SERVER_DEBUG=true
 export SERVER_URL=http://${SERVER_HOST}:${SERVER_EXPOSED_PORT}
 
-#DATABASE READ
-export BLOCKETDB_PORT=5432
-export BLOCKETDB_NAME=blocketdb
-export BLOCKETDB_HOST=18.207.59.20
-export BLOCKETDB_USER=bnbiuser
-export BLOCKETDB_PASSWORD=VE1bi@BN112AzLkOP
+#Source databasee
+export SOURCEDB_HOST=18.207.59.20
+export SOURCEDB_PORT=5432
+export SOURCEDB_NAME=blocketdb
+export SOURCEDB_USER=bnbiuser
+export SOURCEDB_PASSWORD=VE1bi@BN112AzLkOP
 
-#DATABASE READ
-export DW_BLOCKETDB_PORT=5432
-export DW_BLOCKETDB_NAME=dw_blocketdb_ch
-export DW_BLOCKETDB_HOST=54.144.226.106
-export DW_BLOCKETDB_USER=bnbiuser
-export DW_BLOCKETDB_PASSWORD=VE1bi@BN112AzLkOP
+#Endpoint database
+export ENPOINTDB_HOST=54.144.226.106
+export ENPOINTDB_PORT=5432
+export ENPOINTDB_NAME=dw_blocketdb_ch
+export ENPOINTDB_USER=bnbiuser
+export ENPOINTDB_PASSWORD=VE1bi@BN112AzLkOP
 
 #LOGGER variables
 export LOGGER_SYSLOG_ENABLED=false
