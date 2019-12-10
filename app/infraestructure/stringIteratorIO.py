@@ -1,6 +1,7 @@
 from typing import Iterator, Dict, Any, Optional
 import io
 
+
 class StringIteratorIO(io.TextIOBase):
 
     def __init__(self, iter: Iterator[str]):
@@ -33,6 +34,7 @@ class StringIteratorIO(io.TextIOBase):
                 n -= len(m)
                 line.append(m)
         return ''.join(line)
+
 
 def cleanCsvValue(value: Optional[Any]) -> str:
     if value is None:

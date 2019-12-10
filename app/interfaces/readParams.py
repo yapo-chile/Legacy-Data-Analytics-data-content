@@ -4,8 +4,9 @@ import datetime
 import os
 from datetime import timedelta
 
+
 class readParams(object):
-    def __init__(self, strParseParams ):
+    def __init__(self, strParseParams):
         self.strParseParams = strParseParams
         self.dateFrom = None
         self.dateTo = None
@@ -16,9 +17,9 @@ class readParams(object):
         self.configurationFile = None
         self.jarPsql = None
         self.master = None
-        self.logger =  logging.getLogger('readParams')
-        logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s'
-                            , level=logging.INFO)
+        self.logger = logging.getLogger('readParams')
+        logging.basicConfig(
+            format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s', level=logging.INFO)
         self.loadParams()
         self.validateParams()
 
@@ -39,13 +40,13 @@ class readParams(object):
 
     def getLastYear(self) -> str:
         return self.lastYear
-    
+
     def getConfigurationFile(self) -> str:
         return self.configurationFile
 
     def getJarPsql(self) -> str:
         return self.jarPsql
-    
+
     def getMaster(self):
         return self.master
 
@@ -74,14 +75,15 @@ class readParams(object):
         try:
             self.logger.info('Python name : %s ' % self.strParseParams[0])
             for i in range(1, len(self.strParseParams)):
-                self.logger.info('Param[%s] : %s ' % ( i, self.strParseParams[ i ]))
-                param = self.strParseParams[ i ].split("=")
+                self.logger.info('Param[%s] : %s ' %
+                                 (i, self.strParseParams[i]))
+                param = self.strParseParams[i].split("=")
                 self.mappingParams(param[0], param[1])
         except Exception as e:
             self.logger.error('%s' % e)
             exit()
 
-    def mappingParams(self, key:str, value:str) -> None:
+    def mappingParams(self, key: str, value: str) -> None:
         """
         Method [ mapping_params ] is method that join attribute with key.
         Param  [ key ] is the key that be compare with params define for assign to attribute.
@@ -128,7 +130,7 @@ class readParams(object):
             if (self.env is None):
                 self.env = 'prod'
             if(self.appName is None):
-                path_appName = self.strParseParams[ 0 ].split("/")
+                path_appName = self.strParseParams[0].split("/")
                 appName = path_appName[len(path_appName)-1].split(".")
                 self.appName = appName[0]
             if(self.jarPsql is None):

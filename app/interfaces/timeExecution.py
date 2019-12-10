@@ -3,13 +3,14 @@ import logging
 import datetime
 from datetime import timedelta
 
+
 class timeExecution(object):
     def __init__(self):
         self.start = datetime.datetime.now()
         self.end = datetime.datetime.now()
-        self.logger =  logging.getLogger('timeExecution')
-        logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s'
-                            , level=logging.INFO)
+        self.logger = logging.getLogger('timeExecution')
+        logging.basicConfig(
+            format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s', level=logging.INFO)
 
     def getStart(self):
         return self.start

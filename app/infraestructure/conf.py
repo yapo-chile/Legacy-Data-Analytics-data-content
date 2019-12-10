@@ -5,9 +5,10 @@ import os
 class configFile(object):
     def __init__(self, configFile):
         self.log = logging.getLogger('conf')
-        format = """%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"""
-        logging.basicConfig(format=format,
-                            level=logging.INFO)
+        dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """
+        infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
+        format = dateformat + infoFormat
+        logging.basicConfig(format=format, level=logging.INFO)
         self.configFile = configFile
         self.conf = {}
         self.loadConf()

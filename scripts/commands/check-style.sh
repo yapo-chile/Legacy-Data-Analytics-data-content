@@ -15,9 +15,9 @@ if [[ -n "$TRAVIS" ]]; then
 
     CHECKSTYLE_FILE=${REPORT_ARTIFACTS}/checkstyle-report.xml
 
-    pylint -f json -r n src/ | ./scripts/commands/pylint-to-checkstyle > ${CHECKSTYLE_FILE}
+    pylint -f json -r n app/ | ./scripts/commands/pylint-to-checkstyle > ${CHECKSTYLE_FILE}
 else
-    pylint -r n src/
+    pylint -r n app/
 fi
 status=${PIPESTATUS[0]}
 

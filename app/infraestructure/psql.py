@@ -9,9 +9,10 @@ from infraestructure.stringIteratorIO import cleanStrValue
 class database(object):
     def __init__(self, host, port, dbname, user, password):
         self.log = logging.getLogger('psql')
-        format = """%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"""
-        logging.basicConfig(format=format,
-                        level=logging.INFO)
+        dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """
+        infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
+        format = dateformat + infoFormat
+        logging.basicConfig(format=format, level=logging.INFO)
         self.host = host
         self.port = port
         self.dbname = dbname
@@ -19,29 +20,30 @@ class database(object):
         self.password = password
         self.connection = None
         self.getConnection()
-    
+
     def DatabaseConf(self):
         return {"host": self.host,
                 "port": self.port,
                 "user": self.user,
                 "password": self.password,
                 "dbname": self.dbname}
-    
+
     def getConnection(self):
-        self.log.info('getConnection DB %s/%s'% (self.host, self.dbname))
+        self.log.info('getConnection DB %s/%s' % (self.host, self.dbname))
         self.connection = psycopg2.connect(**self.DatabaseConf())
         self.connection.set_client_encoding('UTF-8')
 
     def executeCommand(self, command):
-        self.log.info('executeCommand : %s'% command.replace('\n', ' ').replace('\t', ' '))
+        self.log.info('executeCommand : %s' %
+                      command.replace('\n', ' ').replace('\t', ' '))
         cursor = self.connection.cursor()
         cursor.execute(command)
         self.connection.commit()
         cursor.close()
 
-
     def selectToDict(self, query):
-        self.log.info('Query : %s' % query.replace('\n', ' ').replace('    ', ' '))
+        self.log.info('Query : %s' % query.replace(
+            '\n', ' ').replace('    ', ' '))
         cursor = self.connection.cursor()
         cursor.execute(query)
         fieldnames = [name[0] for name in cursor.description]
@@ -75,7 +77,6 @@ class database(object):
             self.connection.commit()
             self.log.info('Close cursor %s' % tableName)
             cursor.close()
-
 
     def copyEvasionDet(self, tableName, dataDict: Iterator[Dict[str, Any]]):
         self.log.info('copyStringIterator init CURSOR %s.' % tableName)

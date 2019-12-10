@@ -1,11 +1,14 @@
 import os
 import logging
 
+
 class jar(object):
-    def __init__(self, jarName ):
+    def __init__(self, jarName):
         self.log = logging.getLogger('jar')
-        logging.basicConfig(format='%(asctime)s,%(msecs)d %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s'
-                            , level=logging.INFO)
+        dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """
+        infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
+        format = dateformat + infoFormat
+        logging.basicConfig(format=format, level=logging.INFO)
         self.jarName = jarName
         self.path = None
         self.driver = None
