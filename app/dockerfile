@@ -1,5 +1,5 @@
 
-FROM containers.mpi-internal.com/yapo/data-spark-base
+FROM sdehaes/spark-py:v2.4.1-hadoop-2.9.2
 
 COPY . /app
 WORKDIR /app
