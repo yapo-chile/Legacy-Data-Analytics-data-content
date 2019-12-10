@@ -1,42 +1,42 @@
 import sys
 import logging
-import pandas as pd
+from infraestructure.conf import configFile
 from infraestructure.psql import database
 from infraestructure.stringIteratorIO import StringIteratorIO
 from infraestructure.stringIteratorIO import cleanCsvValue
 from interfaces.readParams import readParams
-from interfaces.spark import spark
-from infraestructure.conf import configFile
+from interfaces.timeExecution import timeExecution
 
 
 if __name__ == '__main__':
+  te = timeExecution()
   logger = logging.getLogger('content-evasion-moderation')
   dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """ 
   infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
   format = dateformat + infoFormat
   logging.basicConfig(format=format, level=logging.INFO)
   params = readParams(sys.argv)
-  configuration = configFile(params.getConfigurationFile())
-  rdbmsEndpoint = database(configuration.getSpecific('ENDPOINTDB.HOST'),
-                   configuration.getSpecific('ENDPOINTDB.PORT'),
-                   configuration.getSpecific('ENDPOINTDB.DATABASE'),
-                   configuration.getSpecific('ENDPOINTDB.USERNAME'),
-                   configuration.getSpecific('ENDPOINTDB.PASSWORD'))
-  rdbmsSource = database(configuration.getSpecific('SOURCEDB.HOST'),
-                   configuration.getSpecific('SOURCEDB.PORT'),
-                   configuration.getSpecific('SOURCEDB.DATABASE'),
-                   configuration.getSpecific('SOURCEDB.USERNAME'),
-                   configuration.getSpecific('SOURCEDB.PASSWORD'))
-  deleteEvasion = """ delete from dm_analysis.moderacion_evasion where review_time 
-                   between '""" + params.getDateFrom() + """' 
+  conf = configFile(params.getConfigurationFile())
+  rdbmsEndpoint = database(conf.getVal('ENDPOINTDB.HOST'),
+                   conf.getVal('ENDPOINTDB.PORT'),
+                   conf.getVal('ENDPOINTDB.DATABASE'),
+                   conf.getVal('ENDPOINTDB.USERNAME'),
+                   conf.getVal('ENDPOINTDB.PASSWORD'))
+  rdbmsSource = database(conf.getVal('SOURCEDB.HOST'),
+                   conf.getVal('SOURCEDB.PORT'),
+                   conf.getVal('SOURCEDB.DATABASE'),
+                   conf.getVal('SOURCEDB.USERNAME'),
+                   conf.getVal('SOURCEDB.PASSWORD'))
+  deleteEvasion = """ delete from """ + conf.getVal('ENDPOINTDB.TABLE.ME') + """ 
+                   where review_time between '""" + params.getDateFrom() + """'
                    and '"""  + params.getDateTo() + """' """
-  deleteEvasionDetails = """ delete from dm_analysis.moderacion_evasion_detalles where review_time::date
-                   between '""" + params.getDateFrom() + """' 
+  deleteEvasionDetails = """ delete from """ + conf.getVal('ENDPOINTDB.TABLE.MED') + """  
+                   where review_time::date 
+                   between '""" + params.getDateFrom() + """'
                    and '"""  + params.getDateTo() + """' """
 
   rdbmsEndpoint.executeCommand(deleteEvasion)
   rdbmsEndpoint.executeCommand(deleteEvasionDetails)
-  appName = 'content-evasion-moderation-child'
   queryEvasionModeration = """
     select
           rank() over(partition by u.email
@@ -114,7 +114,8 @@ if __name__ == '__main__':
               4,5 """
 
   dataEvasion = rdbmsSource.selectToDict(queryEvasionModeration)
-  rdbmsEndpoint.copyEvasion('dm_analysis.moderacion_evasion', dataEvasion)
+  rdbmsEndpoint.copyEvasion(conf.getVal('ENDPOINTDB.TABLE.ME'),
+                           dataEvasion)
 
   queryEvasionModerationDetails = """
   select
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     rl.review_time,
     rl.queue,
     rl.refusal_reason_text::varchar(200),
-    p.account_id,      
+    p.account_id,
     p.pack_id,
     p."type"::varchar(20),
     p.slots,
@@ -136,7 +137,7 @@ if __name__ == '__main__':
     lf.ad_id as ifee_ad_id,
     lf.product_name::varchar(20) as ifee_name,
     lf.purchase_date as ifee_purchase_date,
-    lf.ifee_price
+    lf.ifee_price::int
     from
       review_log rl
       left join
@@ -297,7 +298,9 @@ if __name__ == '__main__':
            and rl.review_time::date between '""" + params.getDateFrom() + """'::date and '""" + params.getDateTo() + """'::date
         """
   dataEvasionDetails = rdbmsSource.selectToDict(queryEvasionModerationDetails)
-  rdbmsEndpoint.copyEvasionDet('dm_analysis.moderacion_evasion_detalles', dataEvasionDetails)
+  rdbmsEndpoint.copyEvasionDet(conf.getVal('ENDPOINTDB.TABLE.MED'),
+                               dataEvasionDetails)
   rdbmsSource.closeConnection()
   rdbmsEndpoint.closeConnection()
+  te.getTime()
   logger.info('Process ended successed.')

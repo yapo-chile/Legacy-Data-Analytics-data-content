@@ -82,27 +82,27 @@ class database(object):
         with self.connection.cursor() as cursor:
             stringData = StringIteratorIO((
                 '|'.join(map(cleanCsvValue, (
-                    rowDict['email'],
-                    rowDict['review_order'],
-                    rowDict['ad_id'],
-                    rowDict['admin_name'],
-                    rowDict['review_time'],
-                    rowDict['queue'],
-                    rowDict['refusal_reason_text'],
-                    rowDict['account_id'],
-                    rowDict['pack_id'],
-                    rowDict['type'],
-                    rowDict['slots'],
-                    rowDict['date_start'],
-                    rowDict['date_end'],
-                    rowDict['product_name'],
-                    rowDict['tipo_pack'],
-                    rowDict['ifee_ad_id'],
-                    rowDict['ifee_name'],
-                    rowDict['ifee_purchase_date'],
-                    rowDict['ifee_price']
+                    row['review_order'],
+                    row['email'],
+                    row['ad_id'],
+                    row['admin_name'],
+                    row['review_time'],
+                    row['queue'],
+                    row['refusal_reason_text'],
+                    row['pack_id'],
+                    row['account_id'],
+                    row['type'],
+                    row['slots'],
+                    row['date_start'],
+                    row['date_end'],
+                    row['product_name'],
+                    row['tipo_pack'],
+                    row['ifee_ad_id'],
+                    row['ifee_name'],
+                    row['ifee_purchase_date'],
+                    row['ifee_price'],
                 ))) + '\n'
-                for rowDict in dataDict
+                for row in dataDict
             ))
             self.log.info('Preparing data for insert.')
             cursor.copy_from(stringData, tableName, sep='|')

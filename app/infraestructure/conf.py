@@ -12,7 +12,7 @@ class configFile(object):
         self.conf = {}
         self.loadConf()
 
-    def getSpecific(self, key):
+    def getVal(self, key):
         return self.conf.get(key)
 
     def loadConf(self):
