@@ -21,11 +21,11 @@ before_script:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  - make docker-build
-  - make check-style
+  - make -C evasion-moderation docker-build
+  - make -C evasion-moderation check-style
 after_failure:
   - reports-publisher
 
 after_success:
   - reports-publisher
-  - make docker-publish
+  - make -C evasion-moderation docker-publish
