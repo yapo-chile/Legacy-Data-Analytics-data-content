@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     DATA_EVASION = DB_SOURCE.select_to_dict(QUERY_EVASION_MODERATION)
     DB_ENDPOINT.copy_evasion(CONF.get_val('ENDPOINTDB.TABLE.ME'),
-                            DATA_EVASION)
+                             DATA_EVASION)
 
     QUERY_EVASION_MODERATION_DETAILS = """
     select
@@ -304,7 +304,7 @@ if __name__ == '__main__':
     DATA_EVASION_DETAILS = DB_SOURCE.select_to_dict(
         QUERY_EVASION_MODERATION_DETAILS)
     DB_ENDPOINT.copy_evasion_det(CONF.get_val('ENDPOINTDB.TABLE.MED'),
-                               DATA_EVASION_DETAILS)
+                                 DATA_EVASION_DETAILS)
     DB_SOURCE.close_connection()
     DB_ENDPOINT.close_connection()
     TIME.get_time()
