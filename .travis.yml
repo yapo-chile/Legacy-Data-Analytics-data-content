@@ -22,7 +22,6 @@ before_script:
 # in a modern Go project.
 script:
   - make -C evasion-moderation docker-build
-  - make -C evasion-moderation check-style
 after_failure:
   - reports-publisher
 
