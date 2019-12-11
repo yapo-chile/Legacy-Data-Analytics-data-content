@@ -2,44 +2,42 @@
 # utf-8
 import sys
 import logging
-from infraestructure.conf import configFile
-from infraestructure.psql import database
-from infraestructure.stringIteratorIO import StringIteratorIO
-from infraestructure.stringIteratorIO import cleanCsvValue
-from interfaces.readParams import readParams
-from interfaces.timeExecution import timeExecution
+from infraestructure.conf import ConfigFile
+from infraestructure.psql import Database
+from interfaces.read_params import ReadParams
+from interfaces.time_execution import TimeExecution
 
 
 if __name__ == '__main__':
-    te = timeExecution()
-    logger = logging.getLogger('content-evasion-moderation')
-    dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """
-    infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
-    format = dateformat + infoFormat
-    logging.basicConfig(format=format, level=logging.INFO)
-    params = readParams(sys.argv)
-    conf = configFile(params.getConfigurationFile())
-    rdbmsEndpoint = database(conf.getVal('ENDPOINTDB.HOST'),
-                             conf.getVal('ENDPOINTDB.PORT'),
-                             conf.getVal('ENDPOINTDB.DATABASE'),
-                             conf.getVal('ENDPOINTDB.USERNAME'),
-                             conf.getVal('ENDPOINTDB.PASSWORD'))
-    rdbmsSource = database(conf.getVal('SOURCEDB.HOST'),
-                           conf.getVal('SOURCEDB.PORT'),
-                           conf.getVal('SOURCEDB.DATABASE'),
-                           conf.getVal('SOURCEDB.USERNAME'),
-                           conf.getVal('SOURCEDB.PASSWORD'))
-    deleteEvasion = """ delete from """ + conf.getVal('ENDPOINTDB.TABLE.ME') + """
-                   where review_time between '""" + params.getDateFrom() + """'
-                   and '""" + params.getDateTo() + """' """
-    deleteEvasionDetails = """ delete from """ + conf.getVal('ENDPOINTDB.TABLE.MED') + """
+    TIME = TimeExecution()
+    LOGGER = logging.getLogger('content-evasion-moderation')
+    DATE_FORMAT = """%(asctime)s,%(msecs)d %(levelname)-2s """
+    INFO_FORMAT = """[%(filename)s:%(lineno)d] %(message)s"""
+    LOG_FORMAT = DATE_FORMAT + INFO_FORMAT
+    logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
+    PARAMS = ReadParams(sys.argv)
+    CONF = ConfigFile(PARAMS.get_config_file())
+    DB_ENDPOINT = Database(CONF.get_val('ENDPOINTDB.HOST'),
+                           CONF.get_val('ENDPOINTDB.PORT'),
+                           CONF.get_val('ENDPOINTDB.DATABASE'),
+                           CONF.get_val('ENDPOINTDB.USERNAME'),
+                           CONF.get_val('ENDPOINTDB.PASSWORD'))
+    DB_SOURCE = Database(CONF.get_val('SOURCEDB.HOST'),
+                         CONF.get_val('SOURCEDB.PORT'),
+                         CONF.get_val('SOURCEDB.DATABASE'),
+                         CONF.get_val('SOURCEDB.USERNAME'),
+                         CONF.get_val('SOURCEDB.PASSWORD'))
+    DELETE_EVASION = """ delete from """ + CONF.get_val('ENDPOINTDB.TABLE.ME') + """
+                   where review_time between '""" + PARAMS.get_date_from() + """'
+                   and '""" + PARAMS.get_date_to() + """' """
+    DELETE_EVASION_DETAILS = """ delete from """ + CONF.get_val('ENDPOINTDB.TABLE.MED') + """
                    where review_time::date 
-                   between '""" + params.getDateFrom() + """'
-                   and '""" + params.getDateTo() + """' """
+                   between '""" + PARAMS.get_date_from() + """'
+                   and '""" + PARAMS.get_date_to() + """' """
 
-    rdbmsEndpoint.executeCommand(deleteEvasion)
-    rdbmsEndpoint.executeCommand(deleteEvasionDetails)
-    queryEvasionModeration = """
+    DB_ENDPOINT.execute_command(DELETE_EVASION)
+    DB_ENDPOINT.execute_command(DELETE_EVASION_DETAILS)
+    QUERY_EVASION_MODERATION = """
     select
           rank() over(partition by u.email
             order by rl.review_time::date)
@@ -67,12 +65,12 @@ if __name__ == '__main__':
               ad_id,
               user_id
               from
-                blocket_""" + params.getCurrentYear() + """.ads
+                blocket_""" + PARAMS.get_current_year() + """.ads
                 union all select
                 ad_id,
                 user_id
                 from
-                blocket_""" + params.getLastYear() + """.ads
+                blocket_""" + PARAMS.get_last_year() + """.ads
               )aa
                 using(ad_id)
               left join
@@ -112,17 +110,17 @@ if __name__ == '__main__':
                 rl.refusal_reason_text
                 in ('Profesional INMO','Profesional Vehículos')
                 and rl.review_time::date
-                between '"""+params.getDateFrom()+"""'::date
-                and '"""+params.getDateTo()+"""'::date
+                between '"""+PARAMS.get_date_from()+"""'::date
+                and '"""+PARAMS.get_date_to()+"""'::date
               group by
               4,5 """
 
-    dataEvasion = rdbmsSource.selectToDict(queryEvasionModeration)
-    rdbmsEndpoint.copyEvasion(conf.getVal('ENDPOINTDB.TABLE.ME'),
-                              dataEvasion)
+    DATA_EVASION = DB_SOURCE.select_to_dict(QUERY_EVASION_MODERATION)
+    DB_ENDPOINT.copy_evasion(CONF.get_val('ENDPOINTDB.TABLE.ME'),
+                            DATA_EVASION)
 
-    queryEvasionModerationDetails = """
-  select
+    QUERY_EVASION_MODERATION_DETAILS = """
+    select
     u.email,
     rank() over(partition by u.email order by rl.review_time) as review_order,
     rl.ad_id,
@@ -156,13 +154,13 @@ if __name__ == '__main__':
           ad_id,
           user_id
         from
-          blocket_""" + params.getCurrentYear() + """.ads
+          blocket_""" + PARAMS.get_current_year() + """.ads
         union all
         select
           ad_id,
           user_id
         from
-          blocket_""" + params.getLastYear() + """.ads
+          blocket_""" + PARAMS.get_last_year() + """.ads
         )aa
         using(ad_id)
         left join
@@ -300,14 +298,14 @@ if __name__ == '__main__':
           where
            rl.refusal_reason_text in ('Profesional INMO','Profesional Vehículos','Profesional Empleo')
            and rl.review_time::date
-           between '""" + params.getDateFrom() + """'::date
-           and '""" + params.getDateTo() + """'::date
+           between '""" + PARAMS.get_date_from() + """'::date
+           and '""" + PARAMS.get_date_to() + """'::date
         """
-    dataEvasionDetails = rdbmsSource.selectToDict(
-        queryEvasionModerationDetails)
-    rdbmsEndpoint.copyEvasionDet(conf.getVal('ENDPOINTDB.TABLE.MED'),
-                                 dataEvasionDetails)
-    rdbmsSource.closeConnection()
-    rdbmsEndpoint.closeConnection()
-    te.getTime()
-    logger.info('Process ended successed.')
+    DATA_EVASION_DETAILS = DB_SOURCE.select_to_dict(
+        QUERY_EVASION_MODERATION_DETAILS)
+    DB_ENDPOINT.copy_evasion_det(CONF.get_val('ENDPOINTDB.TABLE.MED'),
+                               DATA_EVASION_DETAILS)
+    DB_SOURCE.close_connection()
+    DB_ENDPOINT.close_connection()
+    TIME.get_time()
+    LOGGER.info('Process ended successed.')

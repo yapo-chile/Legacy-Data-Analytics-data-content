@@ -1,48 +1,62 @@
-from typing import Iterator, Dict, Any, Optional
+from typing import Iterator, Dict, Any
 import logging
 import psycopg2
-from infraestructure.stringIteratorIO import StringIteratorIO
-from infraestructure.stringIteratorIO import cleanCsvValue
-from infraestructure.stringIteratorIO import cleanStrValue
+from infraestructure.string_iterator_io import StringIteratorIO
+from infraestructure.string_iterator_io import clean_csv_value
 
 
-class database(object):
+class Database:
+    """
+    Class that allow do operations with postgresql database.
+    """
     def __init__(self, host, port, dbname, user, password):
         self.log = logging.getLogger('psql')
-        dateformat = """%(asctime)s,%(msecs)d %(levelname)-2s """
-        infoFormat = """[%(filename)s:%(lineno)d] %(message)s"""
-        format = dateformat + infoFormat
-        logging.basicConfig(format=format, level=logging.INFO)
+        date_format = """%(asctime)s,%(msecs)d %(levelname)-2s """
+        info_format = """[%(filename)s:%(lineno)d] %(message)s"""
+        log_format = date_format + info_format
+        logging.basicConfig(format=log_format, level=logging.INFO)
         self.host = host
         self.port = port
         self.dbname = dbname
         self.user = user
         self.password = password
         self.connection = None
-        self.getConnection()
+        self.get_connection()
 
-    def DatabaseConf(self):
+    def database_conf(self):
+        """
+        Method that return dict with database credentials.
+        """
         return {"host": self.host,
                 "port": self.port,
                 "user": self.user,
                 "password": self.password,
                 "dbname": self.dbname}
 
-    def getConnection(self):
-        self.log.info('getConnection DB %s/%s' % (self.host, self.dbname))
-        self.connection = psycopg2.connect(**self.DatabaseConf())
+    def get_connection(self):
+        """
+        Method that returns database connection.
+        """
+        self.log.info('get_connection DB %s/%s', self.host, self.dbname)
+        self.connection = psycopg2.connect(**self.database_conf())
         self.connection.set_client_encoding('UTF-8')
 
-    def executeCommand(self, command):
-        self.log.info('executeCommand : %s' %
+    def execute_command(self, command):
+        """
+        Method that allow execute sql commands such as DML commands.
+        """
+        self.log.info('execute_command : %s',
                       command.replace('\n', ' ').replace('\t', ' '))
         cursor = self.connection.cursor()
         cursor.execute(command)
         self.connection.commit()
         cursor.close()
 
-    def selectToDict(self, query):
-        self.log.info('Query : %s' % query.replace(
+    def select_to_dict(self, query):
+        """
+        Method that from query transform raw data into dict.
+        """
+        self.log.info('Query : %s', query.replace(
             '\n', ' ').replace('    ', ' '))
         cursor = self.connection.cursor()
         cursor.execute(query)
@@ -56,33 +70,39 @@ class database(object):
         cursor.close()
         return result
 
-    def copyEvasion(self, tableName, dataDict: Iterator[Dict[str, Any]]):
-        self.log.info('copyStringIterator init CURSOR %s.' % tableName)
+    def copy_evasion(self, table_name, data_dict: Iterator[Dict[str, Any]]):
+        """
+        Method specific that insert data in evasion moderation table.
+        """
+        self.log.info('copyStringIterator init CURSOR %s.', table_name)
         with self.connection.cursor() as cursor:
-            stringData = StringIteratorIO((
-                '|'.join(map(cleanCsvValue, (
-                    rowDict['review_order'],
-                    rowDict['pack_order'],
-                    rowDict['ifee_order'],
-                    rowDict['email'],
-                    rowDict['review_time'],
-                    rowDict['pack_start_date'],
-                    rowDict['ifee_purchase_date'],
+            string_data = StringIteratorIO((
+                '|'.join(map(clean_csv_value, (
+                    row['review_order'],
+                    row['pack_order'],
+                    row['ifee_order'],
+                    row['email'],
+                    row['review_time'],
+                    row['pack_start_date'],
+                    row['ifee_purchase_date'],
                 ))) + '\n'
-                for rowDict in dataDict
+                for row in data_dict
             ))
             self.log.info('Preparing data for insert.')
-            cursor.copy_from(stringData, tableName, sep='|')
+            cursor.copy_from(string_data, table_name, sep='|')
             self.log.info('copyStringIterator COMMIT.')
             self.connection.commit()
-            self.log.info('Close cursor %s' % tableName)
+            self.log.info('Close cursor %s', table_name)
             cursor.close()
 
-    def copyEvasionDet(self, tableName, dataDict: Iterator[Dict[str, Any]]):
-        self.log.info('copyStringIterator init CURSOR %s.' % tableName)
+    def copy_evasion_det(self, table_name, data_dict: Iterator[Dict[str, Any]]):
+        """
+        Method specific that insert data into evasion moderation details table.
+        """
+        self.log.info('copyStringIterator init CURSOR %s.', table_name)
         with self.connection.cursor() as cursor:
-            stringData = StringIteratorIO((
-                '|'.join(map(cleanCsvValue, (
+            string_data = StringIteratorIO((
+                '|'.join(map(clean_csv_value, (
                     row['review_order'],
                     row['email'],
                     row['ad_id'],
@@ -103,14 +123,18 @@ class database(object):
                     row['ifee_purchase_date'],
                     row['ifee_price'],
                 ))) + '\n'
-                for row in dataDict
+                for row in data_dict
             ))
             self.log.info('Preparing data for insert.')
-            cursor.copy_from(stringData, tableName, sep='|')
+            cursor.copy_from(string_data, table_name, sep='|')
             self.log.info('copyStringIterator COMMIT.')
             self.connection.commit()
-            self.log.info('Close cursor %s' % tableName)
+            self.log.info('Close cursor %s', table_name)
             cursor.close()
 
-    def closeConnection(self):
+    def close_connection(self):
+        """
+        Method that close connection to postgresql database.
+        """
+        self.log.info('Close connection DB : %s/%s', self.host, self.dbname)
         self.connection.close()

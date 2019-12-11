@@ -18,7 +18,6 @@ persistent=yes
 jobs=4
 
 
-
 [MESSAGES CONTROL]
 
 # Only show warnings with the listed confidence levels. Leave empty to show
