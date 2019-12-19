@@ -16,7 +16,7 @@ docker-build: build
 compose-up: docker-build
 	docker-compose up -d
 
-start: compose-up info
+start: compose-up
 	##--scale -d pyms=4 
 
 ## Publishes container

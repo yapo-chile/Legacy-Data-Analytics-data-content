@@ -6,16 +6,9 @@ services:
     container_name: ${DOCKER_CONTAINER_NAME}
     expose:
       - "5000"
-    ports:
-      - "${SERVER_EXPOSED_PORT}:${SERVER_PORT}"
     environment:
-      SOURCEDB_HOST: ${SOURCEDB_HOST}
-      SOURCEDB_PORT: ${SOURCEDB_PORT}
-      SOURCEDB_NAME: ${SOURCEDB_NAME}
-      SOURCEDB_USER: ${SOURCEDB_USER}
-      SOURCEDB_PASSWORD: ${SOURCEDB_PASSWORD}
-      ENPOINTDB_HOST: ${ENPOINTDB_HOST}
-      ENPOINTDB_PORT: ${ENPOINTDB_PORT}
-      ENPOINTDB_NAME: ${ENPOINTDB_NAME}
-      ENPOINTDB_USER: ${ENPOINTDB_USER}
-      ENPOINTDB_PASSWORD: ${ENPOINTDB_PASSWORD}
+      APP_SOURCEDB: /app/sourcedb_secret
+      APP_ENDPOINTDB: /app/endpointdb_secret
+    volumes:
+      - ${VOLUME_APP_SOURCEDB_SECRET}:/app/sourcedb_secret
+      - ${VOLUME_APP_ENDPOINTDB_SECRET}:/app/endpointdb_secret

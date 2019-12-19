@@ -2,7 +2,8 @@
 # utf-8
 import sys
 import logging
-from infraestructure.conf import ConfigFile
+import environ
+from infraestructure.conf import AppConfig
 from infraestructure.psql import Database
 from interfaces.read_params import ReadParams
 from interfaces.time_execution import TimeExecution
@@ -16,25 +17,24 @@ if __name__ == '__main__':
     LOG_FORMAT = DATE_FORMAT + INFO_FORMAT
     logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
     PARAMS = ReadParams(sys.argv)
-    CONF = ConfigFile(PARAMS.get_config_file())
-    DB_ENDPOINT = Database(CONF.get_val('ENDPOINTDB.HOST'),
-                           CONF.get_val('ENDPOINTDB.PORT'),
-                           CONF.get_val('ENDPOINTDB.DATABASE'),
-                           CONF.get_val('ENDPOINTDB.USERNAME'),
-                           CONF.get_val('ENDPOINTDB.PASSWORD'))
-    DB_SOURCE = Database(CONF.get_val('SOURCEDB.HOST'),
-                         CONF.get_val('SOURCEDB.PORT'),
-                         CONF.get_val('SOURCEDB.DATABASE'),
-                         CONF.get_val('SOURCEDB.USERNAME'),
-                         CONF.get_val('SOURCEDB.PASSWORD'))
-    DELETE_EVASION = """ delete from """ + CONF.get_val('ENDPOINTDB.TABLE.ME') + """
+    CONF = environ.to_config(AppConfig)
+    DB_ENDPOINT = Database(CONF.endpointdb.host,
+                           CONF.endpointdb.port,
+                           CONF.endpointdb.name,
+                           CONF.endpointdb.user,
+                           CONF.endpointdb.password)
+    DB_SOURCE = Database(CONF.sourcedb.host,
+                         CONF.sourcedb.port,
+                         CONF.sourcedb.name,
+                         CONF.sourcedb.user,
+                         CONF.sourcedb.password)
+    DELETE_EVASION = """ delete from """ + CONF.endpointdb.table_em + """
                    where review_time between '""" + PARAMS.get_date_from() + """'
                    and '""" + PARAMS.get_date_to() + """' """
-    DELETE_EVASION_DETAILS = """ delete from """ + CONF.get_val('ENDPOINTDB.TABLE.MED') + """
+    DELETE_EVASION_DETAILS = """ delete from """ + CONF.endpointdb.table_emd + """
                    where review_time::date 
                    between '""" + PARAMS.get_date_from() + """'
                    and '""" + PARAMS.get_date_to() + """' """
-
     DB_ENDPOINT.execute_command(DELETE_EVASION)
     DB_ENDPOINT.execute_command(DELETE_EVASION_DETAILS)
     QUERY_EVASION_MODERATION = """
@@ -116,7 +116,7 @@ if __name__ == '__main__':
               4,5 """
 
     DATA_EVASION = DB_SOURCE.select_to_dict(QUERY_EVASION_MODERATION)
-    DB_ENDPOINT.copy_evasion(CONF.get_val('ENDPOINTDB.TABLE.ME'),
+    DB_ENDPOINT.copy_evasion(CONF.endpointdb.table_em,
                              DATA_EVASION)
 
     QUERY_EVASION_MODERATION_DETAILS = """
@@ -303,7 +303,7 @@ if __name__ == '__main__':
         """
     DATA_EVASION_DETAILS = DB_SOURCE.select_to_dict(
         QUERY_EVASION_MODERATION_DETAILS)
-    DB_ENDPOINT.copy_evasion_det(CONF.get_val('ENDPOINTDB.TABLE.MED'),
+    DB_ENDPOINT.copy_evasion_det(CONF.endpointdb.table_emd,
                                  DATA_EVASION_DETAILS)
     DB_SOURCE.close_connection()
     DB_ENDPOINT.close_connection()
