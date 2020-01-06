@@ -25,28 +25,9 @@ export SERVERNAME=$(shell expr `hostname`)
 export MAIN_FILE=src/${APPNAME}.py
 export MAX_RETRIES=4
 
-# SERVER variables
-export SERVER_HOST=0.0.0.0
-export SERVER_PORT=5000
-export SERVER_EXPOSED_PORT=$(call genport,1)
-export SERVER_ROOT=${PWD}
-export SERVER_NAME=$(shell expr `hostname`)
-export SERVER_DEBUG=true
-export SERVER_URL=http://${SERVER_HOST}:${SERVER_EXPOSED_PORT}
-
-#DATABASE READ
-export BLOCKETDB_PORT=5432
-export BLOCKETDB_NAME=blocketdb
-export BLOCKETDB_HOST=18.207.59.20
-export BLOCKETDB_USER=bnbiuser
-export BLOCKETDB_PASSWORD=VE1bi@BN112AzLkOP
-
-#DATABASE READ
-export DW_BLOCKETDB_PORT=5432
-export DW_BLOCKETDB_NAME=dw_blocketdb_ch
-export DW_BLOCKETDB_HOST=54.144.226.106
-export DW_BLOCKETDB_USER=bnbiuser
-export DW_BLOCKETDB_PASSWORD=VE1bi@BN112AzLkOP
+#SECRET variables
+export VOLUME_APP_SOURCEDB_SECRET=/keys/blocket_db
+export VOLUME_APP_ENDPOINTDB_SECRET=/keys/dw_db
 
 #LOGGER variables
 export LOGGER_SYSLOG_ENABLED=false
@@ -58,7 +39,7 @@ export LOGGER_LOG_LEVEL=0
 export DOCKER_REGISTRY=containers.mpi-internal.com
 export DOCKER_IMAGE=${DOCKER_REGISTRY}/yapo/${APPNAME}
 export DOCKER_IMAGE_COMPOSE=${DOCKER_REGISTRY}/yapo/${APPNAME}:${GIT_BRANCH}
-export DOCKER_CONTAINER_NAME=DOCKER_IMAGE_COMPOSE
+export DOCKER_CONTAINER_NAME=${APPNAME}_${VERSION}
 export DOCKER_PORT=8080
 export DOCKER_GATEWAY_PORT=$(call genport,4)
 

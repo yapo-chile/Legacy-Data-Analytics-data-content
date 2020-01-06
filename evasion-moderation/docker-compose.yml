@@ -1,0 +1,14 @@
+version: '3'
+ 
+services:
+  app:
+    image: ${DOCKER_IMAGE_COMPOSE}
+    container_name: ${DOCKER_CONTAINER_NAME}
+    expose:
+      - "5000"
+    environment:
+      APP_SOURCEDB: /app/sourcedb_secret
+      APP_ENDPOINTDB: /app/endpointdb_secret
+    volumes:
+      - ${VOLUME_APP_SOURCEDB_SECRET}:/app/sourcedb_secret
+      - ${VOLUME_APP_ENDPOINTDB_SECRET}:/app/endpointdb_secret
