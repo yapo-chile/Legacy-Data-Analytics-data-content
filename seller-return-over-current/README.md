@@ -1,8 +1,15 @@
-# Base pipeline 
+# Seller return over current
 
-This micro services is base micro services. 
+This micro services create metric **seller return over current**. 
 
-### Build
+## Source data
+Data is consume from **data warehouse**.
+
+## Destiny data
+Data is store in **dm_peak.seller_return_over_current** table from our **data warehouse**.
+
+
+## Build
 ```
 make docker-build
 ```
@@ -23,8 +30,3 @@ docker run -v /local-path/secrets/db-secret:/app/db-secret \
            -date_from=YYYY-MM-DD \
            -date_to=YYYY-MM-DD
 ```
-
-
-docker run -v /Users/luisbarrera/Documents/secrets/dw_db:/app/db-secret \
-           -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/content-seller-return-over-current:feat_seller-return-over-current
