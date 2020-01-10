@@ -66,13 +66,13 @@ class Database:
         cursor.close()
         return pd_result
 
-    def insert_data(self, data_dict: pd.DataFrame) -> None:
-        self.log.info('INSERT INTO %s', self.conf.table)
+    def insert_current(self, data_dict: pd.DataFrame) -> None:
+        self.log.info('INSERT INTO %s', self.conf.table_current)
         page_size: int = 10000
         with self.connection.cursor() as cursor:
             psycopg2.extras \
                 .execute_values(cursor,
-                                """ INSERT INTO """ + self.conf.table +
+                                """ INSERT INTO """ + self.conf.table_current +
                                 """ ( dt_metric,
                                       first_period_start,
                                       first_period_end,
@@ -91,9 +91,43 @@ class Database:
                                         row.sellers_both_periods
                                     ) for row in data_dict.itertuples()),
                                 page_size=page_size)
-            self.log.info('INSERT %s COMMIT.', self.conf.table)
+            self.log.info('INSERT %s COMMIT.', self.conf.table_current)
             self.connection.commit()
-            self.log.info('CLOSE CURSOR %s', self.conf.table)
+            self.log.info('CLOSE CURSOR %s', self.conf.table_current)
+            cursor.close()
+
+
+
+    def insert_past(self, data_dict: pd.DataFrame) -> None:
+        self.log.info('INSERT INTO %s', self.conf.table_past)
+        page_size: int = 10000
+        with self.connection.cursor() as cursor:
+            psycopg2.extras \
+                .execute_values(cursor,
+                                """ INSERT INTO """ + self.conf.table_past +
+                                """ ( dt_metric,
+                                        first_period_start,
+                                        first_period_end,
+                                        second_period_start,
+                                        second_period_end,
+                                        sellers_current_period,
+                                        sellers_past_period,
+                                        sellers_both_periods
+                                    )
+                                    VALUES %s; """, ((
+                                        row.dt_metric,
+                                        row.first_period_start,
+                                        row.first_period_end,
+                                        row.second_period_start,
+                                        row.second_period_end,
+                                        row.sellers_current_period,
+                                        row.sellers_past_period,
+                                        row.sellers_both_periods
+                                    ) for row in data_dict.itertuples()),
+                                page_size=page_size)
+            self.log.info('INSERT %s COMMIT.', self.conf.table_past)
+            self.connection.commit()
+            self.log.info('CLOSE CURSOR %s', self.conf.table_past)
             cursor.close()
 
 

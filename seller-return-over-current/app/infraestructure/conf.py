@@ -20,7 +20,8 @@ class AppConfig:
         name: str = INI_DB.secret(name="dbname", default=environ.var())
         user: str = INI_DB.secret(name="user", default=environ.var())
         password: str = INI_DB.secret(name="password", default=environ.var())
-        table: str = environ.var("dm_peak.seller_return_over_current")
+        table_current: str = environ.var("dm_peak.seller_return_over_current")
+        table_past: str = environ.var("dm_peak.seller_return_over_past")
     db = environ.group(DBConfig)
 
 

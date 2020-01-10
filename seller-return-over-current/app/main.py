@@ -21,8 +21,12 @@ if __name__ == '__main__':
     QUERY = Query()
     DB_WRITE = Database(conf=CONFIG.db)
     DB_WRITE.execute_command(QUERY.delete_data(PARAMS))
-    DATA = DB_WRITE.select_to_dict(QUERY.seller_return_over_current(PARAMS))
-    DB_WRITE.insert_data(DATA)
+    DATA_CURRENT = DB_WRITE.select_to_dict(QUERY \
+                                           .seller_return_over_current(PARAMS))
+    DATA_PAST = DB_WRITE.select_to_dict(QUERY \
+                                        .seller_return_over_past(PARAMS))
+    DB_WRITE.insert_current(DATA_CURRENT)
+    DB_WRITE.insert_past(DATA_PAST)
     DB_WRITE.close_connection()
     TIME.get_time()
     LOGGER.info('Process ended successfully.')
