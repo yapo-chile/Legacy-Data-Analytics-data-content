@@ -11,3 +11,4 @@ __pycache__/
 Pipfile*
 LICENSE
 README.rst
+automated_build.txt
