@@ -193,12 +193,22 @@ class Query:
         """
         return query
 
-    def delete_data(self, params: ReadParams) -> str:
+    def delete_current(self, params: ReadParams) -> str:
         """
         Method that returns events of the day
         """
         command = """
                 delete from dm_peak.seller_return_over_current
+                where
+                dt_metric::date = '""" + params.get_date_from() + """'::date """
+        return command
+
+    def delete_past(self, params: ReadParams) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                delete from dm_peak.seller_return_over_past
                 where
                 dt_metric::date = '""" + params.get_date_from() + """'::date """
         return command
