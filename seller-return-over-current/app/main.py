@@ -35,6 +35,13 @@ def destiny_data(params: ReadParams,
     DB_WRITE.close_connection()
 
 
+def end_pipeline(time: TimeExecution, logger: logging) -> None:
+    time.get_time()
+    logger.info('Process ended successfully.')
+
+
+
+
 if __name__ == '__main__':
     CONFIG = getConf()
     TIME = TimeExecution()
@@ -46,5 +53,4 @@ if __name__ == '__main__':
     PARAMS = ReadParams(sys.argv)
     DATA_PAST, DATA_CURRENT = source_data(PARAMS, CONFIG)
     destiny_data(PARAMS, CONFIG, DATA_PAST, DATA_CURRENT)
-    TIME.get_time()
-    LOGGER.info('Process ended successfully.')
+    end_pipeline(TIME, LOGGER)
