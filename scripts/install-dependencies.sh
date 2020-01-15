@@ -4,6 +4,8 @@ MODULE_COMPILE=""
 echo ${BUILD_BRANCH}
 
 function GET_BUILD_MODULE(){
+    echo "git branch -a"
+    git branch -a
     git checkout ${BUILD_BRANCH}
     GIT_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     GIT_LAST_COMMIT=$(git log -p --name-only --oneline | head -1 | awk '{print $1}')
