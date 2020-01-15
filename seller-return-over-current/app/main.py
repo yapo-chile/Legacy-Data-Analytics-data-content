@@ -20,8 +20,6 @@ def source_data(params: ReadParams,
     DB_SOURCE.close_connection()
     return data_past, data_current
 
-
-
 def destiny_data(params: ReadParams,
                  config: getConf,
                  data_past: pd.DataFrame,
@@ -34,13 +32,9 @@ def destiny_data(params: ReadParams,
     DB_WRITE.insert_past(data_past)
     DB_WRITE.close_connection()
 
-
 def end_pipeline(time: TimeExecution, logger: logging) -> None:
     time.get_time()
     logger.info('Process ended successfully.')
-
-
-
 
 if __name__ == '__main__':
     CONFIG = getConf()
