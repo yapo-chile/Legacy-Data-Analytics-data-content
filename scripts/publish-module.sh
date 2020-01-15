@@ -3,7 +3,14 @@
 MODULE_COMPILE=""
 
 function GET_BUILD_MODULE(){
-    GIT_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    if [ -z "${BUILD_BRANCH}" ]
+    then
+        GIT_CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    else
+        GIT_CURRENT_BRANCH="${BUILD_BRANCH}"
+        echo "git checkout ${GIT_CURRENT_BRANCH}"
+        git checkout ${GIT_CURRENT_BRANCH}
+    fi
     GIT_LAST_COMMIT=$(git log -p --name-only --oneline | head -1 | awk '{print $1}')
     GIT_LAST_MERGE=$(git log -p --name-only --oneline | grep "Merge" | head -1 | awk '{print $1}')
     echo "GIT_CURRENT_BRANCH: ${GIT_CURRENT_BRANCH}"
@@ -13,11 +20,16 @@ function GET_BUILD_MODULE(){
 }
 
 function PUBLISH_MODULE(){   
-    IFS=' '
-    read -ra ADDR <<< "${MODULE_COMPILE}"
-    for MODULE in "${ADDR[@]}"; do
-        echo "make -C ${MODULE} docker-publish"
-        make -C ${MODULE} docker-publish
+    COUNT_MODULES=$(echo "${MODULE_COMPILE}" | wc -l)
+    let INCREMENT=1
+    while [ ${INCREMENT} -le ${COUNT_MODULES} ];
+    do
+        MODULE=$(echo "${MODULE_COMPILE}" | head -${INCREMENT} | tail -1)
+        if [ "${MODULE}" != "scripts" ]; then
+            echo "make -C ${MODULE} docker-publish"
+            make -C ${MODULE} docker-publish
+        fi
+        let INCREMENT=${INCREMENT}+1
     done
 }
 
