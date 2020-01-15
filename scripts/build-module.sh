@@ -12,15 +12,17 @@ function GET_BUILD_MODULE(){
     MODULE_COMPILE=$(git log -p --name-only --oneline ${GIT_LAST_MERGE}..${GIT_LAST_COMMIT} | grep "/" | grep  -v " " | grep -v ".md" | awk '{split($0, val, "/"); print val[1]}' | sort | uniq -c | awk '{print $2}')
 }
 
-function INSTALL_DEPENDENCIES(){
+function BUILD_MODULE(){
     IFS=' '
     read -ra ADDR <<< "${MODULE_COMPILE}"
     for MODULE in "${ADDR[@]}"; do
-        echo "make -C ${MODULE} install"
-        make -C ${MODULE} install
+        echo "make -C ${MODULE} docker-build"
+        make -C ${MODULE} docker-build
+        echo "make -C ${MODULE} check-style"
+        make -C ${MODULE} check-style
     done
 }
 
 GET_BUILD_MODULE
-INSTALL_DEPENDENCIES
+BUILD_MODULE
 
