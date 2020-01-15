@@ -15,6 +15,8 @@ function GET_BUILD_MODULE(){
 
 
 function INSTALL_DEPENDENCIES(){
+    echo "INSTALL DEPENDENCIES"
+    cat ${FILE_LOG}
     while IFS= read -r MODULE
     do
         echo "make -C ${MODULE} install"
