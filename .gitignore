@@ -8,3 +8,7 @@ share
 pgdata
 .mypy_cache
 __pycache__/
+Pipfile*
+LICENSE
+README.rst
+automated_build.txt
