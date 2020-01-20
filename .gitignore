@@ -11,4 +11,6 @@ __pycache__/
 Pipfile*
 LICENSE
 README.rst
+data-pipeline-base
 automated_build.txt
+.DS_Store
