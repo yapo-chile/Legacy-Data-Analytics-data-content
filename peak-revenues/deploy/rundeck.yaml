@@ -4,9 +4,9 @@
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
   executionEnabled: true
-  group: DOCKER/PULSE
+  group:  GLOBAL-METRIC
   loglevel: DEBUG
-  name: Pulse - Project Name Template
+  name: Peak - revenues
   nodeFilterEditable: false
   nodefilters:
     dispatch:
