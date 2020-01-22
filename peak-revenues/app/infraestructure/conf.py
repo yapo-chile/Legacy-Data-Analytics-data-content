@@ -1,7 +1,6 @@
 import environ
 
 
-
 INI_DB = environ.secrets.INISecrets.from_path_in_env("APP_DB_SECRET")
 
 
