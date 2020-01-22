@@ -21,7 +21,6 @@ compose-up-no-build:
 	docker-compose up -d
 
 start: compose-up
-	##--scale -d pyms=4 
 
 ## Only run image
 run: compose-up-no-build
