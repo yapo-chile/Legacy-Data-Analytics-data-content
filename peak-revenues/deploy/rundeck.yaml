@@ -4,9 +4,9 @@
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
   executionEnabled: true
-  group:  GLOBAL-METRIC
+  group: GLOBAL-METRIC
   loglevel: DEBUG
-  name: Peak - revenues
+  name: Peak - Revenues
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -35,9 +35,9 @@
   sequence:
     commands:
     - script: |-
-      sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                      -e APP_DB_SECRET=/app/db-secret \
-                      containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
