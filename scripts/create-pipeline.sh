@@ -1,6 +1,6 @@
 #!/bin/bash
 export BASE_NAME=data-pipeline-base
-export BASE_PIPELINE_NAME=pipeline-"$1"
+export BASE_PIPELINE_NAME="$1"
 export BASE_REPOSITORY=git@github.mpi-internal.com:Yapo/data-pipeline-base.git
 
 rm -Rf ${BASE_NAME}
