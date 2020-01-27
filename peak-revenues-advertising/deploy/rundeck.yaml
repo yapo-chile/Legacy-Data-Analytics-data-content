@@ -1,12 +1,14 @@
 - defaultTab: nodes
   description: |-
-        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+        sudo docker run -v /home/bnbiuser/secrets/google_auth:/app/google-auth \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_GOOGLE_SECRET=/app/google_auth \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
+                        containers.mpi-internal.com/yapo/data-content-peak-revenues-advertising:latest
   executionEnabled: true
   group: GLOBAL-METRIC
   loglevel: DEBUG
-  name: Peak - Revenues
+  name: Peak - Revenues - advertising
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -35,9 +37,11 @@
   sequence:
     commands:
     - script: |-
-        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+        sudo docker run -v /home/bnbiuser/secrets/google_auth:/app/google-auth \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_GOOGLE_SECRET=/app/google_auth \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-content-peak-revenues:latest
+                        containers.mpi-internal.com/yapo/data-content-peak-revenues-advertising:latest
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
