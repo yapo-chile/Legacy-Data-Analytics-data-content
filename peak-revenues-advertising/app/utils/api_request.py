@@ -5,7 +5,7 @@ from infraestructure.conf import getConf
 
 
 def get_dict_google_credentials(google_conf,
-                         json_filename: str):
+                                json_filename: str):
     """
     Function that get google sheet credentials.
     Returns a json file with credentials.
@@ -35,7 +35,7 @@ def get_drive_sheet_dataframe(sheet_name: str,
     scope = [conf.google.scope]
     json_filename = 'credentials.json'
     get_dict_google_credentials(conf.google,
-                         json_filename)
+                                json_filename)
     credentials = ServiceAccountCredentials.\
                     from_json_keyfile_name(json_filename,
                                            scope)
