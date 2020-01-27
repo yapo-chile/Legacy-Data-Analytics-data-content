@@ -31,10 +31,10 @@ def write_data_dwh(params: ReadParams,
                    config: getConf,
                    data_direct_sales: pd.DataFrame,
                    data_network_sales: pd.DataFrame) -> None:
-    query = Query()
+    query = Query(config)
     DB_WRITE = Database(conf=config.db)
-    DB_WRITE.execute_command(query.delete_direct_sales(config))
-    DB_WRITE.execute_command(query.delete_network_sales(config))
+    DB_WRITE.execute_command(query.delete_direct_sales())
+    DB_WRITE.execute_command(query.delete_network_sales())
     DB_WRITE.insert_data_direct_sales(data_direct_sales)
     DB_WRITE.insert_data_network_sales(data_network_sales)
     DB_WRITE.close_connection()
