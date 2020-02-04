@@ -20,15 +20,15 @@
   notification:
     onfailure:
       email:
-        recipients: bi_team@schibsted.cl
+        recipients: data_team@adevinta.com
         subject: ${job.execid} ${execution.status} ${job.name}
     onstart:
       email:
-        recipients: bi_team@schibsted.cl
+        recipients: data_team@adevinta.com
         subject: ${job.execid} ${execution.status} ${job.name}
     onsuccess:
       email:
-        recipients: bi_team@schibsted.cl
+        recipients: data_team@adevinta.com
         subject: ${job.execid} ${execution.status} ${job.name}
   notifyAvgDurationThreshold: null
   scheduleEnabled: true

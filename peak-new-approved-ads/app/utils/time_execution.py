@@ -15,18 +15,6 @@ class TimeExecution:
         log_format = date_format + info_format
         logging.basicConfig(format=log_format, level=logging.INFO)
 
-    def get_start(self) -> datetime:
-        """
-        Method that return start datetime.
-        """
-        return self.start
-
-    def get_end(self) -> datetime:
-        """
-        Method that return end datetime.
-        """
-        return self.end
-
     def get_time(self) -> datetime:
         """
         Method [ getTime ] Returns time execution.
