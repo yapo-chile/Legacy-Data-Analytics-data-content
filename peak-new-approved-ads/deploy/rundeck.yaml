@@ -1,0 +1,43 @@
+- defaultTab: nodes
+  description: |-
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/data-content-peak-new-approved-ads:latest
+  executionEnabled: true
+  group: GLOBAL-METRIC
+  loglevel: DEBUG
+  name: Peak - Seller - New Approved Ads
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        recipients: data_team@adevinta.com
+        subject: ${job.execid} ${execution.status} ${job.name}
+    onstart:
+      email:
+        recipients: data_team@adevinta.com
+        subject: ${job.execid} ${execution.status} ${job.name}
+    onsuccess:
+      email:
+        recipients: data_team@adevinta.com
+        subject: ${job.execid} ${execution.status} ${job.name}
+  notifyAvgDurationThreshold: null
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - script: |-
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/data-content-peak-new-approved-ads:latest
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
