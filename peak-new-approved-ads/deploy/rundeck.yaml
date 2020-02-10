@@ -32,6 +32,15 @@
         subject: ${job.execid} ${execution.status} ${job.name}
   notifyAvgDurationThreshold: null
   scheduleEnabled: true
+  schedule:
+    month: '*'
+    time:
+      hour: '07'
+      minute: '0'
+      seconds: '0'
+    weekday:
+      day: '*'
+    year: '*'
   sequence:
     commands:
     - script: |-
