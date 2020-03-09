@@ -1,14 +1,12 @@
 - defaultTab: nodes
   description: |-
-        sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/lead-and-unique-lead:latest
+                        containers.mpi-internal.com/yapo/data-content-lead-and-unique-lead:latest
   executionEnabled: true
-  group: DOCKER/PULSE
+  group: GLOBAL-METRIC
   loglevel: DEBUG
-  name: Pulse - Project Name Template
+  name: Buyer - Leads and unique leads
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -36,7 +34,7 @@
   schedule:
     month: '*'
     time:
-      hour: '03'
+      hour: '08'
       minute: '0'
       seconds: '0'
     weekday:
@@ -46,11 +44,11 @@
   sequence:
     commands:
     - script: |-
-        sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
+        sudo docker pull containers.mpi-internal.com/yapo/data-content-lead-and-unique-lead:latest
+
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/lead-and-unique-lead:latest
+                        containers.mpi-internal.com/yapo/data-content-lead-and-unique-lead:latest
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
