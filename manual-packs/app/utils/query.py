@@ -46,6 +46,86 @@ class Query:
         """.format(self.conf.db.table_pivot)
         return query
 
+    def query_update_stg(self,
+                         account_id: str,
+                         date_start: str,
+                         date_end: str,
+                         slots: str,
+                         price: str,
+                         doc_num: str) -> str:
+        command = """
+        select 
+        	sp.account_id,
+        	sp.category,
+        	sp.date_start::timestamp,
+        	sp.date_end::timestamp,
+        	sp.days,
+        	sp.slots,
+        	sp.product_id,
+        	sp.price,
+        	sp.doc_num,
+        	sp.tipo_pack,
+        	sp.email
+        from stg.packs sp
+        where 
+            sp.account_id = {0}
+            and sp.date_start::date = '{1}'::date
+            and sp.date_end::date = '{2}'::date
+            and sp.slots = {3}
+            and sp.price = {4}
+            and sp.doc_num = {5}
+        """.format(account_id,
+                   date_start,
+                   date_end,
+                   slots,
+                   price,
+                   doc_num)
+        return command
+
+    def update_stg_packs(self,
+            	         category: str,
+        	             days: str,
+        	             product_id: str,
+        	             tipo_pack: str,
+        	             email: str,
+                         account_id: str,
+                         date_start: str,
+                         date_end: str,
+                         slots: str,
+                         price: str,
+                         doc_num: str) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+        update stg.packs
+        set 
+        	category = '{0}',
+        	days = {1},
+        	product_id = {2},
+        	tipo_pack = '{3}',
+        	email = '{4}'
+        from stg.packs sp
+        where 
+            sp.account_id = {5}
+            and sp.date_start::date = '{6}'::date
+            and sp.date_end::date = '{7}'::date
+            and sp.slots = {8}
+            and sp.price = {9}
+            and sp.doc_num = {10}
+        """.format(category,
+        	       days,
+        	       product_id,
+        	       tipo_pack,
+        	       email,
+                   account_id,
+                   date_start,
+                   date_end,
+                   slots,
+                   price,
+                   doc_num)
+        return command
+
     def delete_pivot(self) -> str:
         """
         Method that returns events of the day

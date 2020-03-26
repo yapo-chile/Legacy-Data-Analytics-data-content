@@ -11,6 +11,39 @@ from utils.read_params import ReadParams
 from utils.time_execution import TimeExecution
 
 
+def update_stg_packs(params: ReadParams,
+                     config: getConf,
+                     data_packs: pd.DataFrame) -> pd.DataFrame:
+    query = Query(config, params)
+    DB_WRITE = Database(conf=config.db)
+    DB_WRITE.execute_command(query.delete_pivot())
+    for index, row in data_packs.iterrows():
+        df_update = DB_WRITE. \
+                        select_to_dict(query. \
+                                        query_update_stg(row['account_id'],
+                                                         row['date_start'],
+                                                         row['date_end'],
+                                                         row['slots'],
+                                                         row['price'],
+                                                         row['doc_num']))
+        if df_update.shape[0] > 0:
+            DB_WRITE.execute_command(query.update_stg_packs(row['category'],
+        	                                                row['days'],
+        	                                                row['product_id'],
+        	                                                row['tipo_pack'],
+        	                                                row['email'],
+                                                            row['account_id'],
+                                                            row['date_start'],
+                                                            row['date_end'],
+                                                            row['slots'],
+                                                            row['price'],
+                                                            row['doc_num']))
+        else:
+            df_insert = row.to_frame().T
+            DB_WRITE.insert_data_stg(df_insert)    
+    DB_WRITE.close_connection()
+
+
 # Method that allow applied fix to dataframe
 def transform_dataframe(data_packs: pd.DataFrame,
                         type_fix: str,
@@ -209,7 +242,7 @@ def source_data_dwh(params: ReadParams,
 
 # Query data from data warehouse
 def source_pivot(params: ReadParams,
-                    config: getConf):
+                 config: getConf):
     query = Query(config, params)
     db_source = Database(conf=config.db)
     data_dwh = db_source.select_to_dict(query \
@@ -241,6 +274,6 @@ if __name__ == '__main__':
     DATA_PACKS = transform_product_packs(DATA_PACKS, DATA_PRODUCT)
     write_data_dwh(PARAMS, CONFIG, DATA_PACKS)
     DATA_PIVOT_PACKS = source_pivot(PARAMS, CONFIG)
-    print(DATA_PIVOT_PACKS.head(20))
+    update_stg_packs(PARAMS, CONFIG, DATA_PIVOT_PACKS)
     TIME.get_time()
     LOGGER.info('Process ended successfully.')
