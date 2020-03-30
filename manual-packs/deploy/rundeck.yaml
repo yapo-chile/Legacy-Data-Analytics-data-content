@@ -4,11 +4,11 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/manual-packs:latest
+                        containers.mpi-internal.com/yapo/data-content-manual-packs:latest
   executionEnabled: true
-  group: DOCKER/PULSE
+  group: CONTENT
   loglevel: DEBUG
-  name: Pulse - Project Name Template
+  name: Manual packs
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -33,24 +33,17 @@
         recipients: data_team@adevinta.com
         subject: ${job.execid} ${execution.status} ${job.name}
   notifyAvgDurationThreshold: null
-  schedule:
-    month: '*'
-    time:
-      hour: '03'
-      minute: '0'
-      seconds: '0'
-    weekday:
-      day: '*'
-    year: '*'
   scheduleEnabled: true
   sequence:
     commands:
     - script: |-
+        sudo docker pull containers.mpi-internal.com/yapo/data-content-manual-packs:latest
+
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/manual-packs:latest
+                        containers.mpi-internal.com/yapo/data-content-manual-packs:latest
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
