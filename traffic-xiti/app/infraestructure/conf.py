@@ -3,6 +3,7 @@ import environ
 
 INI_PULSE = environ.secrets.INISecrets.from_path_in_env("APP_PULSE_SECRET")
 INI_DB = environ.secrets.INISecrets.from_path_in_env("APP_DB_SECRET")
+INI_DW = environ.secrets.INISecrets.from_path_in_env("APP_DW_SECRET")
 
 
 @environ.config(prefix="APP")
@@ -29,7 +30,7 @@ class AppConfig:
             name="region", default=environ.var())
 
     @environ.config(prefix="DB")
-    class DBConfig:
+    class DB_BlocketConfig:
         """
         DBConfig Class representing the configuration to access the database
         """
@@ -38,10 +39,28 @@ class AppConfig:
         name: str = INI_DB.secret(name="dbname", default=environ.var())
         user: str = INI_DB.secret(name="user", default=environ.var())
         password: str = INI_DB.secret(name="password", default=environ.var())
-        table: str = environ.var("dm_analysis.db_version")
-    athenaConf = environ.group(AthenaConfig)
-    db = environ.group(DBConfig)
 
+    @environ.config(prefix="DW")
+    class DB_DWConfig:
+        """
+        DBConfig Class representing the configuration to access the database
+        """
+        host: str = INI_DW.secret(name="host", default=environ.var())
+        port: int = INI_DW.secret(name="port", default=environ.var())
+        name: str = INI_DW.secret(name="dbname", default=environ.var())
+        user: str = INI_DW.secret(name="user", default=environ.var())
+        password: str = INI_DW.secret(name="password", default=environ.var())
+    #   table_traffic: str = environ.var("dm_peak.traffic")
+    #   table_leads_per_user: str = environ.var("dm_pulse.leads_per_user")
+    #   table_liquidity: str = environ.var("dm_peak.liquidity")
+        table_traffic: str = environ.var("dm_analysis.temp_traffic")
+        table_leads_per_user: str = \
+            environ.var("dm_analysis.temp_leads_per_user")
+        table_liquidity: str = environ.var("dm_analysis.temp_liquidity")
+
+    athenaConf = environ.group(AthenaConfig)
+    blocketConf = environ.group(DB_BlocketConfig)
+    DWConf = environ.group(DB_DWConfig)
 
 def getConf():
     return environ.to_config(AppConfig)

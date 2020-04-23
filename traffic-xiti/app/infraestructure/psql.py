@@ -66,26 +66,93 @@ class Database:
         cursor.close()
         return pd_result
 
-    def insert_data(self, data_dict: pd.DataFrame) -> None:
-        self.log.info('INSERT INTO %s', self.conf.table)
+    def insert_data_traffic(self, data_dict: pd.DataFrame) -> None:
+        self.log.info('INSERT INTO %s', self.conf.table_traffic)
         page_size: int = 10000
         with self.connection.cursor() as cursor:
             psycopg2.extras \
                 .execute_values(cursor,
-                                """ INSERT INTO """ + self.conf.table +
+                                """ INSERT INTO """ + self.conf.table_traffic +
                                 """ ( timedate,
-                                      current_version
+                                      vertical,
+                                      platform,
+                                      dau_xiti,
+                                      visits_xiti,
+                                      leads_xiti,
+                                      dau_pulse,
+                                      visits_pulse,
+                                      browsers_pulse,
+                                      buyers_pulse,
+                                      unique_leads_pulse
                                     )
                                     VALUES %s; """, ((
                                         row.timedate,
-                                        row.current_version
+                                        row.vertical,
+                                        row.platform,
+                                        row.dau_xiti,
+                                        row.visits_xiti,
+                                        row.leads_xiti,
+                                        row.dau_pulse,
+                                        row.visits_pulse,
+                                        row.browsers_pulse,
+                                        row.buyers_pulse,
+                                        row.unique_leads_pulse
                                     ) for row in data_dict.itertuples()),
                                 page_size=page_size)
-            self.log.info('INSERT %s COMMIT.', self.conf.table)
+            self.log.info('INSERT %s COMMIT.', self.conf.table_traffic)
             self.connection.commit()
-            self.log.info('CLOSE CURSOR %s', self.conf.table)
+            self.log.info('CLOSE CURSOR %s', self.conf.table_traffic)
             cursor.close()
 
+    def insert_data_leads_per_user(self, data_dict: pd.DataFrame) -> None:
+        self.log.info('INSERT INTO %s', self.conf.table_leads_per_user)
+        page_size: int = 10000
+        with self.connection.cursor() as cursor:
+            psycopg2.extras \
+                .execute_values(cursor,
+                                """ INSERT INTO """ + \
+                                    self.conf.table_leads_per_user +
+                                """ ( timedate,
+                                      vertical,
+                                      platform,
+                                      leads_per_user,
+                                      ads_with_lead_per_user
+                                    )
+                                    VALUES %s; """, ((
+                                        row.timedate,
+                                        row.vertical,
+                                        row.platform,
+                                        row.leads_per_user,
+                                        row.ads_with_lead_per_user
+                                    ) for row in data_dict.itertuples()),
+                                page_size=page_size)
+            self.log.info('INSERT %s COMMIT.', self.conf.table_leads_per_user)
+            self.connection.commit()
+            self.log.info('CLOSE CURSOR %s', self.conf.table_leads_per_user)
+            cursor.close()
+
+    def insert_data_liquidity(self, data_dict: pd.DataFrame) -> None:
+        self.log.info('INSERT INTO %s', self.conf.table_liquidity)
+        page_size: int = 10000
+        with self.connection.cursor() as cursor:
+            psycopg2.extras \
+                .execute_values(cursor,
+                                """ INSERT INTO """ + \
+                                    self.conf.table_liquidity +
+                                """ ( timedate,
+                                      vertical,
+                                      ad_with_lead_7days
+                                    )
+                                    VALUES %s; """, ((
+                                        row.timedate,
+                                        row.vertical,
+                                        row.ad_with_lead_7days
+                                    ) for row in data_dict.itertuples()),
+                                page_size=page_size)
+            self.log.info('INSERT %s COMMIT.', self.conf.table_liquidity)
+            self.connection.commit()
+            self.log.info('CLOSE CURSOR %s', self.conf.table_liquidity)
+            cursor.close()
 
     def close_connection(self):
         """
