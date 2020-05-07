@@ -79,7 +79,8 @@ def source_data_dwh_sel_vert_plat_all_yapo(params: ReadParams,
                                            config: getConf):
     query = Query(config, params)
     db_source = Database(conf=config.DWConf)
-    data_dwh = db_source.select_to_dict(query.get_sellers_vertical_platform_all_yapo())
+    data_dwh = db_source.select_to_dict(query.\
+        get_sellers_vertical_platform_all_yapo())
     db_source.close_connection()
     return data_dwh
 
@@ -139,7 +140,8 @@ if __name__ == '__main__':
     LOGGER.info(DATA_SEL_VERT_ALL_YAPO.head(5))
 
  ## Sellers Vertical Platform All Yapo
-    DATA_SEL_VERT_PLAT_ALL_YAPO = source_data_dwh_sel_vert_plat_all_yapo(PARAMS, CONFIG)
+    DATA_SEL_VERT_PLAT_ALL_YAPO =\
+        source_data_dwh_sel_vert_plat_all_yapo(PARAMS, CONFIG)
     LOGGER.info('DATA_SEL_VERT_PLAT_ALL_YAPO extracted')
     LOGGER.info(DATA_SEL_VERT_PLAT_ALL_YAPO.head(5))
 
@@ -153,23 +155,27 @@ if __name__ == '__main__':
  ###################################################
 
  ## Creating Platform All Yapo (NAA)
-    DF_NAA_PLAT_ALL_YAPO = DATA_NAA_VERT_PLAT.groupby(['approval_date', 'vertical']).\
+    DF_NAA_PLAT_ALL_YAPO =\
+        DATA_NAA_VERT_PLAT.groupby(['approval_date', 'vertical']).\
         agg({'new_ads':'sum', 'naa_pri':'sum', 'naa_pro':'sum'}).reset_index()
 
     DF_NAA_PLAT_ALL_YAPO['platform'] = 'All Yapo'
 
-    DF_NAA_PLAT_ALL_YAPO = DF_NAA_PLAT_ALL_YAPO[['approval_date', 'vertical', 'platform',
-                                                 'new_ads', 'naa_pri', 'naa_pro']]
+    DF_NAA_PLAT_ALL_YAPO =\
+        DF_NAA_PLAT_ALL_YAPO[['approval_date', 'vertical', 'platform',
+                              'new_ads', 'naa_pri', 'naa_pro']]
     LOGGER.info('DF_NAA_PLAT_ALL_YAPO transformed')
 
  ## Creating Vertical All Yapo (NAA)
-    DF_NAA_VERT_ALL_YAPO = DATA_NAA_VERT_PLAT.groupby(['approval_date', 'platform']).\
+    DF_NAA_VERT_ALL_YAPO =\
+        DATA_NAA_VERT_PLAT.groupby(['approval_date', 'platform']).\
         agg({'new_ads':'sum', 'naa_pri':'sum', 'naa_pro':'sum'}).reset_index()
 
     DF_NAA_VERT_ALL_YAPO['vertical'] = 'All Yapo'
 
-    DF_NAA_VERT_ALL_YAPO = DF_NAA_VERT_ALL_YAPO[['approval_date', 'vertical', 'platform',
-                                                 'new_ads', 'naa_pri', 'naa_pro']]
+    DF_NAA_VERT_ALL_YAPO =\
+        DF_NAA_VERT_ALL_YAPO[['approval_date', 'vertical', 'platform',
+                              'new_ads', 'naa_pri', 'naa_pro']]
     LOGGER.info('DF_NAA_VERT_ALL_YAPO transformed')
 
  ## Creating Vertical and Platform All Yapo (NAA)
@@ -179,13 +185,14 @@ if __name__ == '__main__':
     DF_NAA_PLAT_VERT_ALL_YAPO['vertical'] = 'All Yapo'
     DF_NAA_PLAT_VERT_ALL_YAPO['platform'] = 'All Yapo'
 
-    DF_NAA_PLAT_VERT_ALL_YAPO = DF_NAA_PLAT_VERT_ALL_YAPO[['approval_date', 'vertical',
-                                                           'platform', 'new_ads', 'naa_pri',
-                                                           'naa_pro']]
+    DF_NAA_PLAT_VERT_ALL_YAPO =\
+        DF_NAA_PLAT_VERT_ALL_YAPO[['approval_date', 'vertical', 'platform',
+                                   'new_ads', 'naa_pri', 'naa_pro']]
     LOGGER.info('DF_NAA_PLAT_VERT_ALL_YAPO transformed')
 
  ## Appending new rows to new approved ads metrics df
-    DF_NAA_ADS = DATA_NAA_VERT_PLAT.append(DF_NAA_VERT_ALL_YAPO, ignore_index=True, sort=False)\
+    DF_NAA_ADS = DATA_NAA_VERT_PLAT.append(DF_NAA_VERT_ALL_YAPO,
+                                           ignore_index=True, sort=False)\
         .append(DF_NAA_PLAT_ALL_YAPO, ignore_index=True, sort=False)\
             .append(DF_NAA_PLAT_VERT_ALL_YAPO, ignore_index=True, sort=False)\
                 .sort_values(['approval_date', 'platform', 'vertical'])\
@@ -193,7 +200,8 @@ if __name__ == '__main__':
     LOGGER.info('DF_NAA_ADS transformed')
 
  ## Appending new rows to sellers metrics df
-    DF_SELLERS = DATA_SEL_VERT_PLAT.append(DATA_SEL_PLAT_ALL_YAPO, ignore_index=True, sort=False)\
+    DF_SELLERS = DATA_SEL_VERT_PLAT.append(DATA_SEL_PLAT_ALL_YAPO,
+                                           ignore_index=True, sort=False)\
         .append(DATA_SEL_VERT_ALL_YAPO, ignore_index=True, sort=False)\
             .append(DATA_SEL_VERT_PLAT_ALL_YAPO, ignore_index=True, sort=False)\
                 .sort_values(['approval_date', 'platform', 'vertical'])\
@@ -201,34 +209,41 @@ if __name__ == '__main__':
     LOGGER.info('DF_SELLERS transformed')
 
  ## Creating Platform All Yapo (NIA)
-    DF_NIA_PLAT_ALL_YAPO = DATA_NIA_VERT_PLAT.groupby(['creation_date', 'vertical']).\
-        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).reset_index()
+    DF_NIA_PLAT_ALL_YAPO =\
+        DATA_NIA_VERT_PLAT.groupby(['creation_date', 'vertical']).\
+        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).\
+            reset_index()
     LOGGER.info('DF_NIA_PLAT_ALL_YAPO transformed')
 
  ## Creating Vertical All Yapo (NIA)
-    DF_NIA_VERT_ALL_YAPO = DATA_NIA_VERT_PLAT.groupby(['creation_date', 'platform']).\
-        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).reset_index()
+    DF_NIA_VERT_ALL_YAPO =\
+        DATA_NIA_VERT_PLAT.groupby(['creation_date', 'platform']).\
+        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).\
+            reset_index()
 
     DF_NIA_VERT_ALL_YAPO['vertical'] = 'All Yapo'
 
-    DF_NIA_VERT_ALL_YAPO = DF_NIA_VERT_ALL_YAPO[['creation_date', 'vertical', 'platform',
-                                                 'new_inserted_ads', 'nia_pri', 'nia_pro']]
+    DF_NIA_VERT_ALL_YAPO =\
+        DF_NIA_VERT_ALL_YAPO[['creation_date', 'vertical', 'platform',
+                              'new_inserted_ads', 'nia_pri', 'nia_pro']]
     LOGGER.info('DF_NIA_VERT_ALL_YAPO transformed')
 
  ## Creating Vertical and Platform All Yapo (NIA)
     DF_NIA_PLAT_VERT_ALL_YAPO = DATA_NIA_VERT_PLAT.groupby(['creation_date']).\
-        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).reset_index()
+        agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).\
+            reset_index()
 
     DF_NIA_PLAT_VERT_ALL_YAPO['vertical'] = 'All Yapo'
     DF_NIA_PLAT_VERT_ALL_YAPO['platform'] = 'All Yapo'
 
-    DF_NIA_PLAT_VERT_ALL_YAPO = DF_NIA_PLAT_VERT_ALL_YAPO[['creation_date', 'vertical',
-                                                           'platform', 'new_inserted_ads',
-                                                           'nia_pri', 'nia_pro']]
+    DF_NIA_PLAT_VERT_ALL_YAPO =\
+        DF_NIA_PLAT_VERT_ALL_YAPO[['creation_date', 'vertical', 'platform',
+                                   'new_inserted_ads', 'nia_pri', 'nia_pro']]
     LOGGER.info('DF_NIA_PLAT_VERT_ALL_YAPO transformed')
 
  ## Appending new rows to new inserted ads metrics df
-    DF_NIA_ADS = DATA_NIA_VERT_PLAT.append(DF_NIA_VERT_ALL_YAPO, ignore_index=True, sort=False)\
+    DF_NIA_ADS = DATA_NIA_VERT_PLAT.append(DF_NIA_VERT_ALL_YAPO,
+                                           ignore_index=True, sort=False)\
         .append(DF_NIA_PLAT_ALL_YAPO, ignore_index=True, sort=False)\
             .append(DF_NIA_PLAT_VERT_ALL_YAPO, ignore_index=True, sort=False)\
                 .sort_values(['creation_date', 'platform', 'vertical'])\
@@ -247,8 +262,9 @@ if __name__ == '__main__':
 
     DF_CONTENT = DF_CONTENT.merge(DF_SELLERS, left_index=True, right_index=True)
 
-    DF_CONTENT = DF_CONTENT.reset_index().sort_values(['timedate', 'platform', 'vertical']).\
-        reset_index(drop=True)
+    DF_CONTENT = DF_CONTENT.reset_index().\
+        sort_values(['timedate', 'platform', 'vertical']).\
+            reset_index(drop=True)
     LOGGER.info('DF_CONTENT transformed')
  #  exit()
  ###################################################
