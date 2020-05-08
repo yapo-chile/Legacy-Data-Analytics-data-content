@@ -116,39 +116,31 @@ if __name__ == '__main__':
  ###################################################
  #                     EXTRACT                     #
  ###################################################
-    #DATA_ATHENA = source_data_pulse(PARAMS, CONFIG)
-    #DATA_DWH = source_data_dwh(PARAMS, CONFIG)
 
  ## Naa Vertical Platform
     DATA_NAA_VERT_PLAT = source_data_dwh_naa_vert_plat(PARAMS, CONFIG)
     LOGGER.info('DATA_NAA_VERT_PLAT extracted')
-    LOGGER.info(DATA_NAA_VERT_PLAT.head(5))
 
  ## Sellers Vertical Platform
     DATA_SEL_VERT_PLAT = source_data_dwh_sel_vert_plat(PARAMS, CONFIG)
     LOGGER.info('DATA_SEL_VERT_PLAT extracted')
-    LOGGER.info(DATA_SEL_VERT_PLAT.head(5))
 
  ## Sellers Platform All Yapo
     DATA_SEL_PLAT_ALL_YAPO = source_data_dwh_sel_plat_all_yapo(PARAMS, CONFIG)
     LOGGER.info('DATA_SEL_PLAT_ALL_YAPO extracted')
-    LOGGER.info(DATA_SEL_PLAT_ALL_YAPO.head(5))
 
  ## Sellers Vertical All Yapo
     DATA_SEL_VERT_ALL_YAPO = source_data_dwh_sel_vert_all_yapo(PARAMS, CONFIG)
     LOGGER.info('DATA_SEL_VERT_ALL_YAPO extracted')
-    LOGGER.info(DATA_SEL_VERT_ALL_YAPO.head(5))
 
  ## Sellers Vertical Platform All Yapo
     DATA_SEL_VERT_PLAT_ALL_YAPO =\
         source_data_dwh_sel_vert_plat_all_yapo(PARAMS, CONFIG)
     LOGGER.info('DATA_SEL_VERT_PLAT_ALL_YAPO extracted')
-    LOGGER.info(DATA_SEL_VERT_PLAT_ALL_YAPO.head(5))
 
  ## Nia Vertical Platform
     DATA_NIA_VERT_PLAT = source_data_dwh_nia_vert_plat(PARAMS, CONFIG)
     LOGGER.info('DATA_NIA_VERT_PLAT extracted')
-    LOGGER.info(DATA_NIA_VERT_PLAT.head(5))
 
  ###################################################
  #                   TRANSFORM                     #
@@ -213,6 +205,16 @@ if __name__ == '__main__':
         DATA_NIA_VERT_PLAT.groupby(['creation_date', 'vertical']).\
         agg({'new_inserted_ads':'sum', 'nia_pri':'sum', 'nia_pro':'sum'}).\
             reset_index()
+
+    DF_NIA_PLAT_ALL_YAPO['platform'] = 'All Yapo'
+
+    DF_NIA_PLAT_ALL_YAPO = DF_NIA_PLAT_ALL_YAPO[['creation_date',
+                                                 'vertical',
+                                                 'platform',
+                                                 'new_inserted_ads',
+                                                 'nia_pri',
+                                                 'nia_pro']]
+
     LOGGER.info('DF_NIA_PLAT_ALL_YAPO transformed')
 
  ## Creating Vertical All Yapo (NIA)
@@ -266,7 +268,7 @@ if __name__ == '__main__':
         sort_values(['timedate', 'platform', 'vertical']).\
             reset_index(drop=True)
     LOGGER.info('DF_CONTENT transformed')
- #  exit()
+
  ###################################################
  #                     LOAD                        #
  ###################################################
