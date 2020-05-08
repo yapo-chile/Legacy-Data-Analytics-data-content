@@ -50,8 +50,7 @@ class AppConfig:
         name: str = INI_DW.secret(name="dbname", default=environ.var())
         user: str = INI_DW.secret(name="user", default=environ.var())
         password: str = INI_DW.secret(name="password", default=environ.var())
-    #   table: str = environ.var("dm_peak.content")
-        table: str = environ.var("dm_analysis.temp_content")
+        table: str = environ.var("dm_peak.content")
 
     athenaConf = environ.group(AthenaConfig)
     blocketConf = environ.group(DB_BlocketConfig)

@@ -436,7 +436,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    delete from dm_analysis.temp_content where 
+                    delete from dm_peak.content where 
                     timedate::date = 
                     '""" + self.params.get_date_from() + """'::date """
 
