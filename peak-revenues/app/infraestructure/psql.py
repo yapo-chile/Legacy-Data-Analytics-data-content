@@ -63,6 +63,7 @@ class Database:
                 rowset.append(field)
             result.append(dict(rowset))
         pd_result = pd.DataFrame(result)
+        self.log.ingo('Results from query: {}'.format(len(pd_result)))
         cursor.close()
         return pd_result
 
