@@ -49,10 +49,8 @@
     commands:
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/peak-content-naa-region-metrics:latest
-        sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
+        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/peak-content-naa-region-metrics:latest
     keepgoing: false
     strategy: node-first
