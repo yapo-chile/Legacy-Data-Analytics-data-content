@@ -1,0 +1,10 @@
+pip-tools
+psycopg2-binary==2.8.4
+environ-config
+pylint==2.4.4
+pandas==1.0.5
+requests==2.22.0
+unidecode==1.1.1
+openpyxl==3.0.3
+s3fs
+pyarrow==0.17.1
