@@ -61,7 +61,8 @@ class Liquidity():
         day_process = self.day_[8:]
         s3_bucket = "yapo-s3-dev-data"
         bucket_prefix = "/dev/insights/liquidity/yapo/content/"
-        aws_prefix = "s3://{bucket}{prefix}".format(bucket=s3_bucket, prefix=bucket_prefix)
+        aws_prefix = "s3://{bucket}{prefix}"\
+            .format(bucket=s3_bucket, prefix=bucket_prefix)
         path_partitions = "year={year}/month={month}/day={day}/"\
             .format(year=year_process, month=month_process, day=day_process)
         name_parquet = "ads.parquet"
@@ -71,8 +72,9 @@ class Liquidity():
             self.ads_data.to_parquet(s3_url, compression='snappy')
             self.logger.info('File saved in {path}'.format(path=s3_url))
         except ConnectionError as error_connect:
-            self.logger.info('Error (E=1) uploading file s3 bucket for day {day}, error: {error}'\
-                .format(day=self.day_, error=error_connect))
+            self.logger.info('''
+            Error (E=1) uploading file s3 bucket for day {day}, error: {error}
+            '''.format(day=self.day_, error=error_connect))
 
     def generate_for_time_frame(self):
         """

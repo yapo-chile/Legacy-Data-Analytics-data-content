@@ -5,7 +5,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-base-pipeline:[git-branch]
+                        containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
   executionEnabled: true
   group: DOCKER/<FOLDER RUNDECK LOCATION>
   loglevel: DEBUG
@@ -25,12 +25,12 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/data-base-pipeline:[git-branch]
+        sudo docker pull containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-base-pipeline:[git-branch]
+                        containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
