@@ -70,11 +70,13 @@ class Liquidity():
         self.ads_data = self.config.db
         try:
             self.ads_data.to_parquet(s3_url, compression='snappy')
-            self.logger.info('File saved in {path}'.format(path=s3_url))
+            msg_logger = 'File saved in {path}'.format(path=s3_url)
+            self.logger.info(msg_logger)
         except ConnectionError as error_connect:
-            self.logger.info('''
+            msg_logger = '''
             Error (E=1) uploading file s3 bucket for day {day}, error: {error}
-            '''.format(day=self.day_, error=error_connect))
+            '''.format(day=self.day_, error=error_connect)
+            self.logger.info(msg_logger)
 
     def generate_for_time_frame(self):
         """
@@ -85,7 +87,8 @@ class Liquidity():
         n_days = range((self.params.date_to - self.params.date_from).days +1)
         for _ in n_days:
             self.day_ = date_var_.strftime("%Y-%m-%d")
-            self.logger.info('Starting process for date: {date}'\
-                .format(date=self.day_))
+            msg_logger = 'Starting process for date: {date}'\
+                .format(date=self.day_)
+            self.logger.info(msg_logger)
             self.generate_file_to_day()
             date_var_ = date_var_ + timedelta(days=1)
