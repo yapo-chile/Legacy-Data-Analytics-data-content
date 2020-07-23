@@ -10,5 +10,5 @@ services:
       APP_DB_SECRET: /app/db-secret
       APP_AWS_SECRET: /app/aws-secret
     volumes:
-      - /Users/ricardoalvarez/Projects/my-process/Liquidity-content/secret/aws-secret:/app/aws-secret
-      - /Users/ricardoalvarez/Projects/my-process/Liquidity-content/secret//db-secret:/app/db-secret
+      - /home/bnbiuser/secrets/aws-secret:/app/aws-secret
+      - /home/bnbiuser/secrets/dw_db:/app/db-secret

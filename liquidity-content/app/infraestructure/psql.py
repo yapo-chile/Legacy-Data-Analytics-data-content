@@ -86,7 +86,6 @@ class Database:
             self.log.info('CLOSE CURSOR %s', self.conf.table)
             cursor.close()
 
-
     def close_connection(self):
         """
         Method that close connection to postgresql database.

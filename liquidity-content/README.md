@@ -1,6 +1,23 @@
 # liquidity-content pipeline 
 
-This micro services is base micro services. 
+## Description
+
+This process make querys in dwh tables ad and big_sellers_detail to get data about published o deleted ads in a day. In the information obtained is the aproval date, removal date and reason if appropriate, category of ad and his type, seller and his type.
+The consulted data is left in a parquet named `ads.parquet` in the S3 Bucket `schibsted-spt-common-dev` in path `/dev/insights/liquidity/yapo/content/year={year}/month={month}/day={day}/` where `{year}`, `{month}` and `{day}` belong to the day for which the query was executed. 
+This process supports two dates, date_from and date_to, but its execution is for one day since the path where the files are left is daily, so if the date_from is different from the date_to, the process will run to each day in the indicated period, leaving a file in the corresponding path per day.
+
+
+## Pipeline Implementation Details
+
+|   Field           | Description                                                            |
+|-------------------|------------------------------------------------------------------------|
+| Input Source      | Database dwh, table ods.ad and stg.big_sellers_detail                  |
+| Output Source     | S3 Bucket schibsted-spt-common-dev                                     |
+| Schedule          | One time at day, 03:00                                                 |
+| Github Repository | github.mpi-internal.com/Yapo/bi-insights/blob/master/dw_blocketdb/liquidity/liquidity-content/run_liquidity_content.sh |
+| Rundeck Access    | Project: data jobs ; Job: Liquidity - Ads contents to s3               |
+| Associated Report | Unknow                                                                 |
+|-------------------|------------------------------------------------------------------------|
 
 ### Build
 ```
