@@ -3,6 +3,8 @@
         <Add a description about what this ETL does>
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/aws-secret:/app/aws-secret \
+                        -e APP_AWS_SECRET=/app/aws-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
@@ -28,6 +30,8 @@
         sudo docker pull containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/aws-secret:/app/aws-secret \
+                        -e APP_AWS_SECRET=/app/aws-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
