@@ -1,13 +1,12 @@
 - defaultTab: nodes
   description: |-
-        <Add a description about what this ETL does>
         sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -v /home/bnbiuser/secrets/aws-secret:/app/aws-secret \
                         -e APP_AWS_SECRET=/app/aws-secret \
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/liquidity-content:feat_liquidity-content
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: DOCKER/LIQUIDITY
   loglevel: DEBUG
   name: Liquidity - Ads contents to s3
   nodeFilterEditable: false
@@ -34,3 +33,4 @@
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
+  
