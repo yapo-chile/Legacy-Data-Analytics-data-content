@@ -1,7 +1,7 @@
 # pylint: disable=no-member
 # utf-8
 import logging
-from datetime import datetime, date
+import datetime
 from infraestructure.psql import Database
 from utils.query import Query
 from utils.read_params import ReadParams
@@ -37,13 +37,13 @@ class Process():
         .astype(int)
 
         output_df["creation_date"] = output_df["creation_date"]. \
-        fillna(datetime(2199, 12, 31, 0, 0, 0)).astype(str)
+        fillna(datetime.datetime(2199, 12, 31, 0, 0, 0)).astype(str)
 
         output_df["approval_date"] = output_df["approval_date"]. \
-        fillna(datetime(2199, 12, 31, 0, 0, 0)).astype(str)
+        fillna(datetime.datetime(2199, 12, 31, 0, 0, 0)).astype(str)
 
         output_df["deletion_date"] = output_df["deletion_date"]. \
-        fillna(datetime(2199, 12, 31, 0, 0, 0)).astype(str)
+        fillna(datetime.datetime(2199, 12, 31, 0, 0, 0)).astype(str)
 
         self.__data_ads_created_daily = output_df
 
@@ -73,5 +73,5 @@ class Process():
 
     def generate(self):
         self.data_ads_created_daily = self.config.db
-        print("Output: ", self.data_ads_created_daily)
+        #print("Output: ", self.data_ads_created_daily)
         self.save()
