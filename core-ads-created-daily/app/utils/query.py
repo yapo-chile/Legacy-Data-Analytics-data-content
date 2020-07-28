@@ -97,7 +97,7 @@ class Query:
                             public.action_params as rp on (rp.ad_id = aa.ad_id and rp.action_id = aa.action_id and rp.name = 'deletion_reason') 
                         where 
                             acts.state in ('reg', 'accepted', 'deleted', 'refused')
-                            and acts.timestamp between '{0}' and '{1}'
+                            and acts.timestamp between '{0} 00:00:00' and '{1} 23:59:59'
                         union all
                         select 
                             aa.ad_id, 
@@ -155,7 +155,7 @@ class Query:
                             blocket_{2}.action_params as rp on (rp.ad_id = aa.ad_id and rp.action_id = aa.action_id and rp.name = 'deletion_reason')
                         where 
                             acts.state in ('reg', 'accepted', 'deleted', 'refused')
-                            and acts.timestamp between '{0}' and '{1}'
+                            and acts.timestamp between '{0} 00:00:00' and '{1} 23:59:59'
                         union all
                         select 
                             aa.ad_id, 
@@ -213,7 +213,7 @@ class Query:
                             blocket_{3}.action_params as rp on (rp.ad_id = aa.ad_id and rp.action_id = aa.action_id and rp.name = 'deletion_reason')
                         where 
                             acts.state in ('reg', 'accepted', 'deleted', 'refused')
-                            and acts.timestamp between '{0}' and '{1}'
+                            and acts.timestamp between '{0} 00:00:00' and '{1} 23:59:59'
                         ) z
                     where 
                     z.action_type in ('edit', 'new', 'import','delete', 'post_refusal')
@@ -224,13 +224,42 @@ class Query:
                        self.params.get_last_year())
         return queryBlocket
 
-    def delete_base(self) -> str:
+    def insert_output_to_dw(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+                INSERT INTO dm_analysis.temp_stg_ads
+                            (ad_id,
+                            list_id,
+                            user_id,
+                            account_id,
+                            email,
+                            platform_id_nk,
+                            creation_date,
+                            approval_date,
+                            deletion_date,
+                            category, 
+                            region,
+                            type,
+                            company_ad, 
+                            price,
+                            reason_removed_id_nk,
+                            reason_removed_detail_id_nk,
+                            action_type,
+                            communes_id_nk,
+                            phone,
+                            body,
+                            subject,
+                            user_name)
+                VALUES %s;"""
+        return query
+
+    def delete_output_dw_table(self) -> str:
         """
         Method that returns events of the day
         """
         command = """
-                    delete from dm_analysis.db_version where 
-                    timedate::date = 
-                    '""" + self.params.get_date_from() + """'::date """
-
+                    truncate table dm_analysis.temp_stg_ads 
+                """
         return command
