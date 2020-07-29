@@ -51,9 +51,8 @@ class Process():
     def save(self) -> None:
         query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
-        # db.execute_command(query.delete_output_dw_table())
-        #i = 0
-        logging.info('Inicia ciclo de persistencia de los datos')
+        db.execute_command(query.delete_output_dw_table())
+        logging.info('Begininig data persistence cycle')
         for row in self.data_ads_created_daily.itertuples():
             data_row = [(row.ad_id, row.list_id, row.user_id,
                          row.account_id, row.email, row.platform_id_nk,
@@ -65,9 +64,7 @@ class Process():
                          row.action_type, row.communes_id_nk,
                          row.phone, row.body, row.subject,
                          row.user_name)]
-            #print('data_row_' + str(i) + ' :', data_row)
             db.insert_data(query.insert_output_to_dw(), data_row)
-            #i = i + 1
         logging.info('INSERT dm_analysis.temp_stg_ads COMMIT.')
         db.close_connection()
 

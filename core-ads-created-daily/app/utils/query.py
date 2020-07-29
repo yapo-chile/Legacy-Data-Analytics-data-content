@@ -42,14 +42,14 @@ class Query:
                         z.user_name
                     from (
                         select 
-                        aa.ad_id, 
+                        distinct aa.ad_id, 
                         a.list_id,
                         a.user_id, 
                         ac.account_id,
                         u.email,
                         ap."value" as platform_id_nk,
                         case
-                            when (acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
+                            when (acts.action_id = 1 and acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
                             else null
                         end creation_date,
                         case
@@ -100,14 +100,14 @@ class Query:
                             and acts.timestamp between '{0} 00:00:00' and '{1} 23:59:59'
                         union all
                         select 
-                            aa.ad_id, 
+                            distinct aa.ad_id, 
                             a.list_id,
                             a.user_id, 
                             ac.account_id,
                             u.email,
                             ap."value" as platform_id_nk,
                             case
-                                when (acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
+                                when (acts.action_id = 1 and acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
                                 else null
                             end creation_date,
                             case
@@ -158,14 +158,14 @@ class Query:
                             and acts.timestamp between '{0} 00:00:00' and '{1} 23:59:59'
                         union all
                         select 
-                            aa.ad_id, 
+                            distinct aa.ad_id, 
                             a.list_id,
                             a.user_id, 
                             ac.account_id,
                             u.email,
                             ap."value" as platform_id_nk,
                             case
-                                when (acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
+                                when (acts.action_id = 1 and acts.state = 'reg' and aa.action_type in ('edit', 'new', 'import')) then acts.timestamp 
                                 else null
                             end creation_date,
                             case
