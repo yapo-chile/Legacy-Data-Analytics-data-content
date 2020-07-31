@@ -121,13 +121,13 @@ class ReadParams:
         that each attribute have assign a value.
         """
         self.logger.info('Validate params.')
-        current_date = datetime.datetime.now()
+        current_date = datetime.date.today()
         if self.date_from is None:
-            temp_date = current_date.replace(day=1)
-            self.date_from = temp_date
-        if self.date_to is None:
             temp_date = current_date.replace(day=1) + timedelta(days=-10)
             temp_date = (temp_date).replace(day=1)
+            self.date_from = temp_date
+        if self.date_to is None:
+            temp_date = current_date.replace(day=1)
             self.date_to = temp_date
         if self.master is None:
             self.master = 'local'
