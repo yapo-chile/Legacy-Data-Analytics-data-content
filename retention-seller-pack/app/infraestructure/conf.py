@@ -1,7 +1,4 @@
 import environ
-import os
-os.environ["APP_DB_SECRET"] = "/Users/ricardoalvarez/Projects/secrets/db-secret-prod"
-os.environ["APP_DB_DEV_SECRET"] = "/Users/ricardoalvarez/Projects/secrets/db-secret-dev"
 
 INI_DB = environ.secrets.INISecrets.from_path_in_env("APP_DB_SECRET")
 DB_DEV = environ.secrets.INISecrets.from_path_in_env("APP_DB_DEV_SECRET")

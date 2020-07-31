@@ -57,16 +57,17 @@ class RetentionSellerPacks():
         query = Query(config, self.params)
         if self.db is None:
             self.db = Database(conf=config.db)
-        self.logger.info('Executing Query')
+        self.logger.info('Ejecutando query')
         data = pd.read_sql(sql=query.query_retention_seller_pack(),
                            con=self.db.connection)
-        self.logger.info('Query Ended')
+        self.logger.info('Query terminada')
         self.__data_retention_seller_packs = data
         self.db.close_connection()
 
     def generate(self):
+        self.logger.info('Obteniendo Datos')
         self.data_retention_seller_packs = self.config
-        # self.logger.info('Eliminando datos anteriores')
-        # self.delete_from_retention_seller_packs()
-        # self.logger.info('Saving Data')
-        # self.save_retention_seller_packs()
+        self.logger.info('Eliminando datos anteriores')
+        self.delete_from_retention_seller_packs()
+        self.logger.info('Guardando datos')
+        self.save_retention_seller_packs()

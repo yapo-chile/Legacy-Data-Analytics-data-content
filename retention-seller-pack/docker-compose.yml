@@ -8,5 +8,7 @@ services:
       - "5000"
     environment:
       APP_DB_SECRET: /app/db-secret
+      APP_DB_DEV_SECRET: /app/db-secret-dev
     volumes:
-      - /keys/bnbiuser:/app/db-secret
+      - secrets/db-secret-prod:/app/db-secret
+      - secrets/db-secret-dev:/app/db-secret-dev

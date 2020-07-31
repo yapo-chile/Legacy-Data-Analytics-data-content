@@ -4,9 +4,9 @@ import logging
 from infraestructure.conf import getConf
 from utils.read_params import ReadParams
 from utils.time_execution import TimeExecution
-from usecases import RetentionSellerPacks
-from usecases import RetentionSellerPacksDetail
-from usecases import SendEmailSellersLeak
+from usecases.RetentionSellerPacks import RetentionSellerPacks
+from usecases.RetentionSellerPacksDetail import RetentionSellerPacksDetail
+from usecases.SendEmailSellersPackLeak import SendEmailSellersPackLeak
 
 
 if __name__ == '__main__':
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     RetentionSellerPacks(CONFIG, PARAMS).generate()
     RetentionSellerPacksDetail(CONFIG, PARAMS).generate()
-    SendEmailSellersLeak(CONFIG, PARAMS).generate()
+    SendEmailSellersPackLeak(CONFIG, PARAMS).generate()
 
     # End process
     LOGGER.info('Process ended successfully.')
