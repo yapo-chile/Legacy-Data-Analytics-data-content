@@ -21,9 +21,9 @@ if __name__ == '__main__':
     TIME.get_time()
     # Calling main process
 
-    #RetentionSellerPacks(CONFIG, PARAMS).generate()
-    # RetentionSellerPacksDetail(CONFIG, PARAMS).generate()
-    # SendEmailSellersLeak(CONFIG, PARAMS).generate()
+    RetentionSellerPacks(CONFIG, PARAMS).generate()
+    RetentionSellerPacksDetail(CONFIG, PARAMS).generate()
+    SendEmailSellersLeak(CONFIG, PARAMS).generate()
 
     # End process
     LOGGER.info('Process ended successfully.')
