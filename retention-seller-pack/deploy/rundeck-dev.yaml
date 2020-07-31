@@ -1,0 +1,37 @@
+- defaultTab: nodes
+  description: |-
+        Testing process retention sellet packs 
+        <Add a description about what this ETL does>
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db_prod:/app/db-secret-prod \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret-dev \
+                        -e APP_DB_SECRET=/app/db-secret-prod \
+                        -e APP_DB_DEV_SECRET=/app/db-secret-dev \
+                        containers.mpi-internal.com/yapo/retention-seller-pack:feat/retention-seller-pack
+  executionEnabled: true
+  group: DOCKER/CONTENT
+  loglevel: DEBUG
+  name: Content - Retention sellers packs
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  notifyAvgDurationThreshold: null
+  scheduleEnabled: false
+  sequence:
+    commands:
+    - script: |-
+        sudo docker pull containers.mpi-internal.com/yapo/retention-seller-pack:feat/retention-seller-pack
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db_prod:/app/db-secret-prod \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret-dev \
+                        -e APP_DB_SECRET=/app/db-secret-prod \
+                        -e APP_DB_DEV_SECRET=/app/db-secret-dev \
+                        containers.mpi-internal.com/yapo/retention-seller-pack:feat/retention-seller-pack
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
