@@ -7,9 +7,6 @@ services:
     expose:
       - "5000"
     environment:
-      APP_DB_SECRET_DEV: /app/db-secret
-      APP_DB_SECRET: /app/db-secret-prod
+      APP_DB_SECRET: /app/db-secret
     volumes:
-      - ~/Projects/secrets/db-secret-prod:/app/db-secret
-      - ~/Projects/secrets/db-secret-dev:/app/db-secret-dev
-
+      - ~/Projects/secrets/db-secret:/app/db-secret

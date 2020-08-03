@@ -26,7 +26,7 @@ start: compose-up
 run: compose-up-no-build
 
 run-local:
-	python app/main.py -date_from=2020-03-01 -date_to=2020-04-01
+	python app/main.py
 
 ## Publishes container
 docker-publish:

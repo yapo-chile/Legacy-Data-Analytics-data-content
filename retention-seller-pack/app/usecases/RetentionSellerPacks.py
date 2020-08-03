@@ -12,7 +12,7 @@ class RetentionSellerPacks():
         self.config = config
         self.params = params
         self.logger = logging.getLogger('Retention-seller-pack')
-        self.db_dev = None
+        self.month_id = self.params.date_from.strftime('%Y%m')
         self.db = None
 
     def delete_from_retention_seller_packs(self):
@@ -22,10 +22,11 @@ class RetentionSellerPacks():
         from table stg.retention_sellers_packs
         """
         query = Query(self.config, self.params)
-        if self.db_dev is None:
-            self.db_dev = Database(conf=self.config.db_dev)
+        if self.db is None:
+            self.db = Database(conf=self.config.db)
         self.logger.info('Executing query delete')
-        self.db_dev.execute_command(query.delete_retention_sellers_packs())
+        self.db.execute_command(
+            query.delete_retention_sellers_packs(self.month_id))
         self.logger.info('Query executed')
 
 
@@ -35,11 +36,16 @@ class RetentionSellerPacks():
         in stg.retention_sellers_packs
         """
         query = Query(self.config, self.params)
-        if self.db_dev is None:
-            self.db_dev = Database(conf=self.config.db_dev)
-        self.data_retention_seller_packs.to_sql(
-            query.table_dest_retention_seller_pack,
-            con=self.db_dev)
+        if self.db is None:
+            self.db = Database(conf=self.config.db)
+        n_new_regs = len(self.data_retention_seller_packs.index)
+        self.logger.info('Inserting new data, {num_regs} new registers'\
+            .format(num_regs=n_new_regs))
+        self.logger.info('Guardando datos')
+        self.db.insert_data(
+            table_name=query.table_dest_rsp,
+            data=self.data_retention_seller_packs)
+        self.db.close_connection()
 
     @property
     def data_retention_seller_packs(self):
@@ -57,17 +63,13 @@ class RetentionSellerPacks():
         query = Query(config, self.params)
         if self.db is None:
             self.db = Database(conf=config.db)
-        self.logger.info('Ejecutando query')
+        self.logger.info('Ejecutando query - Get Data')
         data = pd.read_sql(sql=query.query_retention_seller_pack(),
                            con=self.db.connection)
-        self.logger.info('Query terminada')
+        self.logger.info('Query ended')
         self.__data_retention_seller_packs = data
-        self.db.close_connection()
 
     def generate(self):
-        self.logger.info('Obteniendo Datos')
         self.data_retention_seller_packs = self.config
-        self.logger.info('Eliminando datos anteriores')
         self.delete_from_retention_seller_packs()
-        self.logger.info('Guardando datos')
         self.save_retention_seller_packs()

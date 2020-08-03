@@ -10,14 +10,10 @@ class Query:
                  params: ReadParams) -> None:
         self.params = params
         self.conf = conf
-
-    def table_dest_retention_seller_packs(self) -> str:
-        """
-        Method that contain dest table of retention
-        seller packs process
-        """
-        table_name = "stg.retention_sellers_packs"
-        return table_name
+        self.table_dest_rsp = \
+            "dm_analysis.retention_sellers_packs"
+        self.table_dest_rsp_detail =\
+            "dm_analysis.retention_sellers_packs_detail"
 
     def query_retention_seller_pack(self) -> str:
         """
@@ -298,24 +294,17 @@ class Query:
         """.format(date_from=self.params.date_from)
         return query
 
-    def delete_retention_sellers_packs(self) -> str:
+    def delete_retention_sellers_packs(self, month) -> str:
         """
         Method that returns query of records of month
         """
         command = """
             delete 
             from {table} 
-            where ((month_id*100+01)::varchar)::date = '{date_from}'
-        """.format(date_from=self.params.date_from,
-                   table=self.table_dest_retention_seller_packs())
+            where month_id = '{month}'
+        """.format(month=month,
+                   table=self.table_dest_rsp)
         return command
-
-    def table_dest_retention_seller_packs_detail(self) -> str:
-        """
-        Method
-        """
-        table_name = "stg.retention_sellers_pack_detail"
-        return table_name
 
     def delete_retention_sellers_packs_detail(self, month) -> str:
         """
@@ -327,7 +316,7 @@ class Query:
             from {table_name}  
             where month_id = {month}
         """.format(month=month,
-                   table_name=self.table_dest_retention_seller_packs_detail())
+                   table_name=self.table_dest_rsp_detail)
         return command
 
     def query_retention_seller_packs_detail(self) -> str:

@@ -19,7 +19,6 @@ class SendEmailSellersPackLeak():
         self.logger = logging.getLogger('Seller-pack-leack')
         self.file_name = 'sellers_pack_fuga.csv'
         self.db = None
-        self.db_dev = None
 
     @property
     def data_sellers_leack(self):

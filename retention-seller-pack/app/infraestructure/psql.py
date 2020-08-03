@@ -3,7 +3,6 @@ import psycopg2
 import psycopg2.extras
 import pandas as pd
 
-
 class Database:
     """
     Class that allow do operations with postgresql database.
@@ -66,21 +65,17 @@ class Database:
         cursor.close()
         return pd_result
 
-    def insert_data(self, table_name: str, data_dict: pd.DataFrame) -> None:
+    def insert_data(self, table_name: str, data: pd.DataFrame) -> None:
         self.log.info('INSERT INTO %s', table_name)
         page_size: int = 10000
+        insert_query = """INSERT INTO {table_name} ({columns}) VALUES %s;
+                       """.format(table_name=table_name,
+                                  columns=(", ".join(data.columns)))
         with self.connection.cursor() as cursor:
-            psycopg2.extras \
-                .execute_values(cursor,
-                                """ INSERT INTO """ + table_name +
-                                """ ( timedate,
-                                      current_version
-                                    )
-                                    VALUES %s; """, ((
-                                        row.timedate,
-                                        row.current_version
-                                    ) for row in data_dict.itertuples()),
-                                page_size=page_size)
+            psycopg2.extras.execute_values(cur=cursor,
+                                           sql=insert_query,
+                                           argslist=[tuple(x) for x in data.values.tolist()],
+                                           page_size=page_size)
             self.log.info('INSERT %s COMMIT.', table_name)
             self.connection.commit()
             self.log.info('CLOSE CURSOR %s', table_name)

@@ -1,7 +1,6 @@
 import environ
 
 INI_DB = environ.secrets.INISecrets.from_path_in_env("APP_DB_SECRET")
-DB_DEV = environ.secrets.INISecrets.from_path_in_env("APP_DB_DEV_SECRET")
 
 @environ.config(prefix="APP")
 class AppConfig:
@@ -20,20 +19,7 @@ class AppConfig:
         user: str = INI_DB.secret(name="user", default=environ.var())
         password: str = INI_DB.secret(name="password", default=environ.var())
 
-    @environ.config(prefix="DB_DEV")
-    class DBDevConfig:
-        """
-        DBConfig Class representing the configuration
-        to access the database dev
-        """
-        host: str = DB_DEV.secret(name="host", default=environ.var())
-        port: int = DB_DEV.secret(name="port", default=environ.var())
-        name: str = DB_DEV.secret(name="dbname", default=environ.var())
-        user: str = DB_DEV.secret(name="user", default=environ.var())
-        password: str = DB_DEV.secret(name="password", default=environ.var())
-
     db = environ.group(DBConfig)
-    db_dev = environ.group(DBDevConfig)
 
 def getConf():
     return environ.to_config(AppConfig)
