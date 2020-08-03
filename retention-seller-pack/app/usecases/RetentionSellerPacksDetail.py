@@ -3,7 +3,7 @@
 import logging
 import pandas as pd
 from infraestructure.psql import Database
-from utils.query import Query
+from utils.query_rsp_detail import QueryRSPDetail
 from utils.read_params import ReadParams
 
 class RetentionSellerPacksDetail():
@@ -19,12 +19,12 @@ class RetentionSellerPacksDetail():
         """
         Method that delete data from month in process if exist
         """
-        query = Query(self.config, self.params)
+        query = QueryRSPDetail(self.config, self.params)
         if self.db is None:
             self.db = Database(conf=self.config.db)
         self.logger.info('Executing query delete')
         self.db.execute_command(
-            query.delete_retention_sellers_packs(self.month_id))
+            query.delete_retention_sellers_packs_detail(self.month_id))
         self.logger.info('Query executed')
 
     def save_retention_seller_packs_detail(self) -> None:
@@ -32,7 +32,7 @@ class RetentionSellerPacksDetail():
         Method that save data in DWH in table
         retention seller packs detail
         """
-        query = Query(self.config, self.params)
+        query = QueryRSPDetail(self.config, self.params)
         if self.db is None:
             self.db = Database(conf=self.config.db)
         n_new_regs = len(self.data_retention_seller_packs_detail.index)
@@ -49,7 +49,7 @@ class RetentionSellerPacksDetail():
 
     @data_retention_seller_packs_detail.setter
     def data_retention_seller_packs_detail(self, config):
-        query = Query(config, self.params)
+        query = QueryRSPDetail(config, self.params)
         if self.db is None:
             self.db = Database(conf=config.db)
         self.logger.info('Making Query')

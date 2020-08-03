@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.encoders import encode_base64
 import pandas as pd
-from utils.query import Query
+from utils.query_seller_leak import Query
 from utils.read_params import ReadParams
 from infraestructure.psql import Database
 
@@ -37,6 +37,7 @@ class SendEmailSellersPackLeak():
         self.db.close_connection()
 
     def send_email(self):
+        self.logger.info('Preparing email')
         SUBJECT = "Base de correos: Fuga de sellers pack"
         FROM = "bi_team@schibsted.cl"
         #TO = ['claudia@schibsted.cl','experiencia@yapo.cl',
@@ -67,8 +68,11 @@ class SendEmailSellersPackLeak():
         part.add_header('Content-Disposition',
                         'attachment; filename=Sellers_Pack_Fuga.csv')
         msg.attach(part)
+        self.logger.info('Sending email')
         server = smtplib.SMTP('localhost')
         server.sendmail(FROM, TO, msg.as_string())
+        self.logger.info('Email sent')
+
 
     def generate(self):
         self.data_sellers_leack = self.config

@@ -3,7 +3,7 @@
 import logging
 import pandas as pd
 from infraestructure.psql import Database
-from utils.query import Query
+from utils.query_rsp import QueryRSP
 from utils.read_params import ReadParams
 
 class RetentionSellerPacks():
@@ -21,7 +21,7 @@ class RetentionSellerPacks():
         month_id corresponding to date_from %Y%m
         from table stg.retention_sellers_packs
         """
-        query = Query(self.config, self.params)
+        query = QueryRSP(self.config, self.params)
         if self.db is None:
             self.db = Database(conf=self.config.db)
         self.logger.info('Executing query delete')
@@ -35,7 +35,7 @@ class RetentionSellerPacks():
         Method that insert data_retention_seller_packs dataframe
         in stg.retention_sellers_packs
         """
-        query = Query(self.config, self.params)
+        query = QueryRSP(self.config, self.params)
         if self.db is None:
             self.db = Database(conf=self.config.db)
         n_new_regs = len(self.data_retention_seller_packs.index)
@@ -60,7 +60,7 @@ class RetentionSellerPacks():
         Setter of data of retention seller packs
         Get data from sql dws executing query's
         """
-        query = Query(config, self.params)
+        query = QueryRSP(config, self.params)
         if self.db is None:
             self.db = Database(conf=config.db)
         self.logger.info('Ejecutando query - Get Data')

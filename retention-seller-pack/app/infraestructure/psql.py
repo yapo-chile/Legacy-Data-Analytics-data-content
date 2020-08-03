@@ -71,10 +71,11 @@ class Database:
         insert_query = """INSERT INTO {table_name} ({columns}) VALUES %s;
                        """.format(table_name=table_name,
                                   columns=(", ".join(data.columns)))
+        args = [tuple(x) for x in data.values.tolist()]
         with self.connection.cursor() as cursor:
             psycopg2.extras.execute_values(cur=cursor,
                                            sql=insert_query,
-                                           argslist=[tuple(x) for x in data.values.tolist()],
+                                           argslist=args,
                                            page_size=page_size)
             self.log.info('INSERT %s COMMIT.', table_name)
             self.connection.commit()
