@@ -6,6 +6,9 @@ from infraestructure.psql import Database
 from utils.query_rsp import QueryRSP
 from utils.read_params import ReadParams
 
+from timeit import default_timer as timer
+from datetime import timedelta
+
 class RetentionSellerPacks():
 
     def __init__(self, config, params: ReadParams) -> None:
@@ -13,7 +16,6 @@ class RetentionSellerPacks():
         self.params = params
         self.logger = logging.getLogger('Retention-seller-pack')
         self.month_id = self.params.date_from.strftime('%Y%m')
-        self.db = None
 
     def delete_from_retention_seller_packs(self):
         """
@@ -22,12 +24,13 @@ class RetentionSellerPacks():
         from table stg.retention_sellers_packs
         """
         query = QueryRSP(self.config, self.params)
-        if self.db is None:
-            self.db = Database(conf=self.config.db)
-        self.logger.info('Executing query delete')
-        self.db.execute_command(
+        db = Database(conf=self.config.db)
+        self.logger.info('Executing query to delete data')
+        db.execute_command(
             query.delete_retention_sellers_packs(self.month_id))
         self.logger.info('Query executed')
+        db.close_connection()
+
 
 
     def save_retention_seller_packs(self) -> None:
@@ -36,16 +39,12 @@ class RetentionSellerPacks():
         in stg.retention_sellers_packs
         """
         query = QueryRSP(self.config, self.params)
-        if self.db is None:
-            self.db = Database(conf=self.config.db)
+        db = Database(conf=self.config.db)
         n_new_regs = len(self.data_retention_seller_packs.index)
-        self.logger.info('Inserting new data, {num_regs} new registers'\
-            .format(num_regs=n_new_regs))
-        self.logger.info('Guardando datos')
-        self.db.insert_data(
+        db.insert_data(
             table_name=query.table_dest_rsp,
             data=self.data_retention_seller_packs)
-        self.db.close_connection()
+        db.close_connection()
 
     @property
     def data_retention_seller_packs(self):
@@ -61,13 +60,13 @@ class RetentionSellerPacks():
         Get data from sql dws executing query's
         """
         query = QueryRSP(config, self.params)
-        if self.db is None:
-            self.db = Database(conf=config.db)
-        self.logger.info('Ejecutando query - Get Data')
-        data = pd.read_sql(sql=query.query_retention_seller_pack(),
-                           con=self.db.connection)
-        self.logger.info('Query ended')
+        db = Database(conf=config.db)
+        self.logger.info('Executing query to get data from dwh')
+        data = db.select_to_dict(query.query_retention_seller_pack())
+        self.logger.info('Query executed')
+        db.close_connection()
         self.__data_retention_seller_packs = data
+
 
     def generate(self):
         self.data_retention_seller_packs = self.config

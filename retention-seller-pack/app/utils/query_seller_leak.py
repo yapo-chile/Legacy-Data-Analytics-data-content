@@ -1,7 +1,7 @@
 from infraestructure.conf import getConf
 from utils.read_params import ReadParams
 
-class Query:
+class QuerySellerLeak:
     """
     Class that store all querys
     """

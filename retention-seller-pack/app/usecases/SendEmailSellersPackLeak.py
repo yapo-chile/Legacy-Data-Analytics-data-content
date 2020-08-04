@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.encoders import encode_base64
 import pandas as pd
-from utils.query_seller_leak import Query
+from utils.query_seller_leak import QuerySellerLeak
 from utils.read_params import ReadParams
 from infraestructure.psql import Database
 
@@ -18,7 +18,6 @@ class SendEmailSellersPackLeak():
         self.params = params
         self.logger = logging.getLogger('Seller-pack-leack')
         self.file_name = 'sellers_pack_fuga.csv'
-        self.db = None
 
     @property
     def data_sellers_leack(self):
@@ -26,15 +25,14 @@ class SendEmailSellersPackLeak():
 
     @data_sellers_leack.setter
     def data_sellers_leack(self, config):
-        query = Query(config, self.params)
-        if self.db is None:
-            self.db = Database(conf=config.db)
-        self.logger.info('Making Query')
+        query = QuerySellerLeak(config, self.params)
+        db = Database(conf=config.db)
+        self.logger.info('Executing query to get data from dwh')
         data = pd.read_sql(sql=query.query_sellers_pack_leak(),
-                           con=self.db.connection)
-        self.logger.info('Query Ended')
+                           con=db.connection)
+        self.logger.info('Query executed')
+        db.close_connection()
         self.__data_sellers_leack = data
-        self.db.close_connection()
 
     def send_email(self):
         self.logger.info('Preparing email')
