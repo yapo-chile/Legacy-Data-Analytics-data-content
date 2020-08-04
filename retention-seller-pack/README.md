@@ -1,20 +1,26 @@
 # retention-seller-pack pipeline 
 
-# retention-seller-pack
-
 ## Description
 
-Introduce here information about the purpose of this ETL, what kind of information it extracts and from where (dwh, pulse, blocket DB, service DB, specifics files, etc) and also specify other important tecnical details such as: execution preconditions, considerations about execution schedule.
+This pipeline have 3 steps
+
+- RetentionSellerPack:  This step extract monthly data from ods.packs about the the active packs in the month, pack puchased in month, number of sellers who bought packs this month, the number of sellers that buy again after a month, and sellers that hace pack last month, but this month doesnt buy. Also, get the accrual (Devengo) of previus metrics.
+
+- RetentionSellerPackDetail: This step extract the same metrics of RetentionSellerPack but grouped by numbers of days and numbers of slots of active packs.
+
+- SendEmailSellersPackLeak: This step extract fata about sellers packs leak (fuga), that is, sellers who had a pack last month, but this month they did not buy one.
+
+
 
 ## Pipeline Implementation Details
 
 |   Field           | Description                                                                |
 |-------------------|----------------------------------------------------------------------------|
-| Input Source      | Specify type of source and/or table names                                  |
-| Output Source     | Specify type of source and/or table names                                  |
-| Schedule          | hh:mm                                                                      |
-| Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
-| Associated Report | Specify name and URL of tableau report (if applies)                        |
+| Input Source      | DWH ods.packs                                                              |
+| Output Source     | stg.retention_sellers_packs, stg.retention_sellers_packs_detail            |
+| Schedule          | One time at month (actually in project test of rundeck is manual)          |
+| Rundeck Access    | Data_jobs : Content - Retention sellers packs                              |
+| Associated Report | --                                                                         |
 
 
 ### Build
