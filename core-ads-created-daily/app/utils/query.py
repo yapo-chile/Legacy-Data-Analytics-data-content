@@ -12,7 +12,7 @@ class Query:
         self.params = params
         self.conf = conf
 
-    def get_data_ads_created_daily(self) -> str:
+    def get_blocket_ads_created_daily(self) -> str:
         """
         Method return str with query
         """
@@ -224,12 +224,146 @@ class Query:
                        self.params.get_last_year())
         return queryBlocket
 
-    def insert_output_to_dw(self) -> str:
+    def get_stg_ads_created_daily(self) -> str:
+        """
+        Method return str with query
+        """
+        queryDwh = """
+                select 
+                    a1.ad_id_nk,
+                    a1.seller_id_fk,
+                    a1.platform_id_fk,
+                    a1.creation_date,
+                    a1.category_id_fk,
+                    a1.region_id_fk,
+                    a1.ad_type_id_fk,
+                    a1.pri_pro_id_fk,
+                    a1.action_type,
+                    a1.price,
+                    a1.insert_date,
+                    a1.update_date,
+                    a1.communes_id_nk,
+                    a1.phone,
+                    a1.body,
+                    a1.subject,
+                    a1.user_name
+                from (
+                    select  
+                        sad.ad_id as ad_id_nk
+                        ,sel.seller_id_pk as seller_id_fk
+                        ,pla.platform_id_pk as platform_id_fk
+                        ,sad.creation_date
+                        ,cat.category_id_pk as category_id_fk
+                        ,reg.region_id_pk as region_id_fk
+                        ,adt.ad_type_id_pk as ad_type_id_fk
+                        ,pio.pri_pro_id_pk as pri_pro_id_fk
+                        ,sad.action_type
+                        ,sad.price
+                        ,now() as insert_date
+                        ,now() as update_date
+                        ,sad.communes_id_nk
+                        ,sad.phone
+                        ,sad.body
+                        ,sad.subject
+                        ,sad.user_name	
+                    from dm_analysis.temp_stg_ad sad
+                        left join ods.ad_type adt on (adt.ad_type_id_nk = sad."type" )
+                        left join ods.category cat on (cat.category_id_nk = sad.category )
+                        left join ods.platform pla on (pla.platform_id_nk = sad.platform_id_nk )
+                        left join ods.pri_pro pio on (pio.pri_pro_id_nk = sad.company_ad )
+                        left join ods.region reg on (reg.region_id_nk = sad.region )
+                        left join ods.seller sel on (sel.seller_id_nk = sad.email )
+                    where
+                        sad.creation_date between '{0} 00:00:00' and '{1} 23:59:59'
+                        order by sad.ad_id, sad.creation_date) a1
+                where not exists (
+                    select 1 from dm_analysis.temp_ods_ad a2 where a2.ad_id_nk = a1.ad_id_nk)    
+            """.format(self.params.get_date_from(),
+                       self.params.get_date_to())
+        return queryDwh
+
+    def get_stg_ads_approved_daily(self) -> str:
+        """
+        Method return str with query
+        """
+        queryDwh = """
+                select 
+                     a1.ad_id as ad_id_nk
+	                ,a1.approval_date
+	                ,coalesce(a1.price,-1) as price
+	                ,a1.list_id as list_id_nk
+                from (
+                    select  
+                         sad.ad_id
+                        ,sad.user_id
+                        ,sad.account_id
+                        ,sad.email
+                        ,sad.approval_date
+                        ,sad.category
+                        ,sad.region
+                        ,sad."type"
+                        ,sad.company_ad
+                        ,sad.price
+                        ,sad.list_id
+                        ,sad.action_type
+                        ,rank() over(partition by sad.ad_id order by sad.approval_date)	
+                    from dm_analysis.temp_stg_ad sad
+                    where
+                        sad.approval_date between '{0} 00:00:00' and '{1} 23:59:59') a1
+                    inner join dm_analysis.temp_ods_ads a2 on (a2.ad_id_nk = a1.ad_id)
+                where 
+                    rank=1
+                    and a2.approval_date is null
+                order by a1.approval_date    
+            """.format(self.params.get_date_from(),
+                       self.params.get_date_to())
+        return queryDwh
+
+    def get_stg_ads_deleted_daily(self) -> str:
+        """
+        Method return str with query
+        """
+        queryDwh = """
+                select 
+                     a1.ad_id as ad_id_nk
+	                ,a1.deletion_date
+	                ,a1.reason_removed_id_fk
+	                ,a1.reason_removed_detail_id_fk
+                from (
+                    select  
+                         sad.ad_id 
+                        ,sad.user_id
+                        ,sad.account_id
+                        ,sad.email
+                        ,sad.deletion_date
+                        ,sad.category
+                        ,sad.region
+                        ,sad."type"
+                        ,sad.company_ad
+                        ,sad.price
+                        ,rer.reason_removed_id_pk as reason_removed_id_fk
+	                    ,sad.reason_removed_detail_id_pk as reason_removed_detail_id_fk
+                        ,rank() over(partition by sad.ad_id order by sad.deletion_date, sad.ad_id)	
+                    from dm_analysis.temp_stg_ad sad
+                        left join ods.reason_removed rer on (rer.reason_removed_id_nk = sad.reason_removed_id_nk )
+                        left join ods.reason_removed_detail rrd on (rrd.reason_removed_detail_id_nk = sad.reason_removed_detail_id_nk::integer )
+                    where
+                        sad.deletion_date between '{0} 00:00:00' and '{1} 23:59:59') a1
+                    inner join dm_analysis.temp_ods_ads a2 on (a2.ad_id_nk = a1.ad_id)
+                where 
+                    rank=1
+                    and a2.deletion_date is null
+                order by a1.deletion_date    
+            """.format(self.params.get_date_from(),
+                       self.params.get_date_to())
+        return queryDwh
+
+    def insert_to_stg_ad_table(self) -> str:
         """
         Method return str with query
         """
         query = """
-                INSERT INTO dm_analysis.temp_stg_ads
+                INSERT INTO dm_analysis.temp_stg_ad
                             (ad_id,
                             list_id,
                             user_id,
@@ -255,11 +389,140 @@ class Query:
                 VALUES %s;"""
         return query
 
-    def delete_output_dw_table(self) -> str:
+    def insert_to_stg_ad_approved_table(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+                INSERT INTO dm_analysis.temp_stg_ad_approved
+                            (ad_id_nk,
+                            approval_date,
+                            price,
+                            list_id_nk)
+                VALUES %s;"""
+        return query
+
+    def insert_to_stg_ad_deleted_table(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+                INSERT INTO dm_analysis.temp_stg_ad_deleted
+                            (ad_id_nk,
+                            deletion_date,
+                            reason_removed_id_fk,
+                            reason_removed_detail_id_fk)
+                VALUES %s;"""
+        return query
+
+    def insert_ad_created_to_ods_ad_table(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+                INSERT INTO dm_analysis.temp_ods_ad
+                            (ad_type_id_fk,
+                            category_id_fk,
+                            platform_id_fk,
+                            pri_pro_id_fk,
+                            region_id_fk,
+                            seller_id_fk,
+                            creation_date,
+                            ad_id_nk,
+                            insert_date,
+                            update_date, 
+                            action_type,
+                            price,
+                            communes_id_nk,
+                            phone,
+                            body,
+                            subject,
+                            user_name)
+                VALUES %s;"""
+        return query
+
+    def upd_approval_date_stg_to_ods_ad_table(self) -> str:
         """
         Method that returns events of the day
         """
         command = """
-                    truncate table dm_analysis.temp_stg_ads 
+                    update dm_analysis.temp_ods_ad oad
+                    set oad.approval_date = saa.approval_date
+                        ,oad.list_id_nk = saa.list_id_nk
+                        ,oad.price = (case when saa.price = -1 then null else saa.price end)
+                        ,oad.update_date = now()
+                    FROM dm_analysis.temp_stg_ad_approved saa
+                    where oad.ad_id_nk = saa.ad_id_nk
                 """
+        return command
+
+    def upd_approval_date_ods_ad_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    update dm_analysis.temp_ods_ad
+                        set approval_date = creation_date
+                    where approval_date is null
+                        and action_type = 'import'
+                        and creation_date::date = 
+                        '""" + self.params.get_date_from() + """'::date
+                        and creation_date::date <= 
+                        '""" + self.params.get_date_to() + """'::date """
+        return command
+
+    def upd_deletion_date_stg_to_ods_ad_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    update dm_analysis.temp_ods_ad oad
+                    set oad.deletion_date = sad.deletion_date
+                        ,oad.reason_removed_id_fk = sad.reason_removed_id_fk
+                        ,oad.reason_removed_detail_id_fk = sad.reason_removed_detail_id_fk
+                        ,oad.update_date = now()
+                    FROM dm_analysis.temp_stg_ad_deleted sad
+                    where oad.ad_id_nk = saa.ad_id_nk
+                """
+        return command
+
+    def delete_stg_ad_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    truncate table dm_analysis.temp_stg_ad 
+                """
+        return command
+
+
+    def delete_stg_ad_approved_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    truncate table dm_analysis.temp_stg_ad_approved 
+                """
+        return command
+
+    def delete_stg_ad_deleted_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    truncate table dm_analysis.temp_stg_ad_deleted 
+                """
+        return command
+
+    def delete_ods_ad_table(self) -> str:
+        """
+        Method that returns events of the day
+        """
+        command = """
+                    delete from dm_analysis.temp_ods_ad where 
+                    creation_date::date >= 
+                    '""" + self.params.get_date_from() + """'::date
+                    and creation_date::date <= 
+                    '""" + self.params.get_date_to() + """'::date """
+
         return command
