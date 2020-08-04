@@ -1,0 +1,32 @@
+- defaultTab: nodes
+  description: |-
+        Ejecutando pruebas de funcionamiento
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/retention-seller-pack:latest
+  executionEnabled: true
+  group: CONTENT
+  loglevel: DEBUG
+  name: Content - Retention sellers packs
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  notifyAvgDurationThreshold: null
+  scheduleEnabled: false
+  sequence:
+    commands:
+    - script: |-
+        sudo docker pull containers.mpi-internal.com/yapo/retention-seller-pack:latest
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/retention-seller-pack:latest
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
