@@ -42,18 +42,8 @@ class SendEmailSellersPackLeak():
         #'sofia@schibsted.cl','bi@schibsted.cl','constanza@schibsted.cl']
         TO = ['ricardo.alvarez@adevinta.com']
         CSV_FILE = self.file_name
-        BODY = """
-            Estimad@s,
-
-            Se adjunta base de correos con fuga de sellers pack del mes anterior.
-
-            Quedamos atentos por cualquier duda o consulta.
-
-            Saludos,
-            BI Team
-            -----
-            Este correo ha sido generado de forma autom\xE1tica
-        """
+        BODY = """Estimad@s,\nSe adjunta base de correos con fuga de sellers pack del mes anterior.
+Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         msg = MIMEMultipart('mixed')
         msg['Subject'] = SUBJECT
         msg['From'] = FROM
@@ -64,7 +54,7 @@ class SendEmailSellersPackLeak():
         part.set_payload(open(CSV_FILE, "rb").read())
         encode_base64(part)
         part.add_header('Content-Disposition',
-                        'attachment; filename=Sellers_Pack_Fuga.csv')
+                        'attachment',filename=self.file_name)
         msg.attach(part)
         self.logger.info('Sending email')
         server = smtplib.SMTP('localhost')
