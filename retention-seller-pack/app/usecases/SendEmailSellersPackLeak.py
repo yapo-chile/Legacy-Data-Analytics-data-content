@@ -37,12 +37,12 @@ class SendEmailSellersPackLeak():
     def send_email(self):
         self.logger.info('Preparing email')
         SUBJECT = "Base de correos: Fuga de sellers pack"
-        FROM = "bi_team@schibsted.cl"
+        FROM = "noreply@yapo.cl"
         #TO = ['claudia@schibsted.cl','experiencia@yapo.cl',
         #'sofia@schibsted.cl','bi@schibsted.cl','constanza@schibsted.cl']
         TO = ['ricardo.alvarez@adevinta.com']
         CSV_FILE = self.file_name
-        BODY = """Estimad@s,\nSe adjunta base de correos con fuga de sellers pack del mes anterior.
+        BODY = """Estimad@s,\n\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
 Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         msg = MIMEMultipart('mixed')
         msg['Subject'] = SUBJECT
