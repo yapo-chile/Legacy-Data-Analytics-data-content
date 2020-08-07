@@ -13,7 +13,7 @@ class ReadParams:
         self.date_from = None
         self.date_to = None
         self.master = None
-        self.email_to = None
+        self.email_to = []
         self.email_from = None
         self.logger = logging.getLogger('readParams')
         date_format = """%(asctime)s,%(msecs)d %(levelname)-2s """
@@ -117,7 +117,7 @@ class ReadParams:
         elif key == '-master':
             self.master = value
         elif key == '-email_to':
-            self.email_to = value.split(',')
+            self.email_to.append(value)
         elif key == '-email_from':
             self.email_from = value
     def validate_params(self) -> None:
