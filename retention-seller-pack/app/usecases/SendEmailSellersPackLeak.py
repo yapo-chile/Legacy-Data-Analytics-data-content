@@ -41,14 +41,14 @@ class SendEmailSellersPackLeak():
             FROM = "noreply@yapo.cl"
         else:
             FROM = self.params.email_from
-        if self.params.email_to is None:
+        if self.params.email_to == [] :
             TO = ['claudia.castro@adevinta.com',
                     'experiencia@yapo.cl',
                     'sofia.fernandez@adevinta.com',
                     'data_team@adevinta.com']
         else:
             TO = self.params.email_to
-            
+
         CSV_FILE = self.file_name
         BODY = """Estimad@s,\n\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
 Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
