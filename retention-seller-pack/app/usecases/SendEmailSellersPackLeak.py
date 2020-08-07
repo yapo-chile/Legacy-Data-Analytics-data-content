@@ -40,7 +40,9 @@ class SendEmailSellersPackLeak():
         FROM = "noreply@yapo.cl"
         #TO = ['claudia@schibsted.cl','experiencia@yapo.cl',
         #'sofia@schibsted.cl','bi@schibsted.cl','constanza@schibsted.cl']
-        TO = ['ricardo.alvarez@adevinta.com']
+        TO = ['ricardo.alvarez@adevinta.com', 
+                'ana.mora@adevinta.com', 
+                'mauricio.wittenberg@adevinta.com']
         CSV_FILE = self.file_name
         BODY = """Estimad@s,\n\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
 Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
