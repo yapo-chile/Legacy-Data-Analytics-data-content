@@ -37,10 +37,18 @@ class SendEmailSellersPackLeak():
     def send_email(self):
         self.logger.info('Preparing email')
         SUBJECT = "Base de correos: Fuga de sellers pack"
-        FROM = "noreply@yapo.cl"
-        #TO = ['claudia@schibsted.cl','experiencia@yapo.cl',
-        #'sofia@schibsted.cl','bi@schibsted.cl','constanza@schibsted.cl']
-        TO = ['ricardo.alvarez@adevinta.com']
+        if self.params.email_from is None:
+            FROM = "noreply@yapo.cl"
+        else:
+            FROM = self.params.email_from
+        if self.params.email_to is None:
+            TO = ['claudia.castro@adevinta.com',
+                    'experiencia@yapo.cl',
+                    'sofia.fernandez@adevinta.com',
+                    'data_team@adevinta.com']
+        else:
+            TO = self.params.email_to
+            
         CSV_FILE = self.file_name
         BODY = """Estimad@s,\n\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
 Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
@@ -56,7 +64,8 @@ Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         part.add_header('Content-Disposition',
                         'attachment',filename=self.file_name)
         msg.attach(part)
-        self.logger.info('Sending email')
+        logger_send_mail = 'Sending email to {}'.format(", ".join(TO))
+        self.logger.info(logger_send_mail)
         server = smtplib.SMTP('localhost')
         server.sendmail(FROM, TO, msg.as_string())
         self.logger.info('Email sent')

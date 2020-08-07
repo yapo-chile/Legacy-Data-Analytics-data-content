@@ -7,7 +7,6 @@ class AppConfig:
     """
     AppConfig Class representing the configuration of the application
     """
-
     @environ.config(prefix="DB")
     class DBConfig:
         """
@@ -18,6 +17,7 @@ class AppConfig:
         name: str = INI_DB.secret(name="dbname", default=environ.var())
         user: str = INI_DB.secret(name="user", default=environ.var())
         password: str = INI_DB.secret(name="password", default=environ.var())
+
 
     db = environ.group(DBConfig)
 

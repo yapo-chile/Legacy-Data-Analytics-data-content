@@ -3,7 +3,11 @@
         Ejecutando pruebas de funcionamiento
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/retention-seller-pack:latest
+                        containers.mpi-internal.com/yapo/retention-seller-pack:latest \
+                        -email_from="noreply@yapo.cl" \
+                        -email_to="list email address to send data separed by ',' " \
+                        -date_to="YYYY-MM-DD" \
+                        -date_from="YYYY-MM-DD" 
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
@@ -26,7 +30,9 @@
         sudo docker pull containers.mpi-internal.com/yapo/retention-seller-pack:latest
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/retention-seller-pack:latest
+                        containers.mpi-internal.com/yapo/retention-seller-pack:latest \
+                        -email_to="ricardo.alvarez@adevinta.com,ana.mora@adevinta.com,mauricio.wittenberg@adevinta.com" \
+                        -email_from="noreply@yapo.cl"
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
