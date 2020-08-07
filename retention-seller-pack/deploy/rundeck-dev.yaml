@@ -3,7 +3,11 @@
         Testing process retention sellet packs inserting data in dm_analitycs in prod dwh database 
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/retention-seller-pack:feat/retention-seller-pack
+                        containers.mpi-internal.com/yapo/retention-seller-pack:feat/retention-seller-pack \
+                        -email_from="noreply@yapo.cl" \
+                        -email_to="list email address to send data separed by ',' " \
+                        -date_to="YYYY-MM-DD" \
+                        -date_from="YYYY-MM-DD" 
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
