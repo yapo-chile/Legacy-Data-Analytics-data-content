@@ -11,7 +11,7 @@ class QueryRSPDetail:
         self.params = params
         self.conf = conf
         self.table_dest_rsp_detail =\
-            "dm_analysis.retention_sellers_packs_detail"
+            "stg.retention_sellers_packs_detail"
 
     def delete_retention_sellers_packs_detail(self, month) -> str:
         """
