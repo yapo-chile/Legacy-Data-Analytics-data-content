@@ -11,7 +11,7 @@ class QueryRSP:
         self.params = params
         self.conf = conf
         self.table_dest_rsp = \
-            "dm_analysis.retention_sellers_packs"
+            "stg.retention_sellers_packs"
 
     def query_retention_seller_pack(self) -> str:
         """

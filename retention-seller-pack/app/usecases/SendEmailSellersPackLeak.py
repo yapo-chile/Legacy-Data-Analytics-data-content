@@ -41,16 +41,16 @@ class SendEmailSellersPackLeak():
             FROM = "noreply@yapo.cl"
         else:
             FROM = self.params.email_from
-        if self.params.email_to == [] :
+        if self.params.email_to == []:
             TO = ['claudia.castro@adevinta.com',
-                    'experiencia@yapo.cl',
-                    'sofia.fernandez@adevinta.com',
-                    'data_team@adevinta.com']
+                  'experiencia@yapo.cl',
+                  'sofia.fernandez@adevinta.com',
+                  'data_team@adevinta.com']
         else:
             TO = self.params.email_to
-
         CSV_FILE = self.file_name
-        BODY = """Estimad@s,\n\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
+        BODY = """Estimad@s,
+\tSe adjunta base de correos con fuga de sellers pack del mes anterior.
 Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         msg = MIMEMultipart('mixed')
         msg['Subject'] = SUBJECT
@@ -62,17 +62,16 @@ Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         part.set_payload(open(CSV_FILE, "rb").read())
         encode_base64(part)
         part.add_header('Content-Disposition',
-                        'attachment',filename=self.file_name)
+                        'attachment', filename=self.file_name)
         msg.attach(part)
         logger_send_mail = 'Sending email to {}'.format(", ".join(TO))
         self.logger.info(logger_send_mail)
-        server = smtplib.SMTP('localhost')
+        server = smtplib.SMTP('127.0.0.1')
         server.sendmail(FROM, TO, msg.as_string())
         self.logger.info('Email sent')
 
-
     def generate(self):
         self.data_sellers_leack = self.config
-        self.data_sellers_leack.to_csv(self.file_name, sep=";")
+        self.data_sellers_leack.to_csv(self.file_name, sep=";", index=False)
         self.send_email()
         

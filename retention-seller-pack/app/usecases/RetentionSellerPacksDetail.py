@@ -26,7 +26,6 @@ class RetentionSellerPacksDetail():
         self.logger.info('Query executed')
         db.close_connection()
 
-
     def save_retention_seller_packs_detail(self) -> None:
         """
         Method that save data in DWH in table
@@ -34,7 +33,6 @@ class RetentionSellerPacksDetail():
         """
         query = QueryRSPDetail(self.config, self.params)
         db = Database(conf=self.config.db)
-        n_new_regs = len(self.data_retention_seller_packs_detail.index)
         db.insert_data(
             table_name=query.table_dest_rsp_detail,
             data=self.data_retention_seller_packs_detail)
@@ -54,7 +52,6 @@ class RetentionSellerPacksDetail():
         self.logger.info('Query executed')
         db.close_connection()
         self.__data_retention_seller_packs_detail = data
-
 
     def generate(self):
         self.data_retention_seller_packs_detail = self.config

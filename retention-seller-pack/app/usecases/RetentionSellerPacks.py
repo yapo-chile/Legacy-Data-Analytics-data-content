@@ -1,13 +1,9 @@
 # pylint: disable=no-member
 # utf-8
 import logging
-import pandas as pd
 from infraestructure.psql import Database
 from utils.query_rsp import QueryRSP
 from utils.read_params import ReadParams
-
-from timeit import default_timer as timer
-from datetime import timedelta
 
 class RetentionSellerPacks():
 
@@ -31,8 +27,6 @@ class RetentionSellerPacks():
         self.logger.info('Query executed')
         db.close_connection()
 
-
-
     def save_retention_seller_packs(self) -> None:
         """
         Method that insert data_retention_seller_packs dataframe
@@ -40,7 +34,6 @@ class RetentionSellerPacks():
         """
         query = QueryRSP(self.config, self.params)
         db = Database(conf=self.config.db)
-        n_new_regs = len(self.data_retention_seller_packs.index)
         db.insert_data(
             table_name=query.table_dest_rsp,
             data=self.data_retention_seller_packs)
@@ -66,7 +59,6 @@ class RetentionSellerPacks():
         self.logger.info('Query executed')
         db.close_connection()
         self.__data_retention_seller_packs = data
-
 
     def generate(self):
         self.data_retention_seller_packs = self.config
