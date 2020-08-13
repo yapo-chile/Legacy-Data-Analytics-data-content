@@ -1,6 +1,5 @@
 # pylint: disable=no-member
 # utf-8
-import logging
 from usecases.attention_ticket import Ticket
 from usecases.satisfaction_survey import Surveypal
 

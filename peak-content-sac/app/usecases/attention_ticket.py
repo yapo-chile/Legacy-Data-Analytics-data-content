@@ -155,7 +155,7 @@ class Ticket():
         # Take data from DWH to define start_time variable
         self.data_zendesk_tickets = self.config.dwh
 
-        self.logger.info('Getting tickets, metrics, users data from Zendesk API')
+        self.logger.info('Getting tickets/metrics/users data from Zendesk API')
         # Hit to endpoint and retrieve data
         endpoint = '/api/v2/incremental/tickets.json?start_time=' \
             + str(self.__data_zendesk_tickets) + '&include=users,metric_sets'
