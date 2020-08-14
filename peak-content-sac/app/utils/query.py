@@ -17,7 +17,7 @@ class Query:
         Method return str with query
         """
         queryDwh = """
-                select max(updated_at)::date as max_update from dm_analysis.test_zendesk_tickets   
+                select max(updated_at)::date as max_update from dm_content_sac.zendesk_tickets   
             """
         return queryDwh
 
@@ -26,7 +26,7 @@ class Query:
         Method return str with query
         """
         queryDwh = """
-                select GREATEST(max("startDate"), max("endDate"))::text from dm_analysis.test_surveypal_csat_answers sca   
+                select GREATEST(max("startDate"), max("endDate"))::text from dm_content_sac.surveypal_csat_answers sca   
             """
         return queryDwh
 
@@ -35,7 +35,7 @@ class Query:
         Method return str with query
         """
         queryDwh = """
-                INSERT INTO dm_analysis.temp_zendesk_tickets
+                INSERT INTO dm_content_sac.temp_zendesk_tickets
                     (ticket_id,
                     created_at,
                     updated_at,
@@ -63,8 +63,8 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    insert into dm_analysis.test_zendesk_tickets (
-                    select * from dm_analysis.temp_zendesk_tickets) 
+                    insert into dm_content_sac.zendesk_tickets (
+                    select * from dm_content_sac.temp_zendesk_tickets) 
                 """
 
         return command
@@ -74,7 +74,7 @@ class Query:
         Method return str with query
         """
         queryDwh = """
-                INSERT INTO dm_analysis.temp_surveypal_csat_answers
+                INSERT INTO dm_content_sac.temp_surveypal_csat_answers
                     (ticket_id,
                      "startDate",
                      "endDate",
@@ -94,8 +94,8 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    insert into dm_analysis.test_surveypal_csat_answers (
-                    select * from dm_analysis.temp_surveypal_csat_answers) 
+                    insert into dm_content_sac.surveypal_csat_answers (
+                    select * from dm_content_sac.temp_surveypal_csat_answers) 
                 """
 
         return command
@@ -105,7 +105,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table dm_analysis.temp_zendesk_tickets 
+                    truncate table dm_content_sac.temp_zendesk_tickets 
                 """
 
         return command
@@ -115,7 +115,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table dm_analysis.temp_surveypal_csat_answers 
+                    truncate table dm_content_sac.temp_surveypal_csat_answers 
                 """
 
         return command
@@ -125,12 +125,12 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    delete from dm_analysis.test_zendesk_tickets
+                    delete from dm_content_sac.zendesk_tickets
                     where ticket_id in (
                     select z.ticket_id
-                    from dm_analysis.test_zendesk_tickets z
+                    from dm_content_sac.zendesk_tickets z
                     left join
-                    dm_analysis.temp_zendesk_tickets t
+                    dm_content_sac.temp_zendesk_tickets t
                     using (ticket_id)
                     where t.ticket_id is not null) 
                 """
@@ -142,12 +142,12 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    delete from dm_analysis.test_surveypal_csat_answers
+                    delete from dm_content_sac.surveypal_csat_answers
                     where ticket_id in (
                             select z.ticket_id
-                            from dm_analysis.test_surveypal_csat_answers z
+                            from dm_content_sac.surveypal_csat_answers z
                             left join
-                            dm_analysis.temp_surveypal_csat_answers t
+                            dm_content_sac.temp_surveypal_csat_answers t
                             using (ticket_id)
                             where t.ticket_id is not null) 
                 """

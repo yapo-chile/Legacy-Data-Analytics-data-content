@@ -44,22 +44,6 @@ class Ticket():
         """
         Method return dataframe with tickets fields from Zendesk API
         """
-        def contact_reason(title):
-            try:
-                return bool("RC" and ("Detalle" or "Descripci") in title)
-            except KeyError:
-                return False
-        def contact_reason_2nd(title):
-            try:
-                return bool("RC" and "Detalle" in title)
-            except KeyError:
-                return False
-        def contact_reason_3rd(title):
-            try:
-                return bool("RC" and "Descripci" in title)
-            except KeyError:
-                return False
-
         self.logger.info('Getting tickets fields from Zendesk API')
         # Hit to endpoint and retrieve data
         endpoint = '/api/v2/ticket_fields.json'
@@ -79,12 +63,15 @@ class Ticket():
         ticket_fields_df = pd.DataFrame(articles_json)
         ticket_fields_min = ticket_fields_df[['id', 'title']]
 
-        ticket_fields_min['contact_reason_field'] = ticket_fields_min['title'] \
-            .map(contact_reason)
+        ticket_fields_min['contact_reason_field'] = \
+            ticket_fields_min['title'] \
+            .map(lambda x: bool("RC" and ("Detalle" or "Descripci") in x))
         ticket_fields_min['contact_reason_field_2nd_order'] = \
-            ticket_fields_min['title'].map(contact_reason_2nd)
+            ticket_fields_min['title'] \
+            .map(lambda x: bool("RC" and "Detalle" in x))
         ticket_fields_min['contact_reason_field_3rd_order'] = \
-            ticket_fields_min['title'].map(contact_reason_3rd)
+            ticket_fields_min['title'] \
+            .map(lambda x: bool("RC" and "Descripci" in x))
 
         self.__data_api_zendesk_ticket_fields = ticket_fields_min
 
