@@ -6,6 +6,7 @@ class Query:
     """
     Class that store all querys
     """
+    # pylint: disable=C0302
     def __init__(self,
                  conf: getConf,
                  params: ReadParams) -> None:
@@ -310,7 +311,7 @@ class Query:
                     from dm_analysis.temp_stg_ad sad
                     where
                         sad.approval_date between '{0} 00:00:00' and '{1} 23:59:59') a1
-                    inner join dm_analysis.temp_ods_ads a2 on (a2.ad_id_nk = a1.ad_id)
+                    inner join dm_analysis.temp_ods_ad a2 on (a2.ad_id_nk = a1.ad_id)
                 where 
                     rank=1
                     and a2.approval_date is null
@@ -349,7 +350,7 @@ class Query:
                         left join ods.reason_removed_detail rrd on (rrd.reason_removed_detail_id_nk = sad.reason_removed_detail_id_nk::integer )
                     where
                         sad.deletion_date between '{0} 00:00:00' and '{1} 23:59:59') a1
-                    inner join dm_analysis.temp_ods_ads a2 on (a2.ad_id_nk = a1.ad_id)
+                    inner join dm_analysis.temp_ods_ad a2 on (a2.ad_id_nk = a1.ad_id)
                 where 
                     rank=1
                     and a2.deletion_date is null
@@ -494,7 +495,6 @@ class Query:
                     truncate table dm_analysis.temp_stg_ad 
                 """
         return command
-
 
     def delete_stg_ad_approved_table(self) -> str:
         """
