@@ -278,7 +278,7 @@ class Query:
                         sad.creation_date between '{0} 00:00:00' and '{1} 23:59:59'
                         order by sad.ad_id, sad.creation_date) a1
                 where not exists (
-                    select 1 from dm_analysis.temp_ods_ad a2 where a2.ad_id_nk = a1.ad_id_nk)    
+                    select 1 from ods.ad a2 where a2.ad_id_nk = a1.ad_id_nk)    
             """.format(self.params.get_date_from(),
                        self.params.get_date_to())
         return queryDwh
@@ -311,7 +311,7 @@ class Query:
                     from dm_analysis.temp_stg_ad sad
                     where
                         sad.approval_date between '{0} 00:00:00' and '{1} 23:59:59') a1
-                    inner join dm_analysis.temp_ods_ad a2 on (a2.ad_id_nk = a1.ad_id)
+                    inner join ods.ad a2 on (a2.ad_id_nk = a1.ad_id)
                 where 
                     rank=1
                     and a2.approval_date is null
@@ -350,7 +350,7 @@ class Query:
                         left join ods.reason_removed_detail rrd on (rrd.reason_removed_detail_id_nk = sad.reason_removed_detail_id_nk::integer )
                     where
                         sad.deletion_date between '{0} 00:00:00' and '{1} 23:59:59') a1
-                    inner join dm_analysis.temp_ods_ad a2 on (a2.ad_id_nk = a1.ad_id)
+                    inner join ods.ad a2 on (a2.ad_id_nk = a1.ad_id)
                 where 
                     rank=1
                     and a2.deletion_date is null
@@ -421,7 +421,7 @@ class Query:
         Method return str with query
         """
         query = """
-                INSERT INTO dm_analysis.temp_ods_ad
+                INSERT INTO ods.ad
                             (ad_type_id_fk,
                             category_id_fk,
                             platform_id_fk,
@@ -447,7 +447,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update dm_analysis.temp_ods_ad oad
+                    update ods.ad oad
                     set approval_date = saa.approval_date
                         ,list_id_nk = saa.list_id_nk
                         ,price = (case when saa.price = -1 then null else saa.price end)
@@ -462,7 +462,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update dm_analysis.temp_ods_ad
+                    update ods.ad
                         set approval_date = creation_date
                     where approval_date is null
                         and action_type = 'import'
@@ -477,7 +477,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update dm_analysis.temp_ods_ad oad
+                    update ods.ad oad
                     set deletion_date = sad.deletion_date
                         ,reason_removed_id_fk = sad.reason_removed_id_fk
                         ,reason_removed_detail_id_fk = sad.reason_removed_detail_id_fk
@@ -519,7 +519,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    delete from dm_analysis.temp_ods_ad where 
+                    delete from ods.ad where 
                     creation_date::date >= 
                     '""" + self.params.get_date_from() + """'::date
                     and creation_date::date <= 
