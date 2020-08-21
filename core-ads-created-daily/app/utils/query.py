@@ -448,10 +448,10 @@ class Query:
         """
         command = """
                     update dm_analysis.temp_ods_ad oad
-                    set oad.approval_date = saa.approval_date
-                        ,oad.list_id_nk = saa.list_id_nk
-                        ,oad.price = (case when saa.price = -1 then null else saa.price end)
-                        ,oad.update_date = now()
+                    set approval_date = saa.approval_date
+                        ,list_id_nk = saa.list_id_nk
+                        ,price = (case when saa.price = -1 then null else saa.price end)
+                        ,update_date = now()
                     FROM dm_analysis.temp_stg_ad_approved saa
                     where oad.ad_id_nk = saa.ad_id_nk
                 """
@@ -478,10 +478,10 @@ class Query:
         """
         command = """
                     update dm_analysis.temp_ods_ad oad
-                    set oad.deletion_date = sad.deletion_date
-                        ,oad.reason_removed_id_fk = sad.reason_removed_id_fk
-                        ,oad.reason_removed_detail_id_fk = sad.reason_removed_detail_id_fk
-                        ,oad.update_date = now()
+                    set deletion_date = sad.deletion_date
+                        ,reason_removed_id_fk = sad.reason_removed_id_fk
+                        ,reason_removed_detail_id_fk = sad.reason_removed_detail_id_fk
+                        ,update_date = now()
                     FROM dm_analysis.temp_stg_ad_deleted sad
                     where oad.ad_id_nk = saa.ad_id_nk
                 """
