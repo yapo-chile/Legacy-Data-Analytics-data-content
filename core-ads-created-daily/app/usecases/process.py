@@ -16,4 +16,4 @@ class Process(AdsToStg, AdsToOds):
         self.save_to_stg_ad()
         self.save_to_stg_ad_approved()
         self.save_to_stg_ad_deleted()
-        #self.save_to_ods_ad()
+        self.save_to_ods_ad()
