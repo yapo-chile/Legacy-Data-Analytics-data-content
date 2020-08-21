@@ -53,12 +53,6 @@ class AdsToStg():
             .get_stg_ads_approved_daily())
         db_source.close_connection()
 
-        output_df['reason_removed_id_fk'] = \
-            output_df['reason_removed_id_fk'].fillna(0).astype(int)
-
-        output_df['reason_removed_detail_id_fk'] = \
-            output_df['reason_removed_detail_id_fk'].fillna(0).astype(int)
-
         self.__data_dwh_ads_approved_daily = output_df
 
     # Query data from data warehouse
@@ -73,6 +67,12 @@ class AdsToStg():
         output_df = db_source.select_to_dict(query \
             .get_stg_ads_deleted_daily())
         db_source.close_connection()
+
+        output_df['reason_removed_id_fk'] = \
+            output_df['reason_removed_id_fk'].fillna(0).astype(int)
+
+        output_df['reason_removed_detail_id_fk'] = \
+            output_df['reason_removed_detail_id_fk'].fillna(0).astype(int)
 
         self.__data_dwh_ads_deleted_daily = output_df
 
