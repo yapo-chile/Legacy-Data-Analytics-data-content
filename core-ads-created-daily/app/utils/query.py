@@ -343,7 +343,7 @@ class Query:
                         ,sad.company_ad
                         ,sad.price
                         ,rer.reason_removed_id_pk as reason_removed_id_fk
-	                    ,sad.reason_removed_detail_id_pk as reason_removed_detail_id_fk
+	                    ,rrd.reason_removed_detail_id_pk as reason_removed_detail_id_fk
                         ,rank() over(partition by sad.ad_id order by sad.deletion_date, sad.ad_id)	
                     from dm_analysis.temp_stg_ad sad
                         left join ods.reason_removed rer on (rer.reason_removed_id_nk = sad.reason_removed_id_nk )
