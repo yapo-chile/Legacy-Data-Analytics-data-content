@@ -483,7 +483,7 @@ class Query:
                         ,reason_removed_detail_id_fk = sad.reason_removed_detail_id_fk
                         ,update_date = now()
                     FROM dm_analysis.temp_stg_ad_deleted sad
-                    where oad.ad_id_nk = saa.ad_id_nk
+                    where oad.ad_id_nk = sad.ad_id_nk
                 """
         return command
 
