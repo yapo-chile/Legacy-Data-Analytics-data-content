@@ -19,6 +19,24 @@ class AdsToOds():
             .get_stg_ads_created_daily())
         db_source.close_connection()
 
+        output_df['ad_type_id_fk'] = \
+            output_df['ad_type_id_fk'].fillna(0).astype(int)
+
+        output_df['category_id_fk'] = \
+            output_df['category_id_fk'].fillna(0).astype(int)
+
+        output_df['platform_id_fk'] = \
+            output_df['platform_id_fk'].fillna(0).astype(int)
+
+        output_df['pri_pro_id_fk'] = \
+            output_df['pri_pro_id_fk'].fillna(0).astype(int)
+
+        output_df['region_id_fk'] = \
+            output_df['region_id_fk'].fillna(0).astype(int)
+
+        output_df['seller_id_fk'] = \
+            output_df['seller_id_fk'].fillna(0).astype(int)
+
         self.__data_stg_ads_created_daily = output_df
 
     # Write data to data warehouse
