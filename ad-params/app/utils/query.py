@@ -71,3 +71,65 @@ class AdParamsCarsQuery:
                        self.params.get_current_year(),
                        self.params.get_last_year())
         return query
+
+
+class AdParamsInmoQuery:
+
+    def dwh_ad_params(self) -> str:
+        return "select * from ods.ads_inmo_params"
+
+    def blocket_ad_params(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+            select
+                ad_id::int ad_id_nk,
+                (select value from ad_params where "name" = 'bathrooms' and ad_id = ads.ad_id)::int as bathrooms,
+                (select value from ad_params where "name" = 'rooms' and ad_id = ads.ad_id)::int as rooms,
+                (select value from ad_params where "name" = 'size' and ad_id = ads.ad_id)::int as meters,
+                (select value from ad_params where "name" = 'estate_type' and ad_id = ads.ad_id)::int as estate_type,
+                (select value from ad_params where "name" = 'new_realestate' and ad_id = ads.ad_id)::int as new_realestate,
+                (select value from ad_params where "name" = 'services' and ad_id = ads.ad_id) as services,
+                (select value from ad_params where "name" = 'currency' and ad_id = ads.ad_id)::varchar(10) as currency,
+                (select value from ad_params where "name" = 'prev_currency' and ad_id = ads.ad_id)::varchar(10) as prev_currency
+            from
+                ads
+            where
+                modified_at::date between '{0}' and '{1}'
+                and category in (1020,1040,1060,1080,1100,1120,1220,1240,1260) limit 100
+            union all select
+                ad_id::int ad_id_nk,
+                (select value from blocket_{2}.ad_params where "name" = 'bathrooms' and ad_id = ads.ad_id)::int as bathrooms,
+                (select value from blocket_{2}.ad_params where "name" = 'rooms' and ad_id = ads.ad_id)::int as rooms,
+                (select value from blocket_{2}.ad_params where "name" = 'size' and ad_id = ads.ad_id)::int as meters,
+                (select value from blocket_{2}.ad_params where "name" = 'estate_type' and ad_id = ads.ad_id)::int as estate_type,
+                (select value from blocket_{2}.ad_params where "name" = 'new_realestate' and ad_id = ads.ad_id)::int as new_realestate,
+                (select value from blocket_{2}.ad_params where "name" = 'services' and ad_id = ads.ad_id) as services,
+                (select value from blocket_{2}.ad_params where "name" = 'currency' and ad_id = ads.ad_id)::varchar(10) as currency,
+                (select value from blocket_{2}.ad_params where "name" = 'prev_currency' and ad_id = ads.ad_id)::varchar(10) as prev_currency
+            from
+                blocket_{2}.ads
+            where
+                modified_at::date between '{0}' and '{1}'
+                and category in (1020,1040,1060,1080,1100,1120,1220,1240,1260)
+            union all select
+                ad_id::int ad_id_nk,
+                (select value from blocket_{3}.ad_params where "name" = 'bathrooms' and ad_id = ads.ad_id)::int as bathrooms,
+                (select value from blocket_{3}.ad_params where "name" = 'rooms' and ad_id = ads.ad_id)::int as rooms,
+                (select value from blocket_{3}.ad_params where "name" = 'size' and ad_id = ads.ad_id)::int as meters,
+                (select value from blocket_{3}.ad_params where "name" = 'estate_type' and ad_id = ads.ad_id)::int as estate_type,
+                (select value from blocket_{3}.ad_params where "name" = 'new_realestate' and ad_id = ads.ad_id)::int as new_realestate,
+                (select value from blocket_{3}.ad_params where "name" = 'services' and ad_id = ads.ad_id) as services,
+                (select value from blocket_{3}.ad_params where "name" = 'currency' and ad_id = ads.ad_id)::varchar(10) as currency,
+                (select value from blocket_{3}.ad_params where "name" = 'prev_currency' and ad_id = ads.ad_id)::varchar(10) as prev_currency
+            from
+                blocket_{3}.ads
+            where
+                modified_at::date between '{0}' and '{1}'
+                and category in (1020,1040,1060,1080,1100,1120,1220,1240,1260)
+            """.format(self.params.get_date_from(),
+                       self.params.get_date_to(),
+                       self.params.get_current_year(),
+                       self.params.get_last_year())
+        return query

@@ -69,7 +69,7 @@ class Database:
             for field in zip(fieldnames, row):
                 rowset.append(field)
             result.append(dict(rowset))
-        pd_result = pd.DataFrame(result)
+        pd_result = pd.DataFrame(result, columns=fieldnames)
         cursor.close()
         return pd_result
 
