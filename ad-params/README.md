@@ -12,7 +12,7 @@ Introduce here information about the purpose of this ETL, what kind of informati
 |-------------------|----------------------------------------------------------------------------|
 | Input Source      | Blocket Db                                                                 |
 | Output Source     | Schema ods, ads_cars_params, ads_inmo_params and big_seller_details        |
-| Schedule          | hh:mm                                                                      |
+| Schedule          | 00:10 everyday                                                             |
 | Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
 | Associated Report | Specify name and URL of tableau report (if applies)                        |
 

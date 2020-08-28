@@ -133,3 +133,55 @@ class AdParamsInmoQuery:
                        self.params.get_current_year(),
                        self.params.get_last_year())
         return query
+
+
+class AdParamsBigSellerQuery:
+
+    def dwh_ad_params(self) -> str:
+        return "select * from ods.big_sellers_detail"
+
+    def blocket_ad_params(self) -> str:
+        """
+        Method return str with query
+        """
+        query = """
+            -- LINK TYPE
+            select
+                t.ad_id as ad_id_nk,
+                t.list_id,
+                fecha::date as list_time,
+                max(link_type) as link_type
+            from	
+            (--t
+            select
+                a.ad_id,
+                a.list_id,
+                cast(list_time as date) as fecha,	
+                b.value as link_type
+            from
+                public.ads a
+            inner join
+                public.ad_params b on a.ad_id = b.ad_id and b.name = 'link_type'
+
+            group by
+                1,2,3,4
+            --
+            union all
+            --
+            select
+                a.ad_id,
+                a.list_id,
+                cast(list_time as date) as fecha,	
+                b.value as link_type
+            from
+                blocket_{0}.ads a
+            inner join
+                blocket_{0}.ad_params b on a.ad_id = b.ad_id and b.name = 'link_type'
+
+            group by
+                1,2,3,4
+            )T	
+            group by 
+                1,2,3
+            """.format(self.params.get_current_year())
+        return query

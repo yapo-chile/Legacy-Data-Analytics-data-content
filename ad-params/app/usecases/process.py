@@ -5,6 +5,7 @@ from infraestructure.psql import Database
 from utils.read_params import ReadParams
 from usecases.cars import AdCarParams
 from usecases.inmo import AdInmoParams
+from usecases.bigsellers import AdBigSellersParams
 
 
 class Process(AdCarParams):
@@ -17,9 +18,12 @@ class Process(AdCarParams):
         self.logger = logger
 
     def generate(self):
-        """self.car_params = AdCarParams(self.config,
+        self.car_params = AdCarParams(self.config,
                                       self.params,
-                                      self.logger).generate()"""
+                                      self.logger).generate()
         self.inmo_params = AdInmoParams(self.config,
                                       self.params,
                                       self.logger).generate()
+        self.big_seller_params = AdBigSellersParams(self.config,
+                                                    self.params,
+                                                    self.logger).generate()
