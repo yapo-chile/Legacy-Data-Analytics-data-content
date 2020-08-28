@@ -176,11 +176,12 @@ class SendEmailBesedo():
         else:
             FROM = self.params.email_from
         if self.params.email_to == []:
-            TO = ['cristian.sanmartin@adevinta.com',
-                  'elizabeth.ramos@adevinta.com',
-                  'sebastian.adroves@schibsted.com',
-                  'yapo.besedo@gmail.com',
-                  'data_team@adevinta.com']
+            TO = ['ricardo.alvarezz@usach.cl']
+            # TO = ['cristian.sanmartin@adevinta.com',
+            #       'elizabeth.ramos@adevinta.com',
+            #       'sebastian.adroves@schibsted.com',
+            #       'yapo.besedo@gmail.com',
+            #       'data_team@adevinta.com']
         else:
             TO = self.params.email_to
         CSV_FILE = self.file_name
