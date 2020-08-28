@@ -4,7 +4,7 @@ import logging
 from infraestructure.conf import getConf
 from utils.read_params import ReadParams
 from utils.time_execution import TimeExecution
-from usescases.process import Process
+from usecases.send_email_besedo import SendEmailBesedo
 
 
 if __name__ == '__main__':
@@ -17,7 +17,6 @@ if __name__ == '__main__':
     logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
     PARAMS = ReadParams(sys.argv)
     TIME.get_time()
-    # Calling main process
-    Process().generate(PARAMS, CONFIG)
+    SendEmailBesedo(CONFIG, PARAMS).generate()
     # End process
     LOGGER.info('Process ended successfully.')

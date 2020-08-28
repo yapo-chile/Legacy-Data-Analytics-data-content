@@ -13,6 +13,8 @@ class ReadParams:
         self.date_from = None
         self.date_to = None
         self.master = None
+        self.email_to = []
+        self.email_from = None
         self.logger = logging.getLogger('readParams')
         date_format = """%(asctime)s,%(msecs)d %(levelname)-2s """
         info_format = """[%(filename)s:%(lineno)d] %(message)s"""
@@ -114,6 +116,10 @@ class ReadParams:
             self.date_to = date_str.strptime(value, '%Y-%m-%d').date()
         elif key == '-master':
             self.master = value
+        elif key == '-email_to':
+            self.email_to.append(value)
+        elif key == '-email_from':
+            self.email_from = value
 
     def validate_params(self) -> None:
         """
@@ -125,6 +131,8 @@ class ReadParams:
         if self.date_from is None:
             temp_date = current_date + timedelta(days=-1)
             self.date_from = temp_date
+            self.current_year = self.get_current_year()
+            self.last_year = self.get_last_year()
         if self.date_to is None:
             temp_date = current_date + timedelta(days=-1)
             self.date_to = temp_date
@@ -133,6 +141,6 @@ class ReadParams:
 
         self.logger.info('Date from : %s', self.date_from)
         self.logger.info('Date to   : %s', self.date_to)
-        self.logger.info('Current year : %s', self.get_current_year())
-        self.logger.info('Last year : %s', self.get_last_year())
+        self.logger.info('Current year : %s', self.current_year)
+        self.logger.info('Last year : %s', self.last_year)
         self.logger.info('Node : %s', self.master)

@@ -1,13 +1,19 @@
 - defaultTab: nodes
   description: |-
         sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:latest
-        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+        sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
+                        -email_from="noreply@yapo.cl -- if put this options replace default email from" \
+                        -email_to="email 1 to send data -- if put this options replace default emails to" \
+                        -email_to="email 2 to send data" \
+                        -email_to="email n to send data" \
+                        -date_to="YYYY-MM-DD" \
+                        -date_from="YYYY-MM-DD"\
                         containers.mpi-internal.com/yapo/send_email_besedo:latest
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: CONTENT
   loglevel: DEBUG
-  name: <FOLDER RUNDECK LOCATION> - Project Name Template
+  name: Review - Send email besedo
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -35,7 +41,7 @@
   schedule:
     month: '*'
     time:
-      hour: '03'
+      hour: '04'
       minute: '0'
       seconds: '0'
     weekday:
@@ -46,8 +52,10 @@
     commands:
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:latest
-        sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
+        sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret\
+                        -email_from="noreply@yapo.cl"\
+                        -email_to="ricardo.alvarez@adevinta.com"\
                         containers.mpi-internal.com/yapo/send_email_besedo:latest
     keepgoing: false
     strategy: node-first

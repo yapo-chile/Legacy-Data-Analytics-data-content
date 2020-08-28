@@ -1,20 +1,21 @@
 # send_email_besedo pipeline 
 
 # send_email_besedo
-
+This pipeline get statistics about the review of ads and times that take. 
 ## Description
 
-Introduce here information about the purpose of this ETL, what kind of information it extracts and from where (dwh, pulse, blocket DB, service DB, specifics files, etc) and also specify other important tecnical details such as: execution preconditions, considerations about execution schedule.
 
 ## Pipeline Implementation Details
 
 |   Field           | Description                                                                |
 |-------------------|----------------------------------------------------------------------------|
-| Input Source      | Specify type of source and/or table names                                  |
-| Output Source     | Specify type of source and/or table names                                  |
-| Schedule          | hh:mm                                                                      |
-| Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
-| Associated Report | Specify name and URL of tableau report (if applies)                        |
+| Input Source      | Blocket, schema: public: review_logs, ad_actions, admins, action_states    |
+|                   |          schema: blocket${current_year}: ad_actions, action_states         |
+|                   |          schema: blocket${last_year}: ad_actions, action_states            |
+| Output Source     | Email                                                                      |
+| Schedule          | 04:00                                                                      |
+| Rundeck Access    | Send email besedo                                                          |
+| Associated Report | None                                                                       |
 
 
 ### Build
