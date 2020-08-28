@@ -14,6 +14,7 @@ class SendEmailBesedo():
     def __init__(self,config,params: ReadParams) -> None:
         self.config = config
         self.params = params
+        self.time_format = "%Y-%m-%d %H:%M:%S"
         self.file_name = 'sellers_pack_fuga.csv'
         self.dict_columns = {'< 5 min':'avisos - < 5 min',
                              '(5:00 - 14:59)min':'avisos - 5:00 - 14:59min',
