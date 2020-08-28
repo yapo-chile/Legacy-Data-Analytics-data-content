@@ -1,6 +1,6 @@
 - defaultTab: nodes
   description: |-
-        <Add a description about what this ETL does>
+        This pipeline get statistics about the review of ads and times that take, and send info in excel format for email.
         sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
                         -email_from="noreply@yapo.cl -- if put this options replace default email from" \
@@ -38,12 +38,12 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:[git-branch]
+        sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:send_email_besedo
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
                         -email_from="noreply@yapo.cl" \
                         -email_to="ricardo.alvarez@adevinta.com" \
-                        containers.mpi-internal.com/yapo/send_email_besedo:[git-branch]
+                        containers.mpi-internal.com/yapo/send_email_besedo:send_email_besedo
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
