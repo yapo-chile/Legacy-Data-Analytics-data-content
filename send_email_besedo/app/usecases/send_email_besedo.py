@@ -2,6 +2,10 @@
 # utf-8
 import sys
 import logging
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.encoders import encode_base64
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -15,7 +19,7 @@ class SendEmailBesedo():
         self.config = config
         self.params = params
         self.time_format = "%Y-%m-%d %H:%M:%S"
-        self.file_name = 'sellers_pack_fuga.csv'
+        self.file_name = 'file_besedo.xls'
         self.dict_columns = {'< 5 min':'avisos - < 5 min',
                              '(5:00 - 14:59)min':'avisos - 5:00 - 14:59min',
                              '(15:00 - 29:59)min':'avisos - 15:00 - 29:59min',
@@ -216,4 +220,5 @@ Este correo ha sido generado de forma automática.\n\nSaludos,\nBI Team"""
                     'action_type_2', 'time_stamp_creation_lag']
         df = df[select] [df['grupo_revision'] == 'Besedo']
         df_2 = self.processing_dataframe_path_2(df.copy())
-        df.to_excel('file_besedo.xls')
+        df.to_excel(self.file_name)
+        self.send_email()
