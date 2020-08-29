@@ -221,6 +221,6 @@ Este correo ha sido generado de forma automática.\n\nSaludos,\nBI Team"""
                     'admin_fullname', 'grupo_revision', 'time_stamp_creation',
                     'action_type_2', 'time_stamp_creation_lag']
         df = df[select] [df['grupo_revision'] == 'Besedo']
-        df_2 = self.processing_dataframe_path_2(df.copy())
+        df = self.processing_dataframe_path_2(df.copy())
         df.to_excel(self.file_name)
         self.send_email()

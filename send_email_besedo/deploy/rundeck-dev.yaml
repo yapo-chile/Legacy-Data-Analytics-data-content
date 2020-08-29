@@ -40,10 +40,10 @@
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:send_email_besedo
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
-                        -email_from="noreply@yapo.cl" \
-                        -email_to="ricardo.alvarez@adevinta.com" \
-                        containers.mpi-internal.com/yapo/send_email_besedo:send_email_besedo
+                        -e APP_DB_SECRET=/app/db-secret\
+                        containers.mpi-internal.com/yapo/send_email_besedo:send_email_besedo\
+                        -email_from="noreply@yapo.cl"\
+                        -email_to="ricardo.alvarez@adevinta.com"
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
