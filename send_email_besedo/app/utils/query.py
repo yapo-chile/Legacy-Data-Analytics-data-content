@@ -2,7 +2,7 @@ from infraestructure.conf import getConf
 from utils.read_params import ReadParams
 
 
-class QueryP2:
+class Query:
     """
     Class that store all querys
     """
