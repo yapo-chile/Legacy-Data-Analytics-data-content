@@ -97,7 +97,7 @@ class AdParamsInmoQuery:
                 ads
             where
                 modified_at::date between '{0}' and '{1}'
-                and category in (1020,1040,1060,1080,1100,1120,1220,1240,1260) limit 100
+                and category in (1020,1040,1060,1080,1100,1120,1220,1240,1260)
             union all select
                 ad_id::int ad_id_nk,
                 (select value from blocket_{2}.ad_params where "name" = 'bathrooms' and ad_id = ads.ad_id)::int as bathrooms,
