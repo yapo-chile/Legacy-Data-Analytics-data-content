@@ -43,8 +43,6 @@ class SendEmailBesedo():
             'action_type', 'action_type_2', 'action_type_3',
             'admin_id', 'action', 'time_stamp_exit',
             'time_stamp_creation', 'time_stamp_creation_lag']
-        self.group_columns = ['review_time', 'tipo_accion', 'grupo_revision',
-                              'queue', 'rango_tiempo_revision']
         self.logger = logging.getLogger('send-email-besedo')
 
     @property
@@ -156,8 +154,10 @@ class SendEmailBesedo():
         sort_array = [
             'queue', 'review_time', 'grupo_revision',
             'tipo_accion', 'rango_tiempo_revision']
-        df = df[self.group_columns].sort_values(by=sort_array)
-        df['ads_revisados'] = df.groupby(self.group_columns)['review_time']\
+        group_columns = ['review_time', 'tipo_accion', 'grupo_revision',
+                         'queue', 'rango_tiempo_revision']
+        df = df[group_columns].sort_values(by=sort_array)
+        df['ads_revisados'] = df.groupby(group_columns)['review_time']\
                                 .transform('size')
         df = df.drop_duplicates().reset_index()
         df = df[['queue', 'review_time',
@@ -224,7 +224,6 @@ class SendEmailBesedo():
             #       'data_team@adevinta.com']
         else:
             TO = self.params.email_to
-        CSV_FILE = self.file_name
         BODY = """Estimad@s,
 Se adjuntan estadísticas de revisión al día de ayer.\n\nSaludos,\nBI Team
 -----
@@ -236,7 +235,7 @@ Este correo ha sido generado de forma automática."""
         textPart = MIMEText(BODY, 'plain')
         msg.attach(textPart)
         part = MIMEBase('application', "octet-stream")
-        part.set_payload(open(CSV_FILE, "rb").read())
+        part.set_payload(open(self.file_name, "rb").read())
         encode_base64(part)
         part.add_header('Content-Disposition',
                         'attachment', filename=self.file_name)
