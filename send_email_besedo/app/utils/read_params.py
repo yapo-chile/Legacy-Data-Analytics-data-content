@@ -130,7 +130,10 @@ class ReadParams:
         current_date = datetime.datetime.now()
         if self.date_from is None:
             temp_date = current_date + timedelta(days=-1)
-            self.date_from = temp_date
+            self.date_from = temp_date.replace(hour=0,
+                                               minute=0,
+                                               second=0,
+                                               microsecond=0)
             self.current_year = self.get_current_year()
             self.last_year = self.get_last_year()
         if self.date_to is None:

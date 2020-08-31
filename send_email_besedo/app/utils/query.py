@@ -1,7 +1,6 @@
 from infraestructure.conf import getConf
 from utils.read_params import ReadParams
 
-
 class Query:
     """
     Class that store all querys
@@ -134,5 +133,5 @@ class Query:
                 and review_time::date = '{date_from}'::date
             order by rl.ad_id, rl.action_id, acts."timestamp" asc
         """.format(current_year=self.params.current_year,
-                    last_year=self.params.last_year,
-                    date_from=self.params.date_from)
+                   last_year=self.params.last_year,
+                   date_from=self.params.date_from)
