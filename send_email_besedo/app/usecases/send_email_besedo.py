@@ -165,12 +165,12 @@ class SendEmailBesedo():
                       'tipo_accion', 'rango_tiempo_revision']
         group_columns = ['review_time', 'tipo_accion', 'grupo_revision',
                          'queue', 'rango_tiempo_revision']
-        
+
         df = df[group_columns].sort_values(by=sort_array)
-        
+
         df['ads_revisados'] = df.groupby(group_columns)['review_time']\
                                 .transform('size')
-        
+
         df = df.drop_duplicates().reset_index()
 
         df = df[['queue', 'review_time',
@@ -178,7 +178,7 @@ class SendEmailBesedo():
         df['suma'] = df.groupby(['review_time', 'queue',
                                  'rango_tiempo_revision']).transform('sum')
         df = df.drop_duplicates().reset_index(drop=True)
-        
+
         df['total_ads'] = df[['review_time', 'queue', 'ads_revisados']]\
                             .groupby(['review_time', 'queue']).transform('sum')
         df = df.drop_duplicates().reset_index(drop=True)
@@ -261,6 +261,6 @@ Este correo ha sido generado de forma automática."""
     def generate(self):
         self.data_review_ads_base = self.config.db
         df = self.getting_reviews_time_per_queue(
-                    self.data_review_ads_base.copy())
+            self.data_review_ads_base.copy())
         df.to_excel(self.file_name)
         self.send_email()
