@@ -1,6 +1,7 @@
 # pylint: disable=no-member
 # utf-8
 import logging
+import pandas as pd
 from infraestructure.psql import Database
 from utils.query import AdParamsInmoQuery
 from utils.read_params import ReadParams
@@ -40,7 +41,7 @@ class AdInmoParams(AdParamsInmoQuery):
 
     def insert_to_table(self):
         dwh = Database(conf=self.config.db)        
-        dwh.insert_copy(self.cleaned_inmo, "ods", "ads_inmo_params")
+        dwh.insert_copy(self.cleaned_inmo, "temp", "ads_inmo_params")
 
     def generate(self):
         self.blocket_data_inmo = self.config.blocket
@@ -64,7 +65,8 @@ class AdInmoParams(AdParamsInmoQuery):
                            "estate_type",
                            "new_realestate",
                            "services"]:
-                self.cleaned_inmo[column] = self.cleaned_inmo[column].astype('Int64')
+                self.cleaned_inmo[column] = pd.to_numeric(self.cleaned_inmo[column],
+                                                          errors='coerce').convert_dtypes() 
 
             self.logger.info("First records as evidence")
             self.logger.info(self.cleaned_inmo.head())

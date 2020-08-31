@@ -1,6 +1,7 @@
 # pylint: disable=no-member
 # utf-8
 import logging
+import pandas as pd
 from infraestructure.psql import Database
 from utils.query import AdParamsCarsQuery
 from utils.read_params import ReadParams
@@ -66,7 +67,9 @@ class AdCarParams(AdParamsCarsQuery):
                         "cubiccms",
                         "fuel",
                         "gearbox"]:
-                self.cleaned_cars[column] = self.cleaned_cars[column].astype('Int64')
+                self.cleaned_cars[column] = pd.to_numeric(self.cleaned_cars[column],
+                                                          errors='coerce').convert_dtypes()
+                
 
             self.logger.info("First records as evidence")
             self.logger.info(self.cleaned_cars.head())

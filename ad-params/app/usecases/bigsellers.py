@@ -1,6 +1,7 @@
 # pylint: disable=no-member
 # utf-8
 import logging
+import pandas as pd
 from infraestructure.psql import Database
 from utils.query import AdParamsBigSellerQuery
 from utils.read_params import ReadParams
@@ -59,7 +60,8 @@ class AdBigSellersParams(AdParamsBigSellerQuery):
             self.cleaned_big_sellers = merged_data
             for column in ["ad_id_nk",
                            "list_id"]:
-                self.cleaned_big_sellers[column] = self.cleaned_big_sellers[column].astype('Int64')
+                self.cleaned_big_sellers[column] = pd.to_numeric(self.cleaned_big_sellers[column],
+                                                                 errors='coerce').convert_dtypes()
 
             self.logger.info("First records as evidence")
             self.logger.info(self.cleaned_big_sellers.head())
