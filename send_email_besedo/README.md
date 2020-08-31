@@ -1,9 +1,9 @@
 # send_email_besedo pipeline 
-
 # send_email_besedo
-This pipeline get statistics about the review of ads and times that take. 
+This pipeline get quantities of time that take manual ads review process for each queue and send an email with the amounts according to delay and the corresponding percentage. 
 ## Description
-
+This pipeline get data of review_log, ad_actions and actions_state, and calculate the time in minutes it takes to review the ads of the day. When they are calculated, it classifies them according to time periods and get the numbers of ads for each time lapse according his queue.
+Finally save data in excel format and send this information for email.
 
 ## Pipeline Implementation Details
 

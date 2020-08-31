@@ -55,7 +55,11 @@
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret\
                         -email_from="noreply@yapo.cl"\
-                        -email_to="ricardo.alvarez@adevinta.com"\
+                        -email_to="cristian.sanmartin@adevinta.com"\
+                        -email_to="elizabeth.ramos@adevinta.com"\
+                        -email_to="sebastian.adroves@schibsted.com"\
+                        -email_to="yapo.besedo@gmail.com"\
+                        -email_to="data_team@adevinta.com"\
                         containers.mpi-internal.com/yapo/send_email_besedo:latest
     keepgoing: false
     strategy: node-first

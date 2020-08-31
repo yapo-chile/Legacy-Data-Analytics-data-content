@@ -65,27 +65,27 @@ class SendEmailBesedo():
         return minutes_of_days+minutes_of_seconds
 
     def conditions_type_action(self, row):
-        type_ = ''
+        action_type = ''
         if row[6] == row[7]:
-            type_ = 'calidad'
+            action_type = 'calidad'
         elif row[0] in ('adminedit', 'post_refusal') or\
-            row[1] in ('adminedit', 'post_refusal'):
-            type_ = 'calidad'
-        elif row[1] == 'disable' and\
-             row[4] == 'refused' and\
+             row[1] in ('adminedit', 'post_refusal'):
+            action_type = 'calidad'
+        elif row[1] == 'disable' and row[4] == 'refused' and\
              row[0] == 'status_change':
-            type_ = 'calidad'
+            action_type = 'calidad'
         elif row[1] == 'remove_gallery' and\
              row[5] is pd.NaT and row[3] == 141:
-            type_ = 'calidad'
-        elif row[7] is pd.NaT and row[1] is np.nan and row[2] == 'post_refusal':
-            type_ = 'calidad'
+            action_type = 'calidad'
+        elif row[7] is pd.NaT and row[1] is np.nan and\
+             row[2] == 'post_refusal':
+            action_type = 'calidad'
         elif row[0] == 'bump' and row[1] == 'bump' and\
              row[2] == 'bump' and row[4] == 'refused':
-            type_ = 'calidad'
+            action_type = 'calidad'
         else:
-            type_ = 'revision'
-        return type_
+            action_type = 'revision'
+        return action_type
 
     def conditions_range_time_revision(self, time_creation_exit_mins):
         range_time_revision = None
@@ -112,20 +112,30 @@ class SendEmailBesedo():
         return range_time_revision
 
     def complete_rows(self, df):
-        list_columns = [
-            'review_time', 'queue', 'total_ads',
-            '< 5 min', '(5:00 - 14:59)min', '(15:00 - 29:59)min',
-            '(30:00 - 44:59)min', '(45:00 - 59:59)min',
-            '(1:00 - 1:30)hrs', '(1:31 - 2:00)hrs',
-            '(2:01 - 3:00)hrs', '(3:01 - 4:00)hrs',
-            '> 4 hrs']
+        list_columns = ['review_time', 'queue', 'total_ads',
+                        '< 5 min', '(5:00 - 14:59)min', '(15:00 - 29:59)min',
+                        '(30:00 - 44:59)min', '(45:00 - 59:59)min',
+                        '(1:00 - 1:30)hrs', '(1:31 - 2:00)hrs',
+                        '(2:01 - 3:00)hrs', '(3:01 - 4:00)hrs',
+                        '> 4 hrs']
         column_diff = list(set(list_columns) - set(df.reset_index().columns))
         if column_diff != []:
             for column in column_diff:
                 df[column] = None
         return df.fillna(0)
 
-    def processing_dataframe_path_2(self, df):
+    def getting_reviews_time_per_queue(self, df):
+        df = df.sort_values(
+            by=['ad_id', 'action_id', 'time_stamp_creation'],
+            ascending=True)
+        df['time_stamp_creation_lag'] = (df.groupby(['ad_id', 'action_id'])\
+                                        ['time_stamp_creation'].shift(1)[:-1])
+        select = ['ad_id', 'action_type', 'queue', 'review_time',
+                  'review_time_date', 'admin_id', 'category', 'action',
+                  'action_id', 'time_stamp_exit', 'action_type_3',
+                  'admin_fullname', 'grupo_revision', 'time_stamp_creation',
+                  'action_type_2', 'time_stamp_creation_lag']
+        df = df[select][df['grupo_revision'] == 'Besedo']
         df['time_stamp_exit'] = pd.to_datetime(df['time_stamp_exit'],
                                                format=self.time_format)
         df['time_stamp_creation'] = pd.to_datetime(df['time_stamp_creation'],
@@ -151,30 +161,37 @@ class SendEmailBesedo():
             self.conditions_range_time_revision)
         df = df.drop('review_time', axis=1)\
                 .rename(columns={'review_time_date':'review_time'})
-        sort_array = [
-            'queue', 'review_time', 'grupo_revision',
-            'tipo_accion', 'rango_tiempo_revision']
+        sort_array = ['queue', 'review_time', 'grupo_revision',
+                      'tipo_accion', 'rango_tiempo_revision']
         group_columns = ['review_time', 'tipo_accion', 'grupo_revision',
                          'queue', 'rango_tiempo_revision']
+        
         df = df[group_columns].sort_values(by=sort_array)
+        
         df['ads_revisados'] = df.groupby(group_columns)['review_time']\
                                 .transform('size')
+        
         df = df.drop_duplicates().reset_index()
+
         df = df[['queue', 'review_time',
                  'rango_tiempo_revision', 'ads_revisados']]
         df['suma'] = df.groupby(['review_time', 'queue',
                                  'rango_tiempo_revision']).transform('sum')
         df = df.drop_duplicates().reset_index(drop=True)
+        
         df['total_ads'] = df[['review_time', 'queue', 'ads_revisados']]\
                             .groupby(['review_time', 'queue']).transform('sum')
         df = df.drop_duplicates().reset_index(drop=True)
+
         df = df[['review_time', 'queue',
                  'rango_tiempo_revision', 'suma', 'total_ads']]\
                 .pivot_table('suma',
                              ['review_time', 'queue', 'total_ads'],
                              'rango_tiempo_revision')
+
         df = self.complete_rows(df.reset_index())\
                  .rename(columns=self.dict_columns)
+
         lmd_perc = lambda x, y: np.around(x*100/y, decimals=2)
         df['< 5 min'] = df.apply(
             lambda x: lmd_perc(x['avisos - < 5 min'], x['total_ads']),
@@ -216,12 +233,7 @@ class SendEmailBesedo():
         else:
             FROM = self.params.email_from
         if self.params.email_to == []:
-            TO = ['ricardo.alvarezz@usach.cl']
-            # TO = ['cristian.sanmartin@adevinta.com',
-            #       'elizabeth.ramos@adevinta.com',
-            #       'sebastian.adroves@schibsted.com',
-            #       'yapo.besedo@gmail.com',
-            #       'data_team@adevinta.com']
+            TO = ['data_team@adevinta.com']
         else:
             TO = self.params.email_to
         BODY = """Estimad@s,
@@ -248,18 +260,7 @@ Este correo ha sido generado de forma automática."""
 
     def generate(self):
         self.data_review_ads_base = self.config.db
-        df = self.data_review_ads_base
-        df = df.sort_values(
-            by=['ad_id', 'action_id', 'time_stamp_creation'],
-            ascending=True)
-        df['time_stamp_creation_lag'] = (df.groupby(['ad_id', 'action_id'])\
-                                        ['time_stamp_creation'].shift(1)[:-1])
-        select = ['ad_id', 'action_type', 'queue', 'review_time',
-                  'review_time_date', 'admin_id', 'category', 'action',
-                  'action_id', 'time_stamp_exit', 'action_type_3',
-                  'admin_fullname', 'grupo_revision', 'time_stamp_creation',
-                  'action_type_2', 'time_stamp_creation_lag']
-        df = df[select][df['grupo_revision'] == 'Besedo']
-        df = self.processing_dataframe_path_2(df.copy())
+        df = self.getting_reviews_time_per_queue(
+                    self.data_review_ads_base.copy())
         df.to_excel(self.file_name)
         self.send_email()
