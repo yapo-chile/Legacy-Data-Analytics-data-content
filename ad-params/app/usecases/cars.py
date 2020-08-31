@@ -52,32 +52,32 @@ class AdCarParams(AdParamsCarsQuery):
             merge(self.dwh_data_cars.drop_duplicates(), on=['ad_id_nk'], 
                    how='left', indicator=True)
         merged_data = merged_data[merged_data['_merge'] == 'left_only']
-        if len(merged_data) >= 1:
-            merged_data = merged_data[merged_data.columns[~merged_data.columns.str.endswith('_y')]]
-            merged_data.columns = merged_data.columns.str.replace(r'_x$', '')
-            del merged_data['_merge']
-            self.cleaned_cars = merged_data
-            for column in ["ad_id_nk", 
-                        "car_year",
-                        "car_type",
-                        "brand",
-                        "model",
-                        "version",
-                        "mileage",
-                        "cubiccms",
-                        "fuel",
-                        "gearbox"]:
-                self.cleaned_cars[column] = pd.to_numeric(self.cleaned_cars[column],
-                                                          errors='coerce').convert_dtypes()
-                
-
-            self.logger.info("First records as evidence")
-            self.logger.info(self.cleaned_cars.head())
-            self.insert_to_table()
-            self.logger.info("Ad car params succesfully saved")
-            return True
-        else:
+        if merged_data.empty:
             self.logger.info("No new data to insert")
             return False
+        merged_data = merged_data[merged_data.columns[~merged_data.columns.str.endswith('_y')]]
+        merged_data.columns = merged_data.columns.str.replace(r'_x$', '')
+        del merged_data['_merge']
+        self.cleaned_cars = merged_data
+        for column in ["ad_id_nk", 
+                    "car_year",
+                    "car_type",
+                    "brand",
+                    "model",
+                    "version",
+                    "mileage",
+                    "cubiccms",
+                    "fuel",
+                    "gearbox"]:
+            self.cleaned_cars[column] = pd.to_numeric(self.cleaned_cars[column],
+                                                        errors='coerce').convert_dtypes()
+            
+
+        self.logger.info("First records as evidence")
+        self.logger.info(self.cleaned_cars.head())
+        self.insert_to_table()
+        self.logger.info("Ad car params succesfully saved")
+        return True
+
 
 

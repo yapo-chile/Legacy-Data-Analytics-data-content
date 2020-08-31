@@ -1,7 +1,6 @@
 # pylint: disable=no-member
 # utf-8
 import logging
-import pandas as pd
 from infraestructure.psql import Database
 from utils.query import AdParamsBigSellerQuery
 from utils.read_params import ReadParams
@@ -48,28 +47,26 @@ class AdBigSellersParams(AdParamsBigSellerQuery):
         self.dwh_data_big_seller = self.config.db
         # Merging blocket and dwh dataset to check if they already
         # exists on final table
-        print(self.dwh_data_big_seller)
         merged_data = self.blocket_data_big_seller.\
             merge(self.dwh_data_big_seller.drop_duplicates(), on=['ad_id_nk'], 
                    how='left', indicator=True)
         merged_data = merged_data[merged_data['_merge'] == 'left_only']
-        if len(merged_data) >= 1:
-            merged_data = merged_data[merged_data.columns[~merged_data.columns.str.endswith('_y')]]
-            merged_data.columns = merged_data.columns.str.replace(r'_x$', '')
-            del merged_data['_merge']
-            self.cleaned_big_sellers = merged_data
-            for column in ["ad_id_nk",
-                           "list_id"]:
-                self.cleaned_big_sellers[column] = pd.to_numeric(self.cleaned_big_sellers[column],
-                                                                 errors='coerce').convert_dtypes()
-
-            self.logger.info("First records as evidence")
-            self.logger.info(self.cleaned_big_sellers.head())
-            self.insert_to_table()
-            self.logger.info("Ad big seller params succesfully saved")
-            return True
-        else:
+        if merged_data.empty:
             self.logger.info("No new data to insert")
             return False
+        merged_data = merged_data[merged_data.columns[~merged_data.columns.str.endswith('_y')]]
+        merged_data.columns = merged_data.columns.str.replace(r'_x$', '')
+        del merged_data['_merge']
+        self.cleaned_big_sellers = merged_data
+        for column in ["ad_id_nk",
+                       "list_id"]:
+            self.cleaned_big_sellers[column] = self.cleaned_big_sellers[column].astype('Int64')
+
+        self.logger.info("First records as evidence")
+        self.logger.info(self.cleaned_big_sellers.head())
+        self.insert_to_table()
+        self.logger.info("Ad big seller params succesfully saved")
+        return True
+
 
 

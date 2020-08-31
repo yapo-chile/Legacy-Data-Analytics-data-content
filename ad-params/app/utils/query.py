@@ -138,7 +138,7 @@ class AdParamsInmoQuery:
 class AdParamsBigSellerQuery:
 
     def dwh_ad_params(self) -> str:
-        return "select * from ods.big_sellers_detail"
+        return "select * from stg.big_sellers_detail"
 
     def blocket_ad_params(self) -> str:
         """
