@@ -4,7 +4,9 @@
 
 ## Description
 
-Introduce here information about the purpose of this ETL, what kind of information it extracts and from where (dwh, pulse, blocket DB, service DB, specifics files, etc) and also specify other important tecnical details such as: execution preconditions, considerations about execution schedule.
+Ads Params Etl processes params from verticals as it would be cars, inmo and big sellers,
+then store them in datawarehouse as appended method so a historical daya would be always
+available.
 
 ## Pipeline Implementation Details
 
