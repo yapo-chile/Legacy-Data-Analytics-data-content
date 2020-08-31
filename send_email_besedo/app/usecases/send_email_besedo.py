@@ -11,8 +11,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from infraestructure.psql import Database
-from utils.query_p1 import QueryP1
-from utils.query_p2 import QueryP2
+from utils.query import Query
 from utils.read_params import ReadParams
 
 class SendEmailBesedo():
@@ -32,28 +31,17 @@ class SendEmailBesedo():
                              '(3:01 - 4:00)hrs':'avisos - 3:01 - 4:00hrs',
                              '> 4 hrs':'avisos -> 4 hrs'}
         self.columns_final = ["review_time","queue","< 5 min","(5:00 - 14:59)min",
-                         "(15:00 - 29:59)min","(30:00 - 44:59)min","(45:00 - 59:59)min",
-                         "(1:00 - 1:30)hrs","(1:31 - 2:00)hrs","(2:01 - 3:00)hrs",
-                         "(3:01 - 4:00)hrs","> 4 hrs","avisos - < 5 min",
-                         "avisos - 5:00 - 14:59min","avisos - 15:00 - 29:59min",
-                         "avisos - 30:00 - 44:59min","avisos - 45:00 - 59:59min",
-                         "avisos - 1:00 - 1:30hrs","avisos - 1:31 - 2:00hrs",
-                         "avisos - 2:01 - 3:00hrs","avisos - 3:01 - 4:00hrs",
-                         "avisos -> 4 hrs"]
+                              "(15:00 - 29:59)min","(30:00 - 44:59)min","(45:00 - 59:59)min",
+                              "(1:00 - 1:30)hrs","(1:31 - 2:00)hrs","(2:01 - 3:00)hrs",
+                              "(3:01 - 4:00)hrs","> 4 hrs","avisos - < 5 min",
+                              "avisos - 5:00 - 14:59min","avisos - 15:00 - 29:59min",
+                              "avisos - 30:00 - 44:59min","avisos - 45:00 - 59:59min",
+                              "avisos - 1:00 - 1:30hrs","avisos - 1:31 - 2:00hrs",
+                              "avisos - 2:01 - 3:00hrs","avisos - 3:01 - 4:00hrs",
+                              "avisos -> 4 hrs"]
+        self.columns_to_tipo = ['action_type', 'action_type_2', 'action_type_3',
+                                'admin_id', 'action', 'time_stamp_exit','time_stamp_creation', 'time_stamp_creation_lag']
         self.logger = logging.getLogger('send-email-besedo')
-
-    # # Query data from data warehouse
-    # @property
-    # def data_review_ads_1(self):
-    #     return self.__data_review_ads_1
-
-    # @data_review_ads_1.setter
-    # def data_review_ads_1(self, config):
-    #     query = QueryP1(config, self.params)
-    #     db_source = Database(conf=config)
-    #     data_review_ads_1 = db_source.select_to_dict(query.query_get_data_reviews())
-    #     db_source.close_connection()
-    #     self.__data_review_ads_1 = data_review_ads_1
 
     @property
     def data_review_ads_base(self):
@@ -61,7 +49,7 @@ class SendEmailBesedo():
 
     @data_review_ads_base.setter
     def data_review_ads_base(self, config):
-        query = QueryP2(config, self.params)
+        query = Query(config, self.params)
         db_source = Database(conf=config)
         data_review_ads_base = db_source.select_to_dict(query.query_get_data_reviews())
         db_source.close_connection()
@@ -74,21 +62,20 @@ class SendEmailBesedo():
         return minutes_of_days+minutes_of_seconds
     
     def conditions_type_action(self, row):
-        if row['time_stamp_creation'] == row['time_stamp_creation_lag']:
-            row['tipo_accion'] = 'calidad'
-        elif row['action_type'] in ('adminedit', 'post_refusal') or row['action_type_2'] in ('adminedit', 'post_refusal'):
-            row['tipo_accion'] = 'calidad'
-        elif row['action_type_2'] == 'disable' and row['action'] == 'refused' and row['action_type'] == 'status_change':
-            row['tipo_accion'] = 'calidad'
-        elif row['action_type_2'] == 'remove_gallery' and row['time_stamp_exit'] is pd.NaT and row['admin_id'] == 141:
-            row['tipo_accion'] = 'calidad'
-        elif row['time_stamp_creation_lag'] is pd.NaT and row['action_type_2'] is np.nan and row['action_type_3'] == 'post_refusal':
-            row['tipo_accion'] = 'calidad'
-        elif row['action_type'] == 'bump' and row['action_type_2'] == 'bump' and row['action_type_3'] == 'bump' and row['action'] == 'refused':
-            row['tipo_accion'] = 'calidad'
+        if row[6] == row[7]:
+            return 'calidad'
+        elif row[0] in ('adminedit', 'post_refusal') or row[1] in ('adminedit', 'post_refusal'):
+            return 'calidad'
+        elif row[1] == 'disable' and row[4] == 'refused' and row[0] == 'status_change':
+            return 'calidad'
+        elif row[1] == 'remove_gallery' and row[5] is pd.NaT and row[3] == 141:
+            return 'calidad'
+        elif row[7] is pd.NaT and row[1] is np.nan and row[2] == 'post_refusal':
+            return 'calidad'
+        elif row[0] == 'bump' and row[1] == 'bump' and row[2] == 'bump' and row[4] == 'refused':
+            return 'calidad'
         else:
-            row['tipo_accion'] = 'revision'
-        return row
+            return 'revision'
     
     def conditions_range_time_revision(self, time_creation_exit_mins):
         range_time_revision = None
@@ -116,11 +103,10 @@ class SendEmailBesedo():
     
     def complete_rows(self, df):
         list_columns = [
-            'review_time', 'queue', 'total_ads',
-            '< 5 min','(5:00 - 14:59)min','(15:00 - 29:59)min','(1:00 - 1:30)hrs',
-            '(1:31 - 2:00)hrs', '(2:01 - 3:00)hrs','(30:00 - 44:59)min',
-            '(3:01 - 4:00)hrs', '(45:00 - 59:59)min','> 4 hrs'
-        ]
+            'review_time', 'queue', 'total_ads','< 5 min','(5:00 - 14:59)min',
+            '(15:00 - 29:59)min','(30:00 - 44:59)min','(45:00 - 59:59)min',
+            '(1:00 - 1:30)hrs','(1:31 - 2:00)hrs','(2:01 - 3:00)hrs',
+            '(3:01 - 4:00)hrs','> 4 hrs']
         column_diff = list(set(list_columns) - set(df.reset_index().columns))
         if column_diff != []:
             for column in column_diff:
@@ -132,7 +118,7 @@ class SendEmailBesedo():
         df['time_stamp_exit']     = pd.to_datetime(df['time_stamp_exit'], format=self.time_format)
         df['time_stamp_creation'] = pd.to_datetime(df['time_stamp_creation'], format=self.time_format)
         df['review_time']         = pd.to_datetime(df['review_time'], format=self.time_format)
-        df = df.apply(self.conditions_type_action, axis=1)
+        df['tipo_accion'] = [self.conditions_type_action(row) for row in df[self.columns_to_tipo].to_numpy()]
         df['real_action_type'] = df.apply(lambda x: x['action_type'] if x['action_type_2'] is None else x['action_type_2'], axis=1)
         df['time_stamp_exit_real'] = df.apply(lambda x: x['review_time'] if x['time_stamp_exit'] is pd.NaT else x['time_stamp_exit'], axis=1)
         #Filter rows 4
