@@ -1,7 +1,7 @@
 - defaultTab: nodes
   description: |-
-        Retrieves ad params from blocketDb and store them in dwh
-        sudo docker run --rm  -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
+        Retrieves ad params from blocketDb and store them in dwh \
+        sudo docker run --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/db-blocket \
                         -e APP_DB_SECRET=/app/db-secret \
@@ -47,7 +47,7 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/ad-params:latest
+        sudo docker pull containers.mpi-internal.com/yapo/ad-params:latest \
         sudo docker run --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/db-blocket \
