@@ -88,6 +88,7 @@ class SendEmailBesedo():
         return action_type
 
     def conditions_range_time_revision(self, time_creation_exit_mins):
+        # pylint: disable=R0912
         range_time_revision = None
         if time_creation_exit_mins < 5:
             range_time_revision = '< 5 min'

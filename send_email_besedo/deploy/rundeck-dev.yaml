@@ -3,13 +3,13 @@
         This pipeline get statistics about the review of ads and times that take, and send info in excel format for email.
         sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/send_email_besedo:[git-branch]
                         -email_from="noreply@yapo.cl -- if put this options replace default email from" \
                         -email_to="email 1 to send data -- if put this options replace default emails to" \
                         -email_to="email 2 to send data" \
                         -email_to="email n to send data" \
                         -date_to="YYYY-MM-DD" \
                         -date_from="YYYY-MM-DD"\
-                        containers.mpi-internal.com/yapo/send_email_besedo:[git-branch]
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
@@ -25,16 +25,7 @@
     filter: 'name: dockerhost'
   nodesSelectedByDefault: true
   notifyAvgDurationThreshold: null
-  schedule:
-    month: '*'
-    time:
-      hour: '04'
-      minute: '0'
-      seconds: '0'
-    weekday:
-      day: '*'
-    year: '*'
-  scheduleEnabled: true
+  scheduleEnabled: false
   sequence:
     commands:
     - script: |-
