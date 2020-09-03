@@ -255,7 +255,7 @@ Este correo ha sido generado de forma automática."""
         msg.attach(part)
         logger_send_mail = 'Sending email to {}'.format(", ".join(TO))
         self.logger.info(logger_send_mail)
-        server = smtplib.SMTP('127.0.0.1')
+        server = smtplib.SMTP('10.45.1.110')
         server.sendmail(FROM, TO, msg.as_string())
         self.logger.info('Email sent')
 

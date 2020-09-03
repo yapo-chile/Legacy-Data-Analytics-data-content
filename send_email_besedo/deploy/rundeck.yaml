@@ -10,6 +10,7 @@
                         -email_to="email n to send data" \
                         -date_to="YYYY-MM-DD" \
                         -date_from="YYYY-MM-DD"\
+                        
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
@@ -54,13 +55,9 @@
         sudo docker pull containers.mpi-internal.com/yapo/send_email_besedo:latest
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret\
-                        containers.mpi-internal.com/yapo/send_email_besedo:latest
+                        containers.mpi-internal.com/yapo/send_email_besedo:latest\
                         -email_from="noreply@yapo.cl"\
-                        -email_to="cristian.sanmartin@adevinta.com"\
-                        -email_to="elizabeth.ramos@adevinta.com"\
-                        -email_to="sebastian.adroves@schibsted.com"\
-                        -email_to="yapo.besedo@gmail.com"\
-                        -email_to="data_team@adevinta.com"\
+                        -email_to="data_team@adevinta.com"
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
