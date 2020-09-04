@@ -21,16 +21,7 @@
     filter: 'name: dockerhost'
   nodesSelectedByDefault: true
   notifyAvgDurationThreshold: null
-  schedule:
-    month: '*'
-    time:
-      hour: '0'
-      minute: '10'
-      seconds: '0'
-    weekday:
-      day: '*'
-    year: '*'
-  scheduleEnabled: true
+  scheduleEnabled: false
   sequence:
     commands:
     - script: |-
