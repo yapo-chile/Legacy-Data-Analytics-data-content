@@ -1,11 +1,11 @@
 - defaultTab: nodes
   description: |-
-        <Add a description about what this ETL does>
-        sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
+        This pipeline make queries related to products and packs to Blocket DB and leave data in datawarehouse
+        sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
+                        -e APP_BLOCKET_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/etl-job-blocket:feat_etl_job_blocket_crontab
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
@@ -39,7 +39,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/blocket-secret \
                         -e APP_DW_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
+                        containers.mpi-internal.com/yapo/etl-job-blocket:feat_etl_job_blocket_crontab
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
