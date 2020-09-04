@@ -12,7 +12,6 @@ from utils.read_params import ReadParams
 from infraestructure.psql import Database
 
 class SendEmailSellersPackLeak():
-
     def __init__(self, config, params: ReadParams) -> None:
         self.config = config
         self.params = params
@@ -66,7 +65,7 @@ Quedamos atentos por cualquier duda o consulta.\n\nSaludos,\nBI Team"""
         msg.attach(part)
         logger_send_mail = 'Sending email to {}'.format(", ".join(TO))
         self.logger.info(logger_send_mail)
-        server = smtplib.SMTP('127.0.0.1')
+        server = smtplib.SMTP('10.45.1.110')
         server.sendmail(FROM, TO, msg.as_string())
         self.logger.info('Email sent')
 
