@@ -9,7 +9,7 @@
   executionEnabled: true
   group: CONTENT
   loglevel: DEBUG
-  name: Ingestion - ETL Data Ingestion Blocket - Packs/Products
+  name: Ingestion - ETL Data Ingestion Blocket - Packs-Products
   nodeFilterEditable: false
   nodefilters:
     dispatch:
