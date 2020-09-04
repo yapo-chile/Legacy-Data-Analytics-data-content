@@ -25,7 +25,7 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
+        sudo docker pull containers.mpi-internal.com/yapo/etl-job-blocket:feat_etl_job_blocket_crontab
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/blocket-secret \
