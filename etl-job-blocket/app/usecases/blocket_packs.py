@@ -1,22 +1,23 @@
 # pylint: disable=no-member
 # utf-8
-import sys
 import logging
-from infraestructure.athena import Athena
 from infraestructure.psql import Database
 from utils.query import Query
-from utils.read_params import ReadParams
+
 
 class BlocketPacks():
-    def __init__(self, config, params: ReadParams) -> None:
+    # pylint: disable=R0902
+    def __init__(self, config, params) -> None:
         self.config = config
         self.params = params
         self.logger = logging.getLogger('BlocketPacks')
 
-    def save(self, data, table_name, configdb) -> None:
-        query = Query(config, params)
+    def save(self, data, schema, table_name, configdb) -> None:
         db = Database(conf=configdb)
-        db.insert_data(table_name, data)
+        self.logger.info('Iniciando inserción de datos')
+        db.insert_copy(schema, table_name, data)
+        self.logger.info(
+            'Datos insertados en {}.{}'.format(schema, table_name))
         db.close_connection()
 
     # Query data from data warehouse
@@ -34,7 +35,7 @@ class BlocketPacks():
         self.__stg_pack_autos = data_dwh
 
     @property
-    def stg_pack_autos(self):
+    def pack_manual_acepted(self):
         return self.__pack_manual_acepted
 
     @pack_manual_acepted.setter
@@ -75,20 +76,21 @@ class BlocketPacks():
     def generate(self):
         self.stg_pack_autos = self.config.db
         self.save(self.stg_pack_autos,
-                  'stg.temp_pack',
+                  'stg',
+                  'temp_pack',
                   self.config.dw)
-
         self.pack_manual_acepted = self.config.db
         self.save(self.pack_manual_acepted,
-                  'stg.pack_manual_accepted',
+                  'stg',
+                  'pack_manual_accepted',
                   self.config.dw)
-
         self.ads_disabled_pack_autos = self.config.db
         self.save(self.ads_disabled_pack_autos,
-                  'stg.ads_disabled_pack_autos',
+                  'stg',
+                  'ads_disabled_pack_autos',
                   self.config.dw)
-
         self.packs = self.config.db
         self.save(self.packs,
-                  'stg.packs',
+                  'stg',
+                  'packs',
                   self.config.dw)

@@ -1,19 +1,16 @@
 # pylint: disable=no-member
 # utf-8
-import sys
 import logging
-from infraestructure.athena import Athena
 from infraestructure.psql import Database
 from utils.query import Query
-from utils.read_params import ReadParams
 
 
-class Process():
-    def __init__(self, config,
-                 params: ReadParams) -> None:
+class OdsBlocket():
+    def __init__(self, config, params) -> None:
         self.config = config
         self.params = params
-        self.select_purchase_ios= [
+        self.logger = logging.getLogger('BlocketPacks')
+        self.select_purchase_ios = [
             'product_order_nk',
             'creation_date',
             'payment_date',
@@ -28,15 +25,18 @@ class Process():
         ]
 
     def delete_packs(self) -> None:
-        query = Query(config, params)
-        db = Database(conf=config.dw)
-        db.execute_command(query.delete_packs())
+        query = Query(self.config, self.params)
+        db = Database(conf=self.config.dw)
+        self.logger.info('Iniciando query: Delete de Packs')
+        db.execute_command(query.delete_ods_packs())
         db.close_connection()
 
-    def save(self, data, table, dbConfig) -> None:
-        query = Query(config, params)
-        db = Database(conf=dbConfig)
-        db.insert_data(data, table)
+    def save(self, data, schema, table_name, configdb) -> None:
+        db = Database(conf=configdb)
+        self.logger.info('Iniciando inserción de datos')
+        db.insert_copy(schema, table_name, data)
+        self.logger.info(
+            'Datos insertados en {}.{}'.format(schema, table_name))
         db.close_connection()
 
     @property
@@ -79,23 +79,24 @@ class Process():
         self.__ods_product_order_detail = data
 
     def generate(self):
-        #delete_packs()
+        self.delete_packs()
         self.stg_packs = self.config.dw
         self.save(self.stg_packs,
-                  'ods.packs',
+                  'ods',
+                  'packs',
                   self.config.dw)
-
         self.dw_str_purchase_ios = self.config.dw
         self.save(
             self.dw_str_purchase_ios[
                 self.select_purchase_ios],
-            'ods.product_order_ios',
+            'ods',
+            'product_order_ios',
             self.config.dw
         )
-        
         self.ods_product_order_detail = self.config.dw
         self.save(
             self.ods_product_order_detail,
-            'ods.product_order_detail',
+            'ods',
+            'product_order_detail',
             self.config.dw
         )

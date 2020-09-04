@@ -1,5 +1,5 @@
 version: '3'
- 
+
 services:
   app:
     image: ${DOCKER_IMAGE_COMPOSE}
@@ -7,8 +7,8 @@ services:
     expose:
       - "5000"
     environment:
-      APP_PULSE_SECRET: /app/pulse-secret
-      APP_DB_SECRET: /app/db-secret
+      APP_DW_SECRET: /app/db-secret
+      APP_BLOCKET_SECRET: /app/blocket-secret
     volumes:
-      - /keys/bnbiuser:/app/db-secret
-      - /keys/zendesk_auth:/app/pulse-secret
+      - ~/Projects/secrets/blocket-secret:/app/blocket-secret
+      - ~/Projects/secrets/db-secret-dev:/app/db-secret

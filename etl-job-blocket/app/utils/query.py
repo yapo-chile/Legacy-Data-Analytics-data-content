@@ -11,12 +11,11 @@ class Query:
         self.params = params
         self.conf = conf
 
-    #jb_blocket_stg_packs
     def stg_pack_autos(self) -> str:
         """
         Method return str that make query to Blocket db
         """
-        return  """ 
+        return """
         select ad_id, 
             purd.price, 
             prod.name as product_id_nk, 
@@ -33,8 +32,8 @@ class Query:
             and payg.status = 'paid'
         """.format(date_from=self.params.date_from)
 
-    def pack_manual_acepted(self) ->str:
-        return """ 
+    def pack_manual_acepted(self) -> str:
+        return """
         select p.pack_id,
             p.date_start,
             p.date_end,
@@ -45,11 +44,11 @@ class Query:
         inner join tokens t on p.token_id = t.token_id
         inner join admins a on a.admin_id = t.admin_id
         inner join accounts ac on ac.account_id = p.account_id
-        where p.date_start::date = '${DATE_FROM}'::date
+        where p.date_start::date = '{date_from}'::date
         group by 1,2,3,4,5,6
         """.format(date_from=self.params.date_from)
 
-    def ads_disabled_pack_autos(self)->str:
+    def ads_disabled_pack_autos(self) -> str:
         return """
         select now()::date,
             a.ad_id as ad_id_nk,
@@ -57,8 +56,8 @@ class Query:
         from ads a
         where a.status = 'disabled'
         group by 1,2,3 """
-    
-    def packs(self)->str:
+
+    def packs(self) -> str:
         return """
         select account_id,
             category,
@@ -101,7 +100,7 @@ class Query:
         """.format(date_from=self.params.date_from)
 
     #jb_blocket_stg_puchase
-    def stg_purchase_ios(self)->str:
+    def stg_purchase_ios(self) -> str:
         return """
         select pia.purchase_in_app_id as purchase_in_app_id_nk,
             pia.receipt_date,
@@ -116,7 +115,7 @@ class Query:
         where pia.receipt_date::date = '{date_from}'::date
         """.format(date_from=self.params.date_from)
 
-    def product_order_detail(self)->str:
+    def product_order_detail(self) -> str:
         return """
         select a.purchase_detail_id as purchase_detail_id_nk,
             pdp2.value::int as num_days,
@@ -135,8 +134,7 @@ class Query:
         left join purchase_detail_params pdp4 on a.purchase_detail_id = pdp4.purchase_detail_id and pdp4."name" = 'frequency'
         """.format(date_from=self.params.date_from)
 
-    #jb_blocket_ods
-    def delete_packs(self):
+    def delete_ods_packs(self):
         return """
         DELETE FROM ods.packs
         where pack_id in (
@@ -145,7 +143,7 @@ class Query:
             where
             p.date_start::date = '{date_from}'::date
         )""".format(date_from=self.params.date_from)
-    
+
     def stg_packs(self):
         return """
         select p.*,

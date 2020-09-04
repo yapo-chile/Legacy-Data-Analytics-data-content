@@ -7,9 +7,9 @@
                         -e APP_DB_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: CONTENT
   loglevel: DEBUG
-  name: <FOLDER RUNDECK LOCATION> - Project Name Template
+  name: Ingestion - ETL Data Ingestion Blocket - Packs/Products
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -21,15 +21,24 @@
     filter: 'name: dockerhost'
   nodesSelectedByDefault: true
   notifyAvgDurationThreshold: null
-  scheduleEnabled: false
+  schedule:
+    month: '*'
+    time:
+      hour: '0'
+      minute: '10'
+      seconds: '0'
+    weekday:
+      day: '*'
+    year: '*'
+  scheduleEnabled: true
   sequence:
     commands:
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
-        sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
+        sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
+                        -e APP_BLOCKET_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
                         containers.mpi-internal.com/yapo/etl-job-blocket:[git-branch]
     keepgoing: false
     strategy: node-first
