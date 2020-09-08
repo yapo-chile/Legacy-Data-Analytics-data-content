@@ -43,6 +43,14 @@ class BlocketPuchases():
         data = db.select_to_dict(
             query.product_order_detail())
         db.close_connection()
+        data = data.astype(
+                {
+                    'purchase_detail_id_nk': 'int64',
+                    'num_days': 'int64',
+                    'total_bump': 'int64',
+                    'frequency': 'int64'
+                }
+            )
         self.__product_order_detail = data
 
     def generate(self):
