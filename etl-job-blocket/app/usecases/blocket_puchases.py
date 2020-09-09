@@ -43,12 +43,9 @@ class BlocketPuchases():
         data = db.select_to_dict(
             query.product_order_detail())
         db.close_connection()
-        data['num_days'] = data['num_days'].apply(
-            lambda x: int(x) if x else x)
-        data['total_bump'] = data['total_bump'].apply(
-            lambda x: int(x) if x else x)
-        data['frequency'] = data['frequency'].apply(
-            lambda x: int(x) if x else x)
+        data = data.astype(
+                {'num_days': 'Int64'}
+            )
         self.__product_order_detail = data
 
     def generate(self):
