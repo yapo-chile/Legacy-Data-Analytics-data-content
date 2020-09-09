@@ -58,6 +58,7 @@ class OdsBlocket():
                 'seller_id_fk': 'Int64'
             }
         )
+        
         self.__stg_packs = data
         db.close_connection()
 
