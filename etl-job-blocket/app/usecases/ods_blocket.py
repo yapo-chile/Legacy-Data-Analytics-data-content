@@ -92,7 +92,9 @@ class OdsBlocket():
             query.ods_product_order_detail())
         data = data.astype(
             {
+                'purchase_detail_id_nk': 'Int64',
                 'num_days': 'Int64',
+                'total_bump': 'Int64',
                 'frequency': 'Int64'
             }
         )

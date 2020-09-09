@@ -1,6 +1,5 @@
 - defaultTab: nodes
   description: |-
-        Chenge3
         This pipeline make queries related to products and packs to Blocket DB and leave data in datawarehouse
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
