@@ -102,20 +102,20 @@ class OdsBlocket():
         self.__ods_product_order_detail = data
 
     def generate(self):
-        # self.delete_packs()
-        # self.stg_packs = self.config.dw
-        # self.save(self.stg_packs,
-        #           'ods',
-        #           'packs',
-        #           self.config.dw)
-        # self.dw_str_purchase_ios = self.config.dw
-        # self.save(
-        #     self.dw_str_purchase_ios[
-        #         self.select_purchase_ios],
-        #     'ods',
-        #     'product_order_ios',
-        #     self.config.dw
-        # )
+        self.delete_packs()
+        self.stg_packs = self.config.dw
+        self.save(self.stg_packs,
+                  'ods',
+                  'packs',
+                  self.config.dw)
+        self.dw_str_purchase_ios = self.config.dw
+        self.save(
+            self.dw_str_purchase_ios[
+                self.select_purchase_ios],
+            'ods',
+            'product_order_ios',
+            self.config.dw
+        )
         self.ods_product_order_detail = self.config.dw
         self.save(
             self.ods_product_order_detail,
