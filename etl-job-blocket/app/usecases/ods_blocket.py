@@ -90,6 +90,11 @@ class OdsBlocket():
         db = Database(conf=config)
         data = db.select_to_dict(
             query.ods_product_order_detail())
+        data = data.astype(
+            {
+                'num_days': 'Int64'
+            }
+        )
         db.close_connection()
         self.__ods_product_order_detail = data
 
@@ -100,14 +105,14 @@ class OdsBlocket():
         #           'ods',
         #           'packs',
         #           self.config.dw)
-        self.dw_str_purchase_ios = self.config.dw
-        self.save(
-            self.dw_str_purchase_ios[
-                self.select_purchase_ios],
-            'ods',
-            'product_order_ios',
-            self.config.dw
-        )
+        # self.dw_str_purchase_ios = self.config.dw
+        # self.save(
+        #     self.dw_str_purchase_ios[
+        #         self.select_purchase_ios],
+        #     'ods',
+        #     'product_order_ios',
+        #     self.config.dw
+        # )
         self.ods_product_order_detail = self.config.dw
         self.save(
             self.ods_product_order_detail,
