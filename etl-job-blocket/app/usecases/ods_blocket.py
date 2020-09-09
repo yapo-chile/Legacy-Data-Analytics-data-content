@@ -49,8 +49,17 @@ class OdsBlocket():
         db = Database(conf=config)
         data = db.select_to_dict(
             query.stg_packs())
-        db.close_connection()
+        data = data.astype(
+            {
+                'account_id': 'Int64',
+                'days': 'Int64',
+                'slots': 'Int64',
+                'product_id': 'Int64',
+                'seller_id_fk': 'Int64'
+            }
+        )
         self.__stg_packs = data
+        db.close_connection()
 
     @property
     def dw_str_purchase_ios(self):
