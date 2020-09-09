@@ -74,9 +74,6 @@ class OdsBlocket():
             query.dw_str_purchase_ios())
         data = data.astype(
             {
-                'product_id_nk': 'Int64',
-                'ad_id_nk': 'Int64',
-                'doc_num': 'Int64',
                 'price_clp': 'Int64'
             }
         )
