@@ -58,7 +58,7 @@ class OdsBlocket():
                 'seller_id_fk': 'Int64'
             }
         )
-        
+
         self.__stg_packs = data
         db.close_connection()
 
@@ -72,8 +72,16 @@ class OdsBlocket():
         db = Database(conf=config)
         data = db.select_to_dict(
             query.dw_str_purchase_ios())
-        db.close_connection()
+        data = data.astype(
+            {
+                'product_id_nk': 'Int64',
+                'ad_id_nk': 'Int64',
+                'doc_num': 'Int64',
+                'price_clp': 'Int64'
+            }
+        )
         self.__dw_str_purchase_ios = data
+        db.close_connection()
 
     @property
     def ods_product_order_detail(self):
@@ -89,12 +97,12 @@ class OdsBlocket():
         self.__ods_product_order_detail = data
 
     def generate(self):
-        self.delete_packs()
-        self.stg_packs = self.config.dw
-        self.save(self.stg_packs,
-                  'ods',
-                  'packs',
-                  self.config.dw)
+        # self.delete_packs()
+        # self.stg_packs = self.config.dw
+        # self.save(self.stg_packs,
+        #           'ods',
+        #           'packs',
+        #           self.config.dw)
         self.dw_str_purchase_ios = self.config.dw
         self.save(
             self.dw_str_purchase_ios[
