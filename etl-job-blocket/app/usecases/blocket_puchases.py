@@ -44,16 +44,21 @@ class BlocketPuchases():
             query.product_order_detail())
         db.close_connection()
         data = data.astype(
-                {'num_days': 'Int64'}
-            )
+            {
+                'purchase_detail_id_nk': 'Int64',
+                'num_days': 'Int64',
+                'total_bump': 'Int64',
+                'frequency': 'Int64'
+            }
+        )
         self.__product_order_detail = data
 
     def generate(self):
-        # self.stg_purchase_ios = self.config.db
-        # self.save(self.stg_purchase_ios,
-        #           'stg',
-        #           'purchase_ios',
-        #           self.config.dw)
+        self.stg_purchase_ios = self.config.db
+        self.save(self.stg_purchase_ios,
+                  'stg',
+                  'purchase_ios',
+                  self.config.dw)
         self.product_order_detail = self.config.db
         self.save(self.product_order_detail,
                   'stg',
