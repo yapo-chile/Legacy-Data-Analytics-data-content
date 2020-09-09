@@ -69,9 +69,7 @@ class AdCarParams(AdParamsCarsQuery):
                     "cubiccms",
                     "fuel",
                     "gearbox"]:
-            self.cleaned_cars[column] = pd.to_numeric(self.cleaned_cars[column],
-                                                        errors='coerce').convert_dtypes()
-            
+            self.cleaned_cars[column] = self.cleaned_cars[column].astype('Int64')
 
         self.logger.info("First records as evidence")
         self.logger.info(self.cleaned_cars.head())
