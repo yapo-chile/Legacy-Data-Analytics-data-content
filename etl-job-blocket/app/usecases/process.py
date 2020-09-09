@@ -16,5 +16,6 @@ class Process:
         self.logger.info('Starting process of data ingestion to DW')
         # BlocketPacks(self.config, self.params).generate()
         # BlocketPuchases(self.config, self.params).generate()
+        self.logger.info('Iniciando ODS BLOCKET')
         OdsBlocket(self.config, self.params).generate()
         self.logger.info('Ending process of data ingestion')
