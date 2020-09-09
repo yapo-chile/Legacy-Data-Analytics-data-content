@@ -92,7 +92,8 @@ class OdsBlocket():
             query.ods_product_order_detail())
         data = data.astype(
             {
-                'num_days': 'Int64'
+                'num_days': 'Int64',
+                'frequency': 'Int64'
             }
         )
         db.close_connection()
