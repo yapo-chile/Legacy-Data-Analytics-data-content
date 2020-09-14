@@ -5,7 +5,7 @@ from infraestructure.psql import Database
 from utils.query import Query
 
 
-class BlocketPuchases():
+class BlocketPuchases:
     def __init__(self, config, params) -> None:
         self.config = config
         self.params = params
@@ -17,6 +17,13 @@ class BlocketPuchases():
         db.insert_copy(schema, table_name, data)
         self.logger.info(
             'Datos insertados en {}.{}'.format(schema, table_name))
+        db.close_connection()
+
+    def truncate_stg_purchase_ios(self):
+        query = Query(self.config, self.params)
+        db = Database(conf=self.config.dw)
+        self.logger.info('Truncando stg.purchase_ios')
+        db.execute_command(query.tr_stg_purchase_ios())
         db.close_connection()
 
     @property
@@ -31,6 +38,13 @@ class BlocketPuchases():
             query.stg_purchase_ios())
         db.close_connection()
         self.__stg_purchase_ios = data
+
+    def truncate_product_order_detail(self):
+        query = Query(self.config, self.params)
+        db = Database(conf=self.config.dw)
+        self.logger.info('Truncando stg.product_order_detail')
+        db.execute_command(query.tr_product_order_detail())
+        db.close_connection()
 
     @property
     def product_order_detail(self):
@@ -55,11 +69,13 @@ class BlocketPuchases():
 
     def generate(self):
         self.stg_purchase_ios = self.config.db
+        self.truncate_stg_purchase_ios()
         self.save(self.stg_purchase_ios,
                   'stg',
                   'purchase_ios',
                   self.config.dw)
         self.product_order_detail = self.config.db
+        self.truncate_product_order_detail()
         self.save(self.product_order_detail,
                   'stg',
                   'product_order_detail',

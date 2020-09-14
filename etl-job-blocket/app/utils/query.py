@@ -1,5 +1,7 @@
+from datetime import timedelta
 from infraestructure.conf import getConf
 from utils.read_params import ReadParams
+
 
 class Query:
     """
@@ -10,6 +12,9 @@ class Query:
                  params: ReadParams) -> None:
         self.params = params
         self.conf = conf
+
+    def tr_stg_pack_autos(self) -> str:
+        return "truncate table stg.temp_pack"
 
     def stg_pack_autos(self) -> str:
         """
@@ -32,6 +37,9 @@ class Query:
             and payg.status = 'paid'
         """.format(date_from=self.params.date_from)
 
+    def tr_pack_manual_acepted(self) -> str:
+        return "truncate table stg.pack_manual_accepted"
+
     def pack_manual_acepted(self) -> str:
         return """
         select p.pack_id,
@@ -48,6 +56,13 @@ class Query:
         group by 1,2,3,4,5,6
         """.format(date_from=self.params.date_from)
 
+    def del_ads_disabled_pack_autos(self) -> str:
+        date_from = self.params.date_from + timedelta(days=1)
+        return """
+        delete from stg.ads_disabled_pack_autos
+        where now::date = '{date_from}'
+        """.format(date_from=date_from)
+
     def ads_disabled_pack_autos(self) -> str:
         return """
         select now()::date,
@@ -56,6 +71,12 @@ class Query:
         from ads a
         where a.status = 'disabled'
         group by 1,2,3 """
+
+    def del_stg_packs(self) -> str:
+        return """
+        delete from stg.packs
+        where date_start::date = '{date_from}'
+        """.format(date_from=self.params.date_from)
 
     def packs(self) -> str:
         return """
@@ -100,6 +121,9 @@ class Query:
         """.format(date_from=self.params.date_from)
 
     #jb_blocket_stg_puchase
+    def tr_stg_purchase_ios(self) -> str:
+        return "truncate table stg.purchase_ios"
+
     def stg_purchase_ios(self) -> str:
         return """
         select pia.purchase_in_app_id as purchase_in_app_id_nk,
@@ -114,6 +138,9 @@ class Query:
         from public.purchase_in_app pia
         where pia.receipt_date::date = '{date_from}'::date
         """.format(date_from=self.params.date_from)
+
+    def tr_product_order_detail(self) -> str:
+        return "truncate table stg.product_order_detail"
 
     def product_order_detail(self) -> str:
         return """
@@ -153,8 +180,14 @@ class Query:
         where p.date_start::date = '{date_from}'::date
         """.format(date_from=self.params.date_from)
 
+    def del_ods_product_order_ios(self):
+        date_from = self.params.date_from + timedelta(days=1)
+        return """
+        DELETE FROM ods.product_order_detail
+        where insert_date::date = {date_from}::date
+        """.format(date_from=date_from)
 
-    def dw_str_purchase_ios(self):
+    def dw_ods_product_order_ios(self):
         return """
         select pia.purchase_in_app_id_nk as product_order_nk,
             pia.receipt_date as creation_date,
@@ -181,7 +214,16 @@ class Query:
         ) b on b.month_id = extract('year' from pia.receipt_date::date) * 100 + extract('month' from pia.receipt_date::date);
         """
 
-    def ods_product_order_detail(self)->str:
+    def del_ods_product_order_detail(self) -> str:
+        return """
+        DELETE from ods.product_order_detail
+        where purchase_detail_id_nk in (
+        select purchase_detail_id_nk
+        from stg.product_order_detail
+        )
+        """
+
+    def ods_product_order_detail(self) -> str:
         return """
         select *
         from stg.product_order_detail
