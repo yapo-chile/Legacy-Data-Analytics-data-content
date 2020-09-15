@@ -183,8 +183,8 @@ class Query:
     def del_ods_product_order_ios(self):
         date_from = self.params.date_from + timedelta(days=1)
         return """
-        DELETE FROM ods.product_order_detail
-        where insert_date::date = {date_from}::date
+        DELETE FROM ods.product_order_ios
+        where insert_date::date = '{date_from}'::date
         """.format(date_from=date_from)
 
     def dw_ods_product_order_ios(self):
