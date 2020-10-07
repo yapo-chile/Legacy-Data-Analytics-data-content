@@ -2,12 +2,16 @@ import logging
 import psycopg2
 import psycopg2.extras
 import pandas as pd
+import csv
+from io import StringIO
+from sqlalchemy import create_engine
 
 
 class Database:
     """
     Class that allow do operations with postgresql database.
     """
+
     def __init__(self, conf) -> None:
         self.log = logging.getLogger('psql')
         date_format = """%(asctime)s,%(msecs)d %(levelname)-2s """
@@ -62,7 +66,7 @@ class Database:
             for field in zip(fieldnames, row):
                 rowset.append(field)
             result.append(dict(rowset))
-        pd_result = pd.DataFrame(result)
+        pd_result = pd.DataFrame(result, columns=fieldnames)
         cursor.close()
         return pd_result
 
@@ -77,6 +81,40 @@ class Database:
                                 page_size=page_size)
             self.connection.commit()
 
+    def get_sqlalchemy_conn(self):
+        return create_engine("postgresql://{}:{}@{}:{}/{}" \
+            .format(self.conf.user,
+                    self.conf.password,
+                    self.conf.host,
+                    self.conf.port,
+                    self.conf.name))
+
+    def insert_copy(self, df, schema, table, index=False):
+        def psql_insert_copy(table, conn, keys, data_iter):
+            db_conn = conn.connection
+            with db_conn.cursor() as cur:
+                s_buf = StringIO()
+                writer = csv.writer(s_buf)
+                writer.writerows(data_iter)
+                s_buf.seek(0)
+
+                columns = ', '.join('"{}"'.format(k) for k in keys)
+                if table.schema:
+                    table_name = '{}.{}'.format(table.schema, table.name)
+                else:
+                    table_name = table.name
+
+                sql = 'COPY {} ({}) FROM STDIN WITH CSV'.format(
+                    table_name, columns)
+                cur.copy_expert(sql=sql, file=s_buf)
+                # close conn is called automatically, no needed to code
+
+        df.to_sql("{}.{}".format(schema, table),
+                  self.get_sqlalchemy_conn(),
+                  index=index,
+                  if_exists='append', # Do not remove this,
+                  # otherwise it would be failing or truncating the whole table
+                  method=psql_insert_copy)
 
     def close_connection(self):
         """

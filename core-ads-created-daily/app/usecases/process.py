@@ -13,7 +13,8 @@ class Process(AdsToStg, AdsToOds):
         self.logger = logger
 
     def generate(self):
+        self.data_blocket_ads_created_daily = self.config.db
         self.save_to_stg_ad()
-        self.save_to_stg_ad_approved()
-        self.save_to_stg_ad_deleted()
-        self.save_to_ods_ad()
+        #self.save_to_stg_ad_approved()
+        #self.save_to_stg_ad_deleted()
+        #self.save_to_ods_ad()

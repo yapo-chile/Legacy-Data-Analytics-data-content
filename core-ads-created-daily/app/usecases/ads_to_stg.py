@@ -81,7 +81,7 @@ class AdsToStg():
         query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
         db.execute_command(query.delete_stg_ad_table())
-        self.data_blocket_ads_created_daily = self.config.db
+        #self.data_blocket_ads_created_daily = self.config.db
         self.logger.info('Executing stg.ad inserts cycle')
         for row in self.data_blocket_ads_created_daily.itertuples():
             data_row = [(row.ad_id, row.list_id, row.user_id,
