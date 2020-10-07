@@ -53,7 +53,7 @@ class Database:
 
     def select_to_dict(self, query) -> pd.DataFrame:
         """
-        Method that from query transform raw data into dict.
+        Method that from  query transform raw data into dict.
         """
         self.log.info('Query : %s', query.replace(
             '\n', ' ').replace('    ', ' '))
