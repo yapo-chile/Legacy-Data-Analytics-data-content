@@ -22,7 +22,6 @@ class AdsToStg(Query):
 
     @data_blocket_ads_created_daily.setter
     def data_blocket_ads_created_daily(self, config):
-        #query = Query(config, self.params)
         db_source = Database(conf=config)
         output_df = db_source \
             .select_to_dict(self.get_blocket_ads_created_daily())
@@ -55,7 +54,6 @@ class AdsToStg(Query):
 
     @data_dwh_ads_approved_daily.setter
     def data_dwh_ads_approved_daily(self, config):
-        #query = Query(config, self.params)
         db_source = Database(conf=config)
         output_df = db_source \
             .select_to_dict(self.get_stg_ads_approved_daily())
@@ -70,7 +68,6 @@ class AdsToStg(Query):
 
     @data_dwh_ads_deleted_daily.setter
     def data_dwh_ads_deleted_daily(self, config):
-        #query = Query(config, self.params)
         db_source = Database(conf=config)
         output_df = db_source \
             .select_to_dict(self.get_stg_ads_deleted_daily())
@@ -86,10 +83,8 @@ class AdsToStg(Query):
 
     # Write data to data warehouse
     def save_to_stg_ad(self) -> None:
-        #query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_ad_table())
-        #self.data_blocket_ads_created_daily = self.config.db
         for row in self.data_blocket_ads_created_daily.itertuples():
             data_row = [(row.ad_id, row.list_id, row.user_id,
                          row.account_id, row.email, row.platform_id_nk,
@@ -106,17 +101,12 @@ class AdsToStg(Query):
 
     # Write data to data warehouse
     def save_to_stg_ad_approved(self) -> None:
-        #query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_ad_approved_table())
-        self.data_dwh_ads_approved_daily = self.config.dwh
-        self.logger.info('Executing stg.ad_approved inserts cycle')
         for row in self.data_dwh_ads_approved_daily.itertuples():
             data_row = [(row.ad_id_nk, row.approval_date,
                          row.price, row.list_id_nk)]
             db.insert_data(self.insert_to_stg_ad_approved_table(), data_row)
-        self.logger.info('INSERT dm_analysis.temp_stg_ad_approved COMMIT.')
-        self.logger.info('Executed data persistence cycle')
         db.close_connection()
 
     # Write data to data warehouse
@@ -124,27 +114,36 @@ class AdsToStg(Query):
         #query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_ad_deleted_table())
-        self.data_dwh_ads_deleted_daily = self.config.dwh
-        self.logger.info('Executing stg.ad_deleted inserts cycle')
         for row in self.data_dwh_ads_deleted_daily.itertuples():
             data_row = [(row.ad_id_nk, row.deletion_date,
                          row.reason_removed_id_fk,
                          row.reason_removed_detail_id_fk)]
             db.insert_data(self.insert_to_stg_ad_deleted_table(), data_row)
-        self.logger.info('INSERT dm_analysis.temp_stg_ad_deleted COMMIT.')
-        self.logger.info('Executed data persistence cycle')
         db.close_connection()
 
     def generate(self):
         # First step: stg.ad
         self.logger.info('Starting stg.ad persistence')
-        self.logger.info('Getting Ads data from Blocket DB')
+        self.logger.info('Getting ads created daily data from Blocket DB')
         self.data_blocket_ads_created_daily = self.config.db
         self.logger.info('Executing stg.ad inserts')
         self.save_to_stg_ad()
         self.logger.info('Executed stg.ad persistence')
 
         # Second step: stg.ad_approved
+        self.logger.info('Starting stg.ad_approved persistence')
+        self.logger.info('Getting ads approved date data from DWH DB')
+        self.data_dwh_ads_approved_daily = self.config.dwh
+        self.logger.info('Executing stg.ad_approved inserts')
+        self.save_to_stg_ad_approved()
+        self.logger.info('Executed stg.ad_approved persistence')
 
         # Third step: stg.ad_deleted
+        self.logger.info('Starting stg.ad_deleted persistence')
+        self.logger.info('Getting ads deletion date data from DWH DB')
+        self.data_dwh_ads_deleted_daily = self.config.dwh
+        self.logger.info('Executing stg.ad_deleted inserts')
+        self.save_to_stg_ad_deleted()
+        self.logger.info('Executed stg.ad_deleted persistence')
+
         return True
