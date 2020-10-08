@@ -6,7 +6,7 @@ from utils.query import Query
 from utils.read_params import ReadParams
 
 
-class AdsToStg():
+class AdsToStg(Query):
     def __init__(self,
                  config,
                  params: ReadParams,
@@ -24,8 +24,8 @@ class AdsToStg():
     def data_blocket_ads_created_daily(self, config):
         #query = Query(config, self.params)
         db_source = Database(conf=config)
-        output_df = db_source.select_to_dict(self \
-            .get_blocket_ads_created_daily())
+        output_df = db_source \
+            .select_to_dict(self.get_blocket_ads_created_daily())
         db_source.close_connection()
 
         output_df['list_id'] = output_df['list_id'].fillna(0)\
@@ -57,8 +57,8 @@ class AdsToStg():
     def data_dwh_ads_approved_daily(self, config):
         #query = Query(config, self.params)
         db_source = Database(conf=config)
-        output_df = db_source.select_to_dict(self \
-            .get_stg_ads_approved_daily())
+        output_df = db_source \
+            .select_to_dict(self.get_stg_ads_approved_daily())
         db_source.close_connection()
 
         self.__data_dwh_ads_approved_daily = output_df
@@ -72,8 +72,8 @@ class AdsToStg():
     def data_dwh_ads_deleted_daily(self, config):
         #query = Query(config, self.params)
         db_source = Database(conf=config)
-        output_df = db_source.select_to_dict(self \
-            .get_stg_ads_deleted_daily())
+        output_df = db_source \
+            .select_to_dict(self.get_stg_ads_deleted_daily())
         db_source.close_connection()
 
         output_df['reason_removed_id_fk'] = \

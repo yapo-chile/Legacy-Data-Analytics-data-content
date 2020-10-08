@@ -2,9 +2,9 @@
 # utf-8
 from utils.read_params import ReadParams
 from usecases.ads_to_stg import AdsToStg
-from usecases.ads_to_ods import AdsToOds
+#from usecases.ads_to_ods import AdsToOds
 
-class Process(AdsToStg, AdsToOds):
+class Process():
     def __init__(self,
                  config,
                  params: ReadParams,
