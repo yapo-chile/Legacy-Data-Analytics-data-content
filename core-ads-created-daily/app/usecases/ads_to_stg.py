@@ -3,9 +3,17 @@
 import datetime
 from infraestructure.psql import Database
 from utils.query import Query
+from utils.read_params import ReadParams
 
 
 class AdsToStg():
+    def __init__(self,
+                 config,
+                 params: ReadParams,
+                 logger) -> None:
+        self.config = config
+        self.params = params
+        self.logger = logger
 
     # Query data from data warehouse
     @property
@@ -78,11 +86,10 @@ class AdsToStg():
 
     # Write data to data warehouse
     def save_to_stg_ad(self) -> None:
-        query = Query(self.config, self.params)
+        #query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
-        db.execute_command(query.delete_stg_ad_table())
+        db.execute_command(self.delete_stg_ad_table())
         #self.data_blocket_ads_created_daily = self.config.db
-        self.logger.info('Executing stg.ad inserts cycle')
         for row in self.data_blocket_ads_created_daily.itertuples():
             data_row = [(row.ad_id, row.list_id, row.user_id,
                          row.account_id, row.email, row.platform_id_nk,
@@ -94,9 +101,7 @@ class AdsToStg():
                          row.action_type, row.communes_id_nk,
                          row.phone, row.body, row.subject,
                          row.user_name)]
-            db.insert_data(query.insert_to_stg_ad_table(), data_row)
-        self.logger.info('INSERT dm_analysis.temp_stg_ad COMMIT.')
-        self.logger.info('Executed data persistence cycle')
+            db.insert_data(self.insert_to_stg_ad_table(), data_row)
         db.close_connection()
 
     # Write data to data warehouse
@@ -129,3 +134,17 @@ class AdsToStg():
         self.logger.info('INSERT dm_analysis.temp_stg_ad_deleted COMMIT.')
         self.logger.info('Executed data persistence cycle')
         db.close_connection()
+
+    def generate(self):
+        # First step: stg.ad
+        self.logger.info('Starting stg.ad persistence')
+        self.logger.info('Getting Ads data from Blocket DB')
+        self.data_blocket_ads_created_daily = self.config.db
+        self.logger.info('Executing stg.ad inserts')
+        self.save_to_stg_ad()
+        self.logger.info('Executed stg.ad persistence')
+
+        # Second step: stg.ad_approved
+
+        # Third step: stg.ad_deleted
+        return True

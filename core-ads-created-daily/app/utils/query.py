@@ -1,17 +1,16 @@
-from infraestructure.conf import getConf
-from utils.read_params import ReadParams
-
+# pylint: disable=no-member
+# utf-8
 
 class Query:
     """
     Class that store all querys
     """
     # pylint: disable=C0302
-    def __init__(self,
-                 conf: getConf,
-                 params: ReadParams) -> None:
-        self.params = params
-        self.conf = conf
+    #def __init__(self,
+    #             conf: getConf,
+    #             params: ReadParams) -> None:
+    #    self.params = params
+    #    self.conf = conf
 
     def get_blocket_ads_created_daily(self) -> str:
         """
