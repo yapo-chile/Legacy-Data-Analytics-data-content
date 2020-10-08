@@ -284,7 +284,7 @@ class Query:
 
     def get_stg_ads_approved_daily(self) -> str:
         """
-        Method return str with query
+        Method return str  with query
         """
         queryDwh = """
                 select 

@@ -111,7 +111,6 @@ class AdsToStg(Query):
 
     # Write data to data warehouse
     def save_to_stg_ad_deleted(self) -> None:
-        #query = Query(self.config, self.params)
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_ad_deleted_table())
         for row in self.data_dwh_ads_deleted_daily.itertuples():
