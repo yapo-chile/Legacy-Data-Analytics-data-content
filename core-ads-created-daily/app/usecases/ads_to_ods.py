@@ -1,10 +1,21 @@
 # pylint: disable=no-member
 # utf-8
 from infraestructure.psql import Database
+# In order to test we need change Query import
+# PLEASE rollback this change to Query utils
+#from utils.query_test import Query
 from utils.query import Query
+from utils.read_params import ReadParams
 
 
-class AdsToOds():
+class AdsToOds(Query):
+    def __init__(self,
+                 config,
+                 params: ReadParams,
+                 logger) -> None:
+        self.config = config
+        self.params = params
+        self.logger = logger
 
     # Query data from data warehouse
     @property
@@ -13,57 +24,56 @@ class AdsToOds():
 
     @data_stg_ads_created_daily.setter
     def data_stg_ads_created_daily(self, config):
-        query = Query(config, self.params)
         db_source = Database(conf=config)
-        output_df = db_source.select_to_dict(query \
-            .get_stg_ads_created_daily())
+        output_df = db_source \
+            .select_to_dict(self.get_stg_ads_created_daily())
         db_source.close_connection()
-
-        output_df['ad_type_id_fk'] = \
-            output_df['ad_type_id_fk'].fillna(0).astype(int)
-
-        output_df['category_id_fk'] = \
-            output_df['category_id_fk'].fillna(0).astype(int)
-
-        output_df['platform_id_fk'] = \
-            output_df['platform_id_fk'].fillna(0).astype(int)
-
-        output_df['pri_pro_id_fk'] = \
-            output_df['pri_pro_id_fk'].fillna(0).astype(int)
-
-        output_df['region_id_fk'] = \
-            output_df['region_id_fk'].fillna(0).astype(int)
-
-        output_df['seller_id_fk'] = \
-            output_df['seller_id_fk'].fillna(0).astype(int)
 
         self.__data_stg_ads_created_daily = output_df
 
     # Write data to data warehouse
-    def save_to_ods_ad(self) -> None:
-        query = Query(self.config, self.params)
+    def clean_ods_ad(self) -> None:
         db = Database(conf=self.config.dwh)
-        db.execute_command(query.delete_ods_ad_table())
-        self.data_stg_ads_created_daily = self.config.dwh
-        self.logger.info('Executing ods.ad inserts cycle')
-        for row in self.data_stg_ads_created_daily.itertuples():
-            data_row = [(row.ad_type_id_fk, row.category_id_fk,
-                         row.platform_id_fk, row.pri_pro_id_fk,
-                         row.region_id_fk, row.seller_id_fk,
-                         row.creation_date, row.ad_id_nk, row.insert_date,
-                         row.update_date, row.action_type, row.price,
-                         row.communes_id_nk, row.phone, row.body, row.subject,
-                         row.user_name)]
-            db.insert_data(query.insert_ad_created_to_ods_ad_table(), data_row)
-        self.logger.info('INSERT dm_analysis.temp_ods_ad COMMIT.')
-        self.logger.info('Executed data persistence cycle')
+        db.execute_command(self.delete_ods_ad_table())
 
-        self.logger.info('Executing ods.ad updates cycle')
-        db.execute_command(query.upd_approval_date_stg_to_ods_ad_table())
-        self.logger.info('UPDATE dm_analysis.temp_ods_ad COMMIT.')
-        db.execute_command(query.upd_approval_date_ods_ad_table())
-        self.logger.info('UPDATE dm_analysis.temp_ods_ad COMMIT.')
-        db.execute_command(query.upd_deletion_date_stg_to_ods_ad_table())
-        self.logger.info('UPDATE dm_analysis.temp_ods_ad COMMIT.')
-        self.logger.info('Executed data persistence cycle')
+    def save_to_ods_ad(self) -> None:
+        db = Database(conf=self.config.dwh)
+        # In order to test we need change output table
+        # PLEASE rollback this change to ods.ad output
+        # table
+        #db.insert_copy(self.formatted_data, "dm_analysis", "temp_ods_ad")
+        db.insert_copy(self.formatted_data, "ods", "ad")
+
+    def update_ods_ad(self) -> None:
+        db = Database(conf=self.config.dwh)
+        db.execute_command(self.upd_approval_date_to_ods_ad_table())
+        db.execute_command(self.upd_left_approval_date_to_ods_ad_table())
+        db.execute_command(self.upd_deletion_date_to_ods_ad_table())
+        db.execute_command(self.upd_rank_approval_to_ods_ad_table())
+        db.execute_command(self.upd_first_approval_to_ods_seller_table())
         db.close_connection()
+
+    # Executer method
+    def generate(self):
+        # First step: inserts into ods.ad
+        self.logger.info('Starting ods.ad persistence')
+        self.logger.info('Getting ads created daily data from DWH DB')
+        self.clean_ods_ad()
+        self.data_stg_ads_created_daily = self.config.dwh
+        self.formatted_data = self.data_stg_ads_created_daily
+        self.logger.info('Executing ods.ad inserts')
+        astypes = {"ad_type_id_fk": "Int64", "category_id_fk": "Int64",
+                   "platform_id_fk": "Int64", "pri_pro_id_fk": "Int64",
+                   "region_id_fk": "Int64", "seller_id_fk": "Int64",
+                   "ad_id_nk": "Int64", "price": "Int64"}
+        self.formatted_data = self.formatted_data.astype(astypes)
+        self.save_to_ods_ad()
+        self.logger.info('Executed ods.ad persistence')
+
+        # Second step: update ods.ad with approval and deletion date data
+        self.logger.info('Starting ods.ad updates')
+        self.logger.info('Executing ods.ad updates')
+        self.update_ods_ad()
+        self.logger.info('Executed ods.ad updates')
+
+        return True

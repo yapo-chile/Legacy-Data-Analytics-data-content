@@ -260,7 +260,7 @@ class Query:
                         ,sad.body
                         ,sad.subject
                         ,sad.user_name	
-                    from stg.ad sad
+                    from dm_analysis.temp_stg_ad sad
                         left join ods.ad_type adt on (adt.ad_type_id_nk = sad."type" 
                                                       and sad.creation_date >= adt.date_from 
                                                       and sad.creation_date <= adt.date_to)
@@ -291,8 +291,8 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update ods.ad oad
-                    set approval_date = saa.approval_date
+                    UPDATE dm_analysis.temp_ods_ad oad
+                    SET approval_date = saa.approval_date
                         ,list_id_nk = saa.list_id_nk
                         ,price = (case when saa.price = -1 then null else saa.price end)
                         ,update_date = now()
@@ -317,10 +317,10 @@ class Query:
                                         ,sad.list_id
                                         ,sad.action_type
                                         ,rank() over(partition by sad.ad_id order by sad.approval_date)	
-                                    from stg.ad sad
+                                    from dm_analysis.temp_stg_ad sad
                                     where
                                         sad.approval_date between '{0} 00:00:00' and '{1} 23:59:59') a1
-                                        inner join ods.ad a2 on (a2.ad_id_nk = a1.ad_id)
+                                        inner join dm_analysis.temp_ods_ad a2 on (a2.ad_id_nk = a1.ad_id)
                             where 
                                 rank=1
                                 and a2.approval_date is null
@@ -335,9 +335,9 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update ods.ad
-                        set approval_date = creation_date
-                    where approval_date is null
+                    UPDATE dm_analysis.temp_ods_ad
+                    SET approval_date = creation_date
+                    WHERE approval_date is null
                         and action_type = 'import'
                         and creation_date::date = 
                         '""" + self.params.get_date_from() + """'::date
@@ -350,8 +350,8 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    update ods.ad oad
-                    set deletion_date = sdd.deletion_date
+                    UPDATE dm_analysis.temp_ods_ad oad
+                    SET deletion_date = sdd.deletion_date
                         ,reason_removed_id_fk = sdd.reason_removed_id_fk
                         ,reason_removed_detail_id_fk = sdd.reason_removed_detail_id_fk
                         ,update_date = now()
@@ -376,7 +376,7 @@ class Query:
                                         ,coalesce(rer.reason_removed_id_pk,0) as reason_removed_id_fk
                                         ,coalesce(rrd.reason_removed_detail_id_pk,0) as reason_removed_detail_id_fk
                                         ,rank() over(partition by sad.ad_id order by sad.deletion_date, sad.ad_id)	
-                                    from stg.ad sad
+                                    from dm_analysis.temp_stg_ad sad
                                         left join ods.reason_removed rer on (rer.reason_removed_id_nk = sad.reason_removed_id_nk 
                                                                              and sad.deletion_date >= rer.date_from 
                                                                              and sad.deletion_date <= rer.date_to)
@@ -400,7 +400,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    UPDATE ods.ad oad
+                    UPDATE dm_analysis.temp_ods_ad oad
                     SET rank_approval = coalesce((select max(a1.rank_approval) + 1 from ods.ad a1 where a1.seller_id_fk = odr.seller_id_fk), 1)
                     FROM (
                             select 
@@ -420,7 +420,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    UPDATE ods.seller os1
+                    UPDATE dm_analysis.temp_ods_seller os1
                     SET first_approval_date = mad.min_approval_date,
                         update_date = now()
                     FROM (
@@ -443,16 +443,16 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table stg.ad 
+                    truncate table dm_analysis.temp_stg_ad 
                 """
         return command
 
     def delete_ods_ad_table(self) -> str:
         """
-        Method that returns events of the day
+        Method that returns events of the  day
         """
         command = """
-                    delete from ods.ad where 
+                    delete from dm_analysis.temp_ods_ad where 
                     creation_date::date >= 
                     '""" + self.params.get_date_from() + """'::date
                     and creation_date::date <= 
