@@ -1,20 +1,13 @@
 - defaultTab: nodes
   description: |-
-        <Add specific URL or path of the pipeline in github>
-        sudo docker run --rm --net=host \
-                        -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
-                        -e APP_SMTP_SECRET=/app/smtp-secret \
-                        containers.mpi-internal.com/yapo/core-ad-sellers:[git-branch] \
-                        -email_from="noreply@yapo.cl" \
-                        -email_to="data_team@adevinta.com"
+        Daily this pipeline makes available into DWH the data related to sellers 
+        of ours ads whatever its classification private or professional as well as 
+        a detail available related to sellers pro to know in which categories a seller 
+        is professional
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: CORE
   loglevel: DEBUG
-  name: <FOLDER RUNDECK LOCATION> - Project Name Template
+  name: Core - Ad-sellers
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -30,15 +23,15 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:[git-branch]
+        sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:feat_core-ad-sellers
         sudo docker run --rm --net=host \
-                        -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
                         -e APP_SMTP_SECRET=/app/smtp-secret \
-                        containers.mpi-internal.com/yapo/core-ad-sellers:[git-branch] \
+                        containers.mpi-internal.com/yapo/core-ad-sellers:feat_core-ad-sellers \
                         -email_from="noreply@yapo.cl" \
                         -email_to="data_team@adevinta.com"
     keepgoing: false
