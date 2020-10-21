@@ -3,7 +3,7 @@
 # utf-8
 from utils.read_params import ReadParams
 from usecases.ad_sellers_to_stg import AdSellersToStg
-#from usecases.ad_sellers_to_ods import AdSellersToOds
+from usecases.ad_sellers_to_ods import AdSellersToOds
 
 
 class Process():
@@ -22,7 +22,8 @@ class Process():
                                                 self.params,
                                                 self.logger).generate()
 
-        # Second step: Getting ad sellers from DWH stg schema to DWH ods schema
-        #self.ad_sellers_to_ods = AdSellersToOds(self.config,
-        #                                        self.params,
-        #                                        self.logger).generate()
+        # Second step: Getting ad sellers from DWH
+        # stg schema to DWH ods schema
+        self.ad_sellers_to_ods = AdSellersToOds(self.config,
+                                                self.params,
+                                                self.logger).generate()

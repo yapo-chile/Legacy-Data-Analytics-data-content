@@ -273,8 +273,8 @@ class Query:
                         scd.email,
                         scd.pri_pro_id_fk,
                         scd.seller_creation_date
-                    from stg.seller_created_daily scd
-                        left join ods.seller s on (s.seller_id_nk = scd.seller_id_nk)) z
+                    from dm_analysis.temp_stg_seller_created_daily scd
+                        left join dm_analysis.temp_ods_seller s on (s.seller_id_nk = scd.seller_id_nk)) z
                 WHERE
                     seller_id_pk_aux = 0
             """
@@ -292,7 +292,7 @@ class Query:
                     sp.category_rank,
                     c.category_id_pk as category_id_fk,
                     cm.category_main_id_pk as category_main_id_fk
-                FROM stg.seller_pro sp
+                FROM dm_analysis.temp_stg_seller_pro sp
                     inner join ods.seller s on (sp.user_id = s.seller_id_blocket_nk)
                     left join ods.category c on (sp.category::int = c.category_id_nk
                                                  and c.date_to::date = '2199-12-31'::date)
@@ -306,12 +306,12 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    UPDATE ods.seller s
+                    UPDATE dm_analysis.temp_ods_seller s
                     SET has_account = true,
                         pri_pro_id_fk = pp.pri_pro_id_pk,
                         update_date = now()
-                    FROM stg.account a
-                        left join ods.pri_pro pp on (pp.pri_pro_id_nk = a.pri_pro_id_nk
+                    FROM dm_analysis.temp_stg_account a
+                        left join ods.pri_pro pp on (pp.pri_pro_id_nk = a.pri_pro_id_nk 
                                                      and pp.date_to::date = '2199-12-31'::date)
                     WHERE s.seller_id_nk = a.email_account
                 """
@@ -322,7 +322,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table stg.account 
+                    truncate table dm_analysis.temp_stg_account 
                 """
         return command
 
@@ -331,7 +331,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table stg.seller_created_daily 
+                    truncate table dm_analysis.temp_stg_seller_created_daily 
                 """
         return command
 
@@ -340,7 +340,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table stg.seller_pro 
+                    truncate table dm_analysis.temp_stg_seller_pro 
                 """
         return command
 
@@ -349,7 +349,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    truncate table ods.seller_pro_details 
+                    truncate table dm_analysis.temp_ods_seller_pro_details 
                 """
         return command
 
@@ -358,7 +358,7 @@ class Query:
         Method that returns events of the day
         """
         command = """
-                    delete from ods.seller where 
+                    delete from dm_analysis.temp_ods_seller where 
                     seller_creation_date::date >= 
                     '""" + self.params.get_date_from() + """'::date
                     and seller_creation_date::date <= 

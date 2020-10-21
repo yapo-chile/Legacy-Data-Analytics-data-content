@@ -2,6 +2,10 @@
 # pylint: disable=W0201
 # utf-8
 from infraestructure.psql import Database
+# In order to test this pipeline we need change the import Query
+# to utils.query_test
+# PLEASE rollback this change to utils.query import
+#from utils.query_test import Query
 from utils.query import Query
 from utils.read_params import ReadParams
 
@@ -26,6 +30,8 @@ class AdSellersToStg(Query):
         output_df = db_source \
             .select_to_dict(self.get_blocket_users_account())
         db_source.close_connection()
+        if output_df.empty:
+            raise Exception("users account etl got empty dataframe")
 
         self.__data_blocket_users_account = output_df
 
@@ -39,6 +45,8 @@ class AdSellersToStg(Query):
         output_df = db_source \
             .select_to_dict(self.get_blocket_sellers_created_daily())
         db_source.close_connection()
+        if output_df.empty:
+            raise Exception("sellers created daily etl got empty dataframe")
 
         self.__data_blocket_sellers_created_daily = output_df
 
@@ -52,6 +60,8 @@ class AdSellersToStg(Query):
         output_df = db_source \
             .select_to_dict(self.get_blocket_account_params_is_pro())
         db_source.close_connection()
+        if output_df.empty:
+            raise Exception("account params etl got empty dataframe")
 
         self.__data_blocket_account_params_is_pro = output_df
 
@@ -59,22 +69,38 @@ class AdSellersToStg(Query):
     def save_to_stg_account(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_account_table())
-        db.insert_copy("dm_analysis", "temp_account", self.formatted_data)
-        #db.insert_copy(self.formatted_data, "stg", "account")
+        # In order to test this pipeline we need change the output table
+        # to dm_analysis.temp_stg_seller_created_daily
+        # PLEASE rollback this change to stg.seller_created_daily
+        # output table
+        #db.insert_copy("dm_analysis",
+        #               "temp_stg_account",
+        #               self.formatted_data)
+        db.insert_copy("stg", "account", self.formatted_data)
 
     def save_to_stg_seller_created_daily(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_created_daily_table())
-        db.insert_copy("dm_analysis",
-                       "temp_seller_created_daily",
-                       self.formatted_data)
-        #db.insert_copy(self.formatted_data, "stg", "seller_created_daily")
+        # In order to test this pipeline we need change the output table
+        # to dm_analysis.temp_stg_seller_created_daily
+        # PLEASE rollback this change to stg.seller_created_daily
+        # output table
+        #db.insert_copy("dm_analysis",
+        #               "temp_stg_seller_created_daily",
+        #               self.formatted_data)
+        db.insert_copy("stg", "seller_created_daily", self.formatted_data)
 
     def save_to_stg_seller_pro(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_pro_table())
-        db.insert_copy("dm_analysis", "temp_seller_pro", self.formatted_data)
-        #db.insert_copy(self.formatted_data, "stg", "seller_pro")
+        # In order to test this pipeline we need change the output table
+        # to dm_analysis.temp_stg_seller_created_daily
+        # PLEASE rollback this change to stg.seller_created_daily
+        # output table
+        #db.insert_copy("dm_analysis",
+        #               "temp_stg_seller_pro",
+        #               self.formatted_data)
+        db.insert_copy("stg", "seller_pro", self.formatted_data)
 
     def generate(self):
         # First step: stg.account
