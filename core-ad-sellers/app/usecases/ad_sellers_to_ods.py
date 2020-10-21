@@ -46,7 +46,7 @@ class AdSellersToOds(Query):
     def save_to_ods_seller(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_ods_seller_table())
-        db.insert_copy(self.formatted_data, "ods", "seller")
+        db.insert_copy("ods", "seller", self.formatted_data)
 
     def update_ods_seller(self) -> None:
         db = Database(conf=self.config.dwh)
@@ -56,7 +56,7 @@ class AdSellersToOds(Query):
     def save_to_ods_seller_pro_details(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_ods_seller_pro_details_table())
-        db.insert_copy(self.formatted_data, "ods", "seller_pro_details")
+        db.insert_copy("ods", "seller_pro_details", self.formatted_data)
 
     def generate(self):
         # First step: insert into ods.seller

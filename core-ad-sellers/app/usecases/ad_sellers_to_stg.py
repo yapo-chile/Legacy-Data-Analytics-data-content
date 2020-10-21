@@ -59,21 +59,21 @@ class AdSellersToStg(Query):
     def save_to_stg_account(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_account_table())
-        db.insert_copy(self.formatted_data, "dm_analysis", "temp_account")
+        db.insert_copy("dm_analysis", "temp_account", self.formatted_data)
         #db.insert_copy(self.formatted_data, "stg", "account")
 
     def save_to_stg_seller_created_daily(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_created_daily_table())
-        db.insert_copy(self.formatted_data,
-                       "dm_analysis",
-                       "temp_seller_created_daily")
+        db.insert_copy("dm_analysis",
+                       "temp_seller_created_daily",
+                       self.formatted_data)
         #db.insert_copy(self.formatted_data, "stg", "seller_created_daily")
 
     def save_to_stg_seller_pro(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_pro_table())
-        db.insert_copy(self.formatted_data, "dm_analysis", "temp_seller_pro")
+        db.insert_copy("dm_analysis", "temp_seller_pro", self.formatted_data)
         #db.insert_copy(self.formatted_data, "stg", "seller_pro")
 
     def generate(self):

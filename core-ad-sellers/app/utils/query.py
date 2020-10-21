@@ -315,27 +315,30 @@ class Query:
     def delete_stg_account_table(self) -> str:
         """
         Method that returns events of the day
+        stg.account
         """
         command = """
-                    truncate table stg.account 
+                    truncate table dm_analysis.temp_account 
                 """
         return command
 
     def delete_stg_seller_created_daily_table(self) -> str:
         """
         Method that returns events of the day
+        stg.seller_created_daily
         """
         command = """
-                    truncate table stg.seller_created_daily 
+                    truncate table dm_analysis.temp_seller_created_daily 
                 """
         return command
 
     def delete_stg_seller_pro_table(self) -> str:
         """
         Method that returns events of the day
+        stg.seller_pro
         """
         command = """
-                    truncate table stg.seller_pro 
+                    truncate table dm_analysis.temp_seller_pro 
                 """
         return command
 
