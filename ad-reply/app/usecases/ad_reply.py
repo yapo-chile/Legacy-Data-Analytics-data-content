@@ -29,6 +29,23 @@ class AdReply(AdReplyQuery):
 
     # Query data from data warehouse
     @property
+    def data_buyers(self):
+        return self.__data_buyers
+
+    @data_buyers.setter
+    def data_buyers(self, config):
+        db_source = Database(conf=config)
+        data_buyers_ = db_source.select_to_dict(self.get_ad_reply_stg())
+        data_buyers_ = data_buyers_[data_buyers_.buyer_id_pk_aux == 0]
+        data_buyers_.drop(
+            ['buyer_id_pk_aux'],
+            axis=1,
+            inplace=True)
+        db_source.close_connection()
+        self.__data_buyers = data_buyers_
+
+    # Query data from data warehouse
+    @property
     def ods_data_reply(self):
         return self.__ods_data_reply
 
@@ -65,6 +82,15 @@ class AdReply(AdReplyQuery):
         self.logger.info("First records as evidence to STG")
         self.logger.info(cleaned_data.head())
         dwh.insert_copy(cleaned_data, "stg", "ad_reply")
+
+    def insert_buyers_to_ods(self) -> None:
+        db = Database(conf=self.config.db)
+        db.insert_copy(
+            df=self.data_buyers,
+            schema='ods',
+            table='buyer'
+        )
+        db.close_connection()
 
     def insert_to_ods(self):
         def set_rank(x, ods):
@@ -103,6 +129,11 @@ class AdReply(AdReplyQuery):
         self.blocket_data_reply = self.config.blocket
         self.ods_data_reply = self.config.db
         self.insert_to_stg()
+        # Reading stg to perform ods buyers data
+        self.logger.info('Starting ods_buyer step')
+        self.data_buyers = self.config.db
+        self.insert_buyers_to_ods()
+        self.logger.info('Ending ods_buyer step')
         # Reading stg with ods all togeter
         self.dwh_stg_data_reply = self.config.db
         self.insert_to_ods()
