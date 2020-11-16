@@ -9,7 +9,7 @@
   executionEnabled: true
   group: DOCKER/CONTENT
   loglevel: DEBUG
-  name: CONTENT - AD Params
+  name: CONTENT - AD Reply
   nodeFilterEditable: false
   nodefilters:
     dispatch:

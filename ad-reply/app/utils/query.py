@@ -11,7 +11,7 @@ class AdReplyQuery:
         """
         Cleans yesterday's data to avoid duplicate in insert
         """
-        return """delete from ods.ad_reply 
+        return """delete from ods.ad_reply
             where ad_reply_creation_date 
                 between '{DATE_FROM}' and '{DATE_TO}';""".format(
                        DATE_FROM=self.params.get_date_from(),
@@ -87,4 +87,21 @@ class AdReplyQuery:
             """.format(DATE_FROM=self.params.get_date_from(),
                        DATE_TO=self.params.get_date_to(),
                        CURRENT_YEAR=self.params.get_current_year())
+        return query
+
+    def get_ad_reply_stg(self) -> str:
+        query = """
+            SELECT  ad.buyer_id_nk,
+                    ad.email,
+                    coalesce(b.buyer_id_pk, 0) as buyer_id_pk_aux,
+                    ad.buyer_creation_date ,
+                    ad.insert_date
+            FROM (  SELECT sender_email as buyer_id_nk,
+                        sender_email as email,
+                        min(added_at) as buyer_creation_date ,
+                        now() as insert_date
+                    FROM stg.ad_reply , ods.ad
+                    WHERE list_id = ad.list_id_nk
+                    GROUP BY sender_email) ad
+            LEFT JOIN ods.buyer b on ad.email = b.buyer_id_nk;"""
         return query
