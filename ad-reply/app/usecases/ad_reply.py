@@ -44,7 +44,7 @@ class AdReply(AdReplyQuery):
         db_source.close_connection()
         self.__data_buyers = data_buyers_
 
-    # Query data from data warehouse
+    # Query data  from data warehouse
     @property
     def ods_data_reply(self):
         return self.__ods_data_reply
@@ -95,13 +95,13 @@ class AdReply(AdReplyQuery):
     def insert_to_ods(self):
         def set_rank(x, ods):
             if x['ad_reply_id_nk'] and x['ad_id_fk'] > 0:
-                x['rank'] = ods[ods['buyer_id_fk'] = x['buyer_id_fk']].rank.max() + 1
+                x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']].rank.max() + 1
             return x
         cleaned_data = self.dwh_stg_data_reply
         cleaned_data.rename(columns={"buyer_id_pk": "buyer_id_fk",
                                      "ad_id_pk": "ad_id_fk"}, inplace=True)
         self.ods_data_reply = self.config.db
-        cleaned_data = cleaned.apply(set_rank, ods=self.ods_data_reply, axis=1)
+        cleaned_data = cleaned_data.apply(set_rank, ods=self.ods_data_reply, axis=1)
         # In case there are still nones in the column, they would be filled
         # with default value 1, indicating they are new
         cleaned_data['rank'].fillna(1, inplace=True)
@@ -139,8 +139,3 @@ class AdReply(AdReplyQuery):
         self.insert_to_ods()
         self.logger.info("Ad Reply succesfully saved")
         return True
-
-
-            
-
-
