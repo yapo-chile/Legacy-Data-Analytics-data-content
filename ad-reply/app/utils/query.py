@@ -4,8 +4,23 @@
 
 class AdReplyQuery:
 
-    def dwh_ad_reply(self, ids) -> str:
-        return "select * from ods.ad_reply where buyer_id_fk in ({})".format(ids)
+    def dwh_ad_reply_rank(self) -> str:
+        return """SELECT
+            ad_reply_id_pk
+            ,ad_reply_id_nk 
+            ,buyer_id_fk
+            FROM ods.ad_reply
+            where rank is null and ad_reply_id_nk is not null and ad_id_fk >0
+            order by ad_reply_creation_date, ad_reply_id_nk;
+            """
+
+    def update_ad_reply_rank(self, buyer_id_fk, ad_reply_id_pk) -> str:
+        return """update ods.ad_reply
+            set rank = coalesce( (select max(rank)+1 from ods.ad_reply where buyer_id_fk={}),1 )
+            where ad_reply_id_pk={}""".format(buyer_id_fk, ad_reply_id_pk)
+
+    def clean_stg_ad_reply(self) -> str:
+        return """truncate stg.ad_reply;"""
 
     def clean_ods_ad_reply(self) -> str:
         """
@@ -19,18 +34,20 @@ class AdReplyQuery:
 
     def ods_stg_ad_reply_comparation(self) -> str:
         return """SELECT
-                    sender_email as buyer_id_nk	
-                    , min(mail_queue_id) as ad_reply_id_nk
-                    , added_at as ad_reply_creation_date
-                    , sender_email as email
-                    , list_id as list_id_nk
-                    , now() as insert_date
-                    , ad_id as ad_id_nk
-                    FROM stg.ad_reply
-                        ,ods.ad
-                    where ad_reply.ad_id = ad.ad_id_nk
-                    group by sender_email, added_at, list_id, ad_id
-                    order by added_at"""
+                ar.sender_email as buyer_id_nk,
+                b.buyer_id_pk as buyer_id_fk
+                , min(ar.mail_queue_id) as ad_reply_id_nk
+                , ar.added_at as ad_reply_creation_date
+                , ar.sender_email as email
+                , ar.list_id as list_id_nk
+                , now() as insert_date
+                , a.ad_id_pk as ad_id_fk
+                FROM stg.ad_reply ar
+                inner join ods.ad a on ar.ad_id = a.ad_id_nk
+                inner join ods.buyer b on  b.buyer_id_nk = ar.sender_email
+                group by sender_email,b.buyer_id_pk ,added_at, list_id, a.ad_id_pk
+                order by added_at
+            """
 
     def blocket_ad_reply(self) -> str:
         """
@@ -59,7 +76,7 @@ class AdReplyQuery:
             inner join
                 blocket_{CURRENT_YEAR}.ads as a on a.list_id = mq.list_id
             WHERE 
-                added_at between '{DATE_FROM}' and '{DATE_TO}'
+                added_at between '{DATE_FROM} 00:00:00' and '{DATE_TO} 23:59:59'
             union all
             SELECT
                 mq.mail_queue_id
@@ -83,7 +100,7 @@ class AdReplyQuery:
             inner join
                 public.ads as b on b.list_id = mq.list_id
             WHERE 
-	            added_at between '{DATE_FROM}' and '{DATE_TO}'
+	            added_at between '{DATE_FROM} 00:00:00' and '{DATE_TO} 23:59:59'
             """.format(DATE_FROM=self.params.get_date_from(),
                        DATE_TO=self.params.get_date_to(),
                        CURRENT_YEAR=self.params.get_current_year())
