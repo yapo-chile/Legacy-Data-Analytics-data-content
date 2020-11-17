@@ -30,7 +30,9 @@
                             -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                             -e APP_BLOCKET_SECRET=/app/db-blocket \
                             -e APP_DB_SECRET=/app/db-secret \
-                              containers.mpi-internal.com/yapo/ad-reply:feat_ad-reply
+                              containers.mpi-internal.com/yapo/ad-reply:feat_ad-reply \
+                              -date_from="2020-11-14" \
+                              -date_to="2020-11-14"
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago

@@ -25,6 +25,9 @@ if [ -n "${BUILD_BRANCH}" ]; then
     export GIT_BRANCH=${BUILD_BRANCH}
 fi
 
+echo "Logging into docker"
+docker login --username "${ARTIFACTORY_USER}" --password "${ARTIFACTORY_PWD}" "${DOCKER_REGISTRY}"
+
 echoTitle "Building docker image for ${DOCKER_IMAGE}"
 echo "GIT BRANCH: ${GIT_BRANCH}"
 echo "GIT TAG: ${GIT_TAG}"
