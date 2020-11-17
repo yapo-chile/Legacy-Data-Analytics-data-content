@@ -129,6 +129,7 @@ class AdReply(AdReplyQuery):
         self.blocket_data_reply = self.config.blocket
         self.ods_data_reply = self.config.db
         self.insert_to_stg()
+
         # Reading stg to perform ods buyers data
         self.logger.info('Starting ods_buyer step')
         self.data_buyers = self.config.db
