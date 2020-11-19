@@ -1,0 +1,78 @@
+- defaultTab: nodes
+  description: |-
+        Daily this pipeline makes available into DWH the data related to sellers 
+        of ours ads whatever its classification private or professional as well as 
+        a detail available related to sellers pro to know in which categories a seller 
+        is professional
+  executionEnabled: true
+  group: CORE
+  id: 1ddfab96-0c36-4f6d-ad86-4dbc7620ae72
+  loglevel: DEBUG
+  name: Core - Ad-sellers
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  plugins:
+    ExecutionLifecycle: null
+  scheduleEnabled: false
+  sequence:
+    commands:
+    - script: |-
+        sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:feat_core-ad-sellers
+        sudo docker run --rm --net=host \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
+                        -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        -e APP_SMTP_SECRET=/app/smtp-secret \
+                        containers.mpi-internal.com/yapo/core-ad-sellers:feat_core-ad-sellers \
+                        -email_from="noreply@yapo.cl" \
+                        -email_to="data_team@adevinta.com"
+    - description: Ad create daily reference
+      jobref:
+        group: CORE
+        name: Core - Ads-created-daily
+        nodeStep: 'true'
+        uuid: ece93976-26a7-4c92-804e-d7aaca17eb11
+    - description: Product order reference
+      jobref:
+        group: DOCKER/REVENUES
+        name: RAW - Data ingestion blocket - Products Order
+        nodeStep: 'true'
+        uuid: 231e10f6-3404-4801-98f8-ba9b77ac039f
+    - description: Store purchases reference
+      jobref:
+        group: DOCKER/REVENUES
+        name: Revenues - Store Purchases
+        nodeStep: 'true'
+        uuid: 7618ce91-ca88-4772-95cc-42dd97d79943
+    - description: Ad Reply reference
+      jobref:
+        group: DOCKER/CONTENT
+        name: CONTENT - AD Reply
+        nodeStep: 'true'
+        uuid: 0b0d0329-a55f-41fd-ba8f-fbbaae88d479
+    - description: Users reference
+      jobref:
+        group: CORE
+        name: Core - Buyers - User buyers and sellers
+        nodeStep: 'true'
+        uuid: ee6680f0-93de-40a2-91c1-86921f16bcbb
+    - description: Incremental reference
+      jobref:
+        group: CONTENT
+        name: Content - ETL incremental automatico - Crontab
+        nodeStep: 'true'
+        uuid: 1651a268-eeda-4221-8b2d-aef1617007cd
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
+  uuid: 1ddfab96-0c36-4f6d-ad86-4dbc7620ae72
