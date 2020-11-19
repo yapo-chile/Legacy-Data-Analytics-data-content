@@ -1,9 +1,6 @@
 # pylint: disable=no-member
 # utf-8
 from infraestructure.psql import Database
-# In order to test we need change Query import
-# PLEASE rollback this change to Query utils
-#from utils.query_test import Query
 from utils.query import Query
 from utils.read_params import ReadParams
 
@@ -37,10 +34,6 @@ class AdsToStg(Query):
     def save_to_stg_ad(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_ad_table())
-        # In order to test we need change output table
-        # PLEASE rollback this change to stg.ad output
-        # table
-        #db.insert_copy(self.formatted_data, "dm_analysis", "temp_stg_ad")
         db.insert_copy(self.formatted_data, "stg", "ad")
 
     # Executer method

@@ -4,17 +4,35 @@
 
 ## Description
 
-Introduce here information about the purpose of this ETL, what kind of information it extracts and from where (dwh, pulse, blocket DB, service DB, specifics files, etc) and also specify other important tecnical details such as: execution preconditions, considerations about execution schedule.
+Ads created daily pipeline that aims to obtain from blocket db the ads created on the day of the process, in addition to calculating the dates of approval and elimination / rejection of ads on the same process date.
 
 ## Pipeline Implementation Details
 
 |   Field           | Description                                                                |
 |-------------------|----------------------------------------------------------------------------|
-| Input Source      | Specify type of source and/or table names                                  |
-| Output Source     | Specify type of source and/or table names                                  |
-| Schedule          | hh:mm                                                                      |
-| Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
-| Associated Report | Specify name and URL of tableau report (if applies)                        |
+| Input Source      | Blocket:   {public,                                                        |
+|                   |             blocket_$current_year,                                         |
+|                   |             blocket_$last_year}.action_states                              |
+|                   |            {public,                                                        |
+|                   |             blocket_$current_year,                                         |
+|                   |             blocket_$last_year}.ad_actions                                 |
+|                   |            {public,                                                        |
+|                   |             blocket_$current_year,                                         |
+|                   |             blocket_$last_year}.ads                                        |
+|                   |            {public,                                                        |
+|                   |             blocket_$current_year,                                         |
+|                   |             blocket_$last_year}.action_params                              |
+|                   |            {public,                                                        |
+|                   |             blocket_$current_year,                                         |
+|                   |             blocket_$last_year}.ad_params                                  |
+|                   |            public.users                                                    |
+|                   |            public.accounts                                                 |
+| Output Source     | DWH:  stg.ad                                                               |
+|                   |       ods.ad                                                               |
+|                   |       ods.seller                                                           |
+| Schedule          | logical precedence                                                         |
+| Rundeck Access    | data jobs: CORE: Ads-created-daily                                         |
+| Associated Report | TBD                                                                        |
 
 
 ### Build
@@ -24,23 +42,25 @@ make docker-build
 
 ### Run micro services
 ```
-docker run -v /local-path/secrets/pulse:/app/pulse-secret \
-           -v /local-path/secrets/db-secret:/app/db-secret \
-           -e APP_PULSE_SECRET=/app/pulse-secret \
-           -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/core-ads-created-daily:[TAG]
+sudo docker pull containers.mpi-internal.com/yapo/core-ads-created-daily:latest
+sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/core-ads-created-daily:latest
 ```
 
 ### Run micro services with parameters
 
 ```
-docker run -v /local-path/secrets/pulse:/app/pulse-secret \
-           -v /local-path/secrets/db-secret:/app/db-secret \
-           -e APP_PULSE_SECRET=/app/pulse-secret \
-           -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/core-ads-created-daily:[TAG] \
-           -date_from=YYYY-MM-DD \
-           -date_to=YYYY-MM-DD
+sudo docker pull containers.mpi-internal.com/yapo/core-ads-created-daily:latest
+sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/core-ads-created-daily:latest \
+                        -date_from=YYYY-MM-DD \
+                        -date_to=YYYY-MM-DD
 ```
 
 ### Adding Rundeck token to Travis

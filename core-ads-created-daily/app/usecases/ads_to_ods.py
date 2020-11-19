@@ -1,9 +1,6 @@
 # pylint: disable=no-member
 # utf-8
 from infraestructure.psql import Database
-# In order to test we need change Query import
-# PLEASE rollback this change to Query utils
-#from utils.query_test import Query
 from utils.query import Query
 from utils.read_params import ReadParams
 
@@ -38,10 +35,6 @@ class AdsToOds(Query):
 
     def save_to_ods_ad(self) -> None:
         db = Database(conf=self.config.dwh)
-        # In order to test we need change output table
-        # PLEASE rollback this change to ods.ad output
-        # table
-        #db.insert_copy(self.formatted_data, "dm_analysis", "temp_ods_ad")
         db.insert_copy(self.formatted_data, "ods", "ad")
 
     def update_ods_ad(self) -> None:
