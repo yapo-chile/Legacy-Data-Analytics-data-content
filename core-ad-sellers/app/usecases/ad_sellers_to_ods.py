@@ -2,10 +2,6 @@
 # pylint: disable=W0201
 # utf-8
 from infraestructure.psql import Database
-# In order to test this pipeline we need change the import Query
-# to utils.query_test
-# PLEASE rollback this change to utils.query import
-#from utils.query_test import Query
 from utils.query import Query
 from utils.read_params import ReadParams
 
@@ -49,13 +45,6 @@ class AdSellersToOds(Query):
     # Write data to data warehouse
     def save_to_ods_seller(self) -> None:
         db = Database(conf=self.config.dwh)
-        # In order to test this pipeline we need change the output table
-        # to dm_analysis.temp_ods_seller
-        # PLEASE rollback this change to ods.seller
-        # output table
-        #db.insert_copy("dm_analysis",
-        #               "temp_ods_seller",
-        #               self.formatted_data)
         db.insert_copy("ods", "seller", self.formatted_data)
 
     def update_ods_seller(self) -> None:
@@ -70,13 +59,6 @@ class AdSellersToOds(Query):
     def save_to_ods_seller_pro_details(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_ods_seller_pro_details_table())
-        # In order to test this pipeline we need change the output table
-        # to dm_analysis.temp_ods_seller_pro_details
-        # PLEASE rollback this change to ods.seller_pro_details
-        # output table
-        #db.insert_copy("dm_analysis",
-        #               "temp_ods_seller_pro_details",
-        #               self.formatted_data)
         db.insert_copy("ods", "seller_pro_details", self.formatted_data)
 
     def generate(self):

@@ -1,21 +1,14 @@
 - defaultTab: nodes
   description: |-
-        <Add specific URL or path of the pipeline in github>
-        sudo docker run --rm --net=host \
-                    -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                    -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                    -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                    -e APP_PULSE_SECRET=/app/pulse-secret \
-                    -e APP_DB_SECRET=/app/db-secret \
-                    -e APP_SMTP_SECRET=/app/smtp-secret \
-                    containers.mpi-internal.com/yapo/core-ad-sellers:latest \
-                    -email_from="noreply@yapo.cl -- if put this options replace default email from" \
-                    -email_to="email 1 to send data -- if put this options replace default emails to" \
-                    -email_to="email n to send data"
+        REPO: Yapo / data-content/core-ad-sellers
+        Daily this pipeline makes available into DWH the data 
+        related to sellers of ours ads whatever its classification 
+        private or professional as well as a detail available related 
+        to sellers pro in order to know in which categories a seller is professional
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: CORE
   loglevel: DEBUG
-  name: <FOLDER RUNDECK LOCATION> - Project Name Template
+  name: Ad-sellers
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -38,11 +31,14 @@
           webhook_token: T017F9KHA1Y/B01BL7C1CSY/Ai9NzdCrBUA5Ru5sa8JHYrjR
         type: SlackNotification
   notifyAvgDurationThreshold: null
+  retry:
+    delay: 30m
+    retry: '3'
   schedule:
     month: '*'
     time:
-      hour: '03'
-      minute: '0'
+      hour: '00'
+      minute: '10'
       seconds: '0'
     weekday:
       day: '*'
@@ -53,15 +49,39 @@
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:latest
         sudo docker run --rm --net=host \
-                        -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
                         -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
-                        -e APP_DB_SECRET=/app/db-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
                         -e APP_SMTP_SECRET=/app/smtp-secret \
                         containers.mpi-internal.com/yapo/core-ad-sellers:latest \
                         -email_from="noreply@yapo.cl" \
                         -email_to="data_team@adevinta.com"
+    - description: Ad create daily reference
+      jobref:
+        group: CORE
+        name: Ads-created-daily
+        nodeStep: 'true'
+        uuid: 4fc2a9e0-f179-4621-a509-5f2903b8043c
+    - description: Product order reference
+      jobref:
+        group: CORE
+        name: Core - Incremental Products Order
+        nodeStep: 'true'
+        uuid: 491a0cf6-0914-427b-a66c-6b60591e7371
+    - description: Store purchases reference
+      jobref:
+        group: DOCKER/REVENUES
+        name: Revenues - Store Purchases
+        nodeStep: 'true'
+        uuid: 9505123d-60ec-47d3-995f-11827e14b8f3
+    - description: Incremental reference
+      jobref:
+        group: CONTENT
+        name: Content - ETL incremental automatico - Crontab
+        nodeStep: 'true'
+        uuid: 1651a268-eeda-4221-8b2d-aef1617007cd
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago

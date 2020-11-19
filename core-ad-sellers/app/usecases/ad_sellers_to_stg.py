@@ -2,10 +2,6 @@
 # pylint: disable=W0201
 # utf-8
 from infraestructure.psql import Database
-# In order to test this pipeline we need change the import Query
-# to utils.query_test
-# PLEASE rollback this change to utils.query import
-#from utils.query_test import Query
 from utils.query import Query
 from utils.read_params import ReadParams
 
@@ -69,37 +65,16 @@ class AdSellersToStg(Query):
     def save_to_stg_account(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_account_table())
-        # In order to test this pipeline we need change the output table
-        # to dm_analysis.temp_stg_seller_created_daily
-        # PLEASE rollback this change to stg.seller_created_daily
-        # output table
-        #db.insert_copy("dm_analysis",
-        #               "temp_stg_account",
-        #               self.formatted_data)
         db.insert_copy("stg", "account", self.formatted_data)
 
     def save_to_stg_seller_created_daily(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_created_daily_table())
-        # In order to test this pipeline we need change the output table
-        # to dm_analysis.temp_stg_seller_created_daily
-        # PLEASE rollback this change to stg.seller_created_daily
-        # output table
-        #db.insert_copy("dm_analysis",
-        #               "temp_stg_seller_created_daily",
-        #               self.formatted_data)
         db.insert_copy("stg", "seller_created_daily", self.formatted_data)
 
     def save_to_stg_seller_pro(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.delete_stg_seller_pro_table())
-        # In order to test this pipeline we need change the output table
-        # to dm_analysis.temp_stg_seller_created_daily
-        # PLEASE rollback this change to stg.seller_created_daily
-        # output table
-        #db.insert_copy("dm_analysis",
-        #               "temp_stg_seller_pro",
-        #               self.formatted_data)
         db.insert_copy("stg", "seller_pro", self.formatted_data)
 
     def generate(self):

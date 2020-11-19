@@ -4,17 +4,27 @@
 
 ## Description
 
-Introduce here information about the purpose of this ETL, what kind of information it extracts and from where (dwh, pulse, blocket DB, service DB, specifics files, etc) and also specify other important tecnical details such as: execution preconditions, considerations about execution schedule.
+Daily this pipeline makes available into DWH the data related to sellers of ours ads whatever its classification private or professional as well as a detail available related to sellers pro in order to know in which categories a seller is professional.
 
 ## Pipeline Implementation Details
 
 |   Field           | Description                                                                |
 |-------------------|----------------------------------------------------------------------------|
-| Input Source      | Specify type of source and/or table names                                  |
-| Output Source     | Specify type of source and/or table names                                  |
-| Schedule          | hh:mm                                                                      |
-| Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
-| Associated Report | Specify name and URL of tableau report (if applies)                        |
+| Input Source      | Blocket:    public/blocket_{year}.action_states                            |
+|                   |             public/blocket_{year}.ad_actions                               |
+|                   |             public/blocket_{year}.ads                                      |
+|                   |             public/blocket_{year}.action_params                            |
+|                   |             public/blocket_{year}.users                                    |
+|                   |             public/blocket_{year}.accounts                                 |
+|                   |             public/blocket_{year}.ad_params                                |
+| Output Source     | DWH:    stg.account                                                        |
+|                   |         stg.seller_created_daily                                           | 
+|                   |         stg.seller_pro                                                     |   
+|                   |         ods.seller                                                         |   
+|                   |         ods.seller_pro_details                                             |
+| Schedule          | 00:10 Daily                                                                |
+| Rundeck Access    | data jobs: CORE: Ad-sellers                                                |
+| Associated Report | TBD                                                                        |
 
 
 ### Build
@@ -24,23 +34,35 @@ make docker-build
 
 ### Run micro services
 ```
-docker run -v /local-path/secrets/pulse:/app/pulse-secret \
-           -v /local-path/secrets/db-secret:/app/db-secret \
-           -e APP_PULSE_SECRET=/app/pulse-secret \
-           -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/core-ad-sellers:[TAG]
+sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:latest
+sudo docker run --rm --net=host \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
+                        -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        -e APP_SMTP_SECRET=/app/smtp-secret \
+                        containers.mpi-internal.com/yapo/core-ad-sellers:latest \
+                        -email_from="noreply@yapo.cl" \
+                        -email_to="data_team@adevinta.com"
 ```
 
 ### Run micro services with parameters
 
 ```
-docker run -v /local-path/secrets/pulse:/app/pulse-secret \
-           -v /local-path/secrets/db-secret:/app/db-secret \
-           -e APP_PULSE_SECRET=/app/pulse-secret \
-           -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/core-ad-sellers:[TAG] \
-           -date_from=YYYY-MM-DD \
-           -date_to=YYYY-MM-DD
+sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:latest
+sudo docker run --rm --net=host \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
+                        -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
+                        -e APP_DB_SECRET=/app/blocket-secret \
+                        -e APP_DW_SECRET=/app/db-secret \
+                        -e APP_SMTP_SECRET=/app/smtp-secret \
+                        containers.mpi-internal.com/yapo/core-ad-sellers:latest \
+                        -email_from="noreply@yapo.cl" \
+                        -email_to="data_team@adevinta.com"
+                        -date_from=YYYY-MM-DD \
+                        -date_to=YYYY-MM-DD
 ```
 
 ### Adding Rundeck token to Travis
