@@ -12,12 +12,11 @@ class AdReplyQuery:
             FROM ods.ad_reply
             where rank is null and ad_reply_id_nk is not null and ad_id_fk >0
             order by ad_reply_creation_date, ad_reply_id_nk;
-            """
+        """
 
-    def update_ad_reply_rank(self, buyer_id_fk, ad_reply_id_pk) -> str:
-        return """update ods.ad_reply
-            set rank = coalesce( (select max(rank)+1 from ods.ad_reply where buyer_id_fk={}),1 )
-            where ad_reply_id_pk={}""".format(buyer_id_fk, ad_reply_id_pk)
+    def dwh_ad_reply_by_id_buyer(self, ids) -> str:
+        return """select * from ods.ad_reply
+            where buyer_id_fk in ({}) and rank is not null""".format(",".join(ids))
 
     def clean_stg_ad_reply(self) -> str:
         return """truncate stg.ad_reply;"""
@@ -31,6 +30,15 @@ class AdReplyQuery:
                 between '{DATE_FROM}' and '{DATE_TO}';""".format(
                        DATE_FROM=self.params.get_date_from(),
                        DATE_TO=self.params.get_date_to())
+
+    def clean_ods_ad_reply_ranks(self, ids) -> str:
+        """
+        Cleans yesterday's data to avoid duplicate in insert
+        """
+        return """delete from ods.ad_reply
+            where rank is null
+            and ad_id_fk > 0 
+            and ad_reply_id_pk in ({})""".format(",".join(ids))
 
     def ods_stg_ad_reply_comparation(self) -> str:
         return """SELECT
