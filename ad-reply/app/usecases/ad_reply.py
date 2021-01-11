@@ -5,6 +5,7 @@ from infraestructure.psql import Database
 from utils.query import AdReplyQuery
 from utils.read_params import ReadParams
 
+CHUNCKED_BLOCKS = 100
 
 class AdReply(AdReplyQuery):
     def __init__(self,
@@ -44,7 +45,7 @@ class AdReply(AdReplyQuery):
         db_source.close_connection()
         self.__data_buyers = data_buyers_
 
-    # Query data  from data warehouse
+    # Query data to get newly inserted data from ad reply warehouse
     @property
     def ods_data_reply(self):
         return self.__ods_data_reply
@@ -79,18 +80,49 @@ class AdReply(AdReplyQuery):
         self.logger.info(cleaned_data.head())
         dwh.execute_command(self.clean_stg_ad_reply())
         dwh.insert_copy(cleaned_data, "stg", "ad_reply")
-    
+
     def update_rank(self):
+
+        def set_rank(x, ods):
+            if x['buyer_id_fk'] in ods['buyer_id_fk'].tolist():
+                x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].max() + 1
+            return x
+
         cleaned_data = self.ods_data_reply
-        dwh = Database(conf=self.config.db)
+        
         self.logger.info("First records as evidence of updating ranks")
         self.logger.info(cleaned_data.head())
+
+        buyers = cleaned_data['buyer_id_fk'].astype("str").unique().tolist()
+        dwh = Database(conf=self.config.db)
+        chunked = round(len(buyers) / CHUNCKED_BLOCKS)
+
+        self.logger.info("Ods ad reply data retrieved")
+        self.logger.info("Calculating ranks")
+        self.logger.info(("buyers to find {}".format(len(buyers))))
+        for obj in range(chunked):
+            if buyers:
+                ods = dwh.select_to_dict(self.dwh_ad_reply_by_id_buyer(
+                    buyers[:CHUNCKED_BLOCKS]  
+                ))
+                self.logger.info((len(ods)))
+                del buyers[:CHUNCKED_BLOCKS]
+                astypes = {"buyer_id_fk": "Int64",
+                        "rank": "Int64"}
+                ods = ods.astype(astypes)
+                cleaned_data.apply(set_rank, ods=ods, axis=1)
+                del ods
+                self.logger.info("processsed items {}".format(obj + CHUNCKED_BLOCKS))
         
-        def update_ods(x, dwh):
-            dwh.execute_command(self.update_ad_reply_rank(x['buyer_id_fk'],
-                                                            x['ad_reply_id_pk']))
-            return x
-        cleaned_data.apply(update_ods, dwh=dwh, axis=1)
+        self.logger.info("Ranks calculated")
+        self.logger.info("Filling new ranks as 1")
+        cleaned_data["rank"].fillna(1, inplace = True)
+        cleaned_data = cleaned_data.astype(astypes)
+        
+        dwh.execute_command(self.clean_ods_ad_reply_ranks(
+            cleaned_data['ad_reply_id_pk'].astype("str").unique().tolist()))
+        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
+
 
     def insert_buyers_to_ods(self) -> None:
         db = Database(conf=self.config.db)
