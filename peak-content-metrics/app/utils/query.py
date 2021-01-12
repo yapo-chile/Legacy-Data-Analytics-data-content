@@ -82,6 +82,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where 
                 approval_date::date = '{0}'
+                and action_type not in ('import')
             group by 1,2,3,4
             --QUERY DE BIG SELLERS A DW
             union all 
@@ -156,6 +157,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where
                 approval_date::date  = '{0}'
+                and action_type not in ('import')
             group by 1,2,3,4
             --QUERY DE BIG SELLERS A DW
             union all 
@@ -223,6 +225,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where
                 approval_date::date = '{0}'
+                and action_type not in ('import')
             group by 1,2,3
             --QUERY DE BIG SELLERS A DW
             union all 
@@ -287,6 +290,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where
                 approval_date::date = '{0}'
+                and action_type not in ('import')
             group by 1,2,3
             --QUERY DE BIG SELLERS A DW
             union all 
@@ -336,6 +340,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where
                 approval_date::date = '{0}'
+                and action_type not in ('import')
             group by 1,2
             --QUERY DE BIG SELLERS A DW
             union all
@@ -400,6 +405,7 @@ class Query:
                 left join ods.platform pl on pl.platform_id_pk=ad.platform_id_fk
             where
                 creation_date::date = '{0}'
+                and action_type not in ('import')
             group by 1,2,3,4
             --QUERY DE BIG SELLERS A DW
             union all 
