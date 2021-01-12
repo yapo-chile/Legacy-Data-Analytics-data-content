@@ -330,21 +330,6 @@ class Query:
                            self.params.get_date_to())
         return command
 
-    def upd_left_approval_date_to_ods_ad_table(self) -> str:
-        """
-        Method that returns events of the day
-        """
-        command = """
-                    update ods.ad
-                        set approval_date = creation_date
-                    where approval_date is null
-                        and action_type = 'import'
-                        and creation_date::date = 
-                        '""" + self.params.get_date_from() + """'::date
-                        and creation_date::date <= 
-                        '""" + self.params.get_date_to() + """'::date """
-        return command
-
     def upd_deletion_date_to_ods_ad_table(self) -> str:
         """
         Method that returns events of the day

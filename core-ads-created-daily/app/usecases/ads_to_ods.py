@@ -40,7 +40,6 @@ class AdsToOds(Query):
     def update_ods_ad(self) -> None:
         db = Database(conf=self.config.dwh)
         db.execute_command(self.upd_approval_date_to_ods_ad_table())
-        db.execute_command(self.upd_left_approval_date_to_ods_ad_table())
         db.execute_command(self.upd_deletion_date_to_ods_ad_table())
         db.execute_command(self.upd_rank_approval_to_ods_ad_table())
         db.execute_command(self.upd_first_approval_to_ods_seller_table())
