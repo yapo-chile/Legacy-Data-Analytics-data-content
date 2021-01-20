@@ -113,8 +113,6 @@ class AdReplyQuery:
                        DATE_TO=self.params.get_date_to(),
                        CURRENT_YEAR=self.params.get_current_year())
         return query
-<<<<<<< HEAD
-=======
 
     def get_ad_reply_stg(self) -> str:
         query = """
@@ -132,4 +130,3 @@ class AdReplyQuery:
                     GROUP BY sender_email) ad
             LEFT JOIN ods.buyer b on ad.email = b.buyer_id_nk;"""
         return query
->>>>>>> [feat/ad-reply]: ad reply etl job
