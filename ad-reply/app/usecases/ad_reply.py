@@ -84,6 +84,9 @@ class AdReply(AdReplyQuery):
     def update_rank(self):
 
         def set_rank(x, ods):
+            # Achicar ods cortando solo a data de 2 años o menos
+            # se puede achicar cleaned data tambien buscando una forma de procesar solo
+            # buyers id tipo cleaned_data[cleaned_data['buyers_id'] in (buyers)].apply()?
             if x['buyer_id_fk'] in ods['buyer_id_fk'].tolist():
                 x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].max() + 1
             return x
@@ -106,11 +109,12 @@ class AdReply(AdReplyQuery):
                     buyers[:CHUNCKED_BLOCKS]  
                 ))
                 self.logger.info((len(ods)))
-                del buyers[:CHUNCKED_BLOCKS]
+                
                 astypes = {"buyer_id_fk": "Int64",
                         "rank": "Int64"}
                 ods = ods.astype(astypes)
-                cleaned_data.apply(set_rank, ods=ods, axis=1)
+                cleaned_data[cleaned_data['buyer_id_fk'].isin(buyers[:CHUNCKED_BLOCKS])] = cleaned_data.apply(set_rank, ods=ods, axis=1)
+                del buyers[:CHUNCKED_BLOCKS]
                 del ods
                 self.logger.info("processsed items {}".format(obj + CHUNCKED_BLOCKS))
         
