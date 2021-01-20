@@ -6,17 +6,17 @@ class AdReplyQuery:
 
     def dwh_ad_reply_rank(self) -> str:
         return """SELECT
-            ad_reply_id_pk
-            ,ad_reply_id_nk 
-            ,buyer_id_fk
+            *
             FROM ods.ad_reply
             where rank is null and ad_reply_id_nk is not null and ad_id_fk >0
             order by ad_reply_creation_date, ad_reply_id_nk;
         """
 
     def dwh_ad_reply_by_id_buyer(self, ids) -> str:
-        return """select * from ods.ad_reply
-            where buyer_id_fk in ({}) and rank is not null""".format(",".join(ids))
+        return """select distinct on(buyer_id_fk) buyer_id_fk, "rank"
+            from ods.ad_reply 
+            where buyer_id_fk in ({}) and rank is not null 
+            order by buyer_id_fk, "rank" desc""".format(",".join(ids))
 
     def clean_stg_ad_reply(self) -> str:
         return """truncate stg.ad_reply;"""

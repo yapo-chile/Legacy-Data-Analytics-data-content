@@ -5,7 +5,7 @@ from infraestructure.psql import Database
 from utils.query import AdReplyQuery
 from utils.read_params import ReadParams
 
-CHUNCKED_BLOCKS = 100
+CHUNCKED_BLOCKS = 1000
 
 class AdReply(AdReplyQuery):
     def __init__(self,
@@ -82,13 +82,11 @@ class AdReply(AdReplyQuery):
         dwh.insert_copy(cleaned_data, "stg", "ad_reply")
 
     def update_rank(self):
-
         def set_rank(x, ods):
-            x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].max() + 1
+            x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].get(0, 1) + 1
             return x
 
         cleaned_data = self.ods_data_reply
-        
         self.logger.info("First records as evidence of updating ranks")
         self.logger.info(cleaned_data.head())
 
@@ -96,33 +94,37 @@ class AdReply(AdReplyQuery):
         dwh = Database(conf=self.config.db)
         chunked = round(len(buyers) / CHUNCKED_BLOCKS)
 
+        dwh.execute_command(self.clean_ods_ad_reply_ranks(
+            cleaned_data['ad_reply_id_pk'].astype("str").unique().tolist()))
+
         self.logger.info("Ods ad reply data retrieved")
         self.logger.info("Calculating ranks")
         self.logger.info(("buyers to find {}".format(len(buyers))))
+        astypes = {"buyer_id_fk": "Int64",
+                   "rank": "Int64"}
         for obj in range(chunked):
             if buyers:
                 ods = dwh.select_to_dict(self.dwh_ad_reply_by_id_buyer(
                     buyers[:CHUNCKED_BLOCKS]  
                 ))
-                self.logger.info((len(cleaned_data[cleaned_data['buyer_id_fk'].isin(buyers[:CHUNCKED_BLOCKS])])))
                 
-                astypes = {"buyer_id_fk": "Int64",
-                        "rank": "Int64"}
                 ods = ods.astype(astypes)
-                cleaned_data[cleaned_data['buyer_id_fk'].isin(buyers[:CHUNCKED_BLOCKS])] = cleaned_data.apply(set_rank, ods=ods, axis=1)
+                ods_buyers = ods['buyer_id_fk'].values
+                self.logger.info("Processed items: {}".format(len(cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)])))
+                cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)] = \
+                    cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)] \
+                        .apply(set_rank, ods=ods, axis=1)
                 del buyers[:CHUNCKED_BLOCKS]
+                del ods_buyers
                 del ods
-                self.logger.info("processsed items {}".format(obj + CHUNCKED_BLOCKS))
         
         self.logger.info("Ranks calculated")
         self.logger.info("Filling new ranks as 1")
         cleaned_data["rank"].fillna(1, inplace = True)
+        astypes["ad_reply_id_pk"] = "Int64"
+        astypes["ad_reply_id_nk"] = "Int64"
         cleaned_data = cleaned_data.astype(astypes)
-        
-        dwh.execute_command(self.clean_ods_ad_reply_ranks(
-            cleaned_data['ad_reply_id_pk'].astype("str").unique().tolist()))
         dwh.insert_copy(cleaned_data, "ods", "ad_reply")
-
 
     def insert_buyers_to_ods(self) -> None:
         db = Database(conf=self.config.db)
@@ -155,12 +157,11 @@ class AdReply(AdReplyQuery):
 
     def generate(self):
         self.blocket_data_reply = self.config.blocket
-        print(self.blocket_data_reply.head())
         self.insert_to_stg()
         # Reading stg to perform ods buyers data
         self.logger.info('Starting ods_buyer step')
-        #self.data_buyers = self.config.db
-        #self.insert_buyers_to_ods()
+        self.data_buyers = self.config.db
+        self.insert_buyers_to_ods()
         self.logger.info('Ending ods_buyer step')
         # Reading stg with ods all togeter
         self.dwh_stg_data_reply = self.config.db
