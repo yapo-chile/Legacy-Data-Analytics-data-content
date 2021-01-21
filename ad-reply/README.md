@@ -4,8 +4,8 @@
 
 ## Description
 
-Ads Params Etl processes params from verticals as it would be cars, inmo and big sellers,
-then store them in datawarehouse as appended method so a historical daya would be always
+Ads Reply Etl processes replies from ads 
+then store them in datawarehouse as appended method so a historical would be always
 available.
 
 ## Pipeline Implementation Details
@@ -13,7 +13,7 @@ available.
 |   Field           | Description                                                                |
 |-------------------|----------------------------------------------------------------------------|
 | Input Source      | Blocket Db                                                                 |
-| Output Source     | Schema ods, ads_cars_params, ads_inmo_params and big_seller_details        |
+| Output Source     | Schema stg.ad_reply, ods.ad_reply                                          |
 | Schedule          | 00:10 everyday                                                             |
 | Rundeck Access    | Specify rundeck environment (test/data jobs) and rundeck ETL name          |
 | Associated Report | Specify name and URL of tableau report (if applies)                        |

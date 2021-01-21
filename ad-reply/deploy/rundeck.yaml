@@ -9,7 +9,7 @@
   executionEnabled: true
   group: DOCKER/CONTENT
   loglevel: DEBUG
-  name: CONTENT - AD Params
+  name: CONTENT - AD Reply
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -24,20 +24,18 @@
     onfailure:
       email:
         recipients: data_team@adevinta.com
-        subject: ${job.execid} ${execution.status} ${job.name}
-    onstart:
-      email:
-        recipients: data_team@adevinta.com
-        subject: ${job.execid} ${execution.status} ${job.name}
-    onsuccess:
-      email:
-        recipients: data_team@adevinta.com
-        subject: ${job.execid} ${execution.status} ${job.name}
+        subject: ${job.execid} ${execution.status} ${job.name} - Fallo definitivo
+      plugin:
+        configuration:
+          slack_channel: ''
+          webhook_base_url: https://hooks.slack.com/services
+          webhook_token: T017F9KHA1Y/B01BL7C1CSY/Ai9NzdCrBUA5Ru5sa8JHYrjR
+        type: SlackNotification
   notifyAvgDurationThreshold: null
   schedule:
     month: '*'
     time:
-      hour: '0'
+      hour: '1'
       minute: '10'
       seconds: '0'
     weekday:
