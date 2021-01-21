@@ -1,33 +1,37 @@
 # pylint: disable=no-member
 # utf-8
 
+MAIN_TABLE='"temp".ad_reply'
+TEMP_TABLE='"temp".ad_reply'
+
 
 class AdReplyQuery:
 
     def dwh_ad_reply_rank(self) -> str:
         return """SELECT
             *
-            FROM ods.ad_reply
+            FROM {}
             where rank is null and ad_reply_id_nk is not null and ad_id_fk >0
             order by ad_reply_creation_date, ad_reply_id_nk;
-        """
+        """.format(MAIN_TABLE)
 
     def dwh_ad_reply_by_id_buyer(self, ids) -> str:
         return """select distinct on(buyer_id_fk) buyer_id_fk, "rank"
-            from ods.ad_reply 
+            from {}
             where buyer_id_fk in ({}) and rank is not null 
-            order by buyer_id_fk, "rank" desc""".format(",".join(ids))
+            order by buyer_id_fk, "rank" desc""".format(MAIN_TABLE, ",".join(ids))
 
     def clean_stg_ad_reply(self) -> str:
-        return """truncate stg.ad_reply;"""
+        return """truncate {};""".format(TEMP_TABLE)
 
     def clean_ods_ad_reply(self) -> str:
         """
         Cleans yesterday's data to avoid duplicate in insert
         """
-        return """delete from ods.ad_reply
+        return """delete from {TABLE}
             where ad_reply_creation_date 
                 between '{DATE_FROM}' and '{DATE_TO}';""".format(
+                       TABLE=MAIN_TABLE,
                        DATE_FROM=self.params.get_date_from(),
                        DATE_TO=self.params.get_date_to())
 
@@ -35,10 +39,10 @@ class AdReplyQuery:
         """
         Cleans yesterday's data to avoid duplicate in insert
         """
-        return """delete from ods.ad_reply
+        return """delete from {}
             where rank is null
             and ad_id_fk > 0 
-            and ad_reply_id_pk in ({})""".format(",".join(ids))
+            and ad_reply_id_pk in ({})""".format(MAIN_TABLE, ",".join(ids))
 
     def ods_stg_ad_reply_comparation(self) -> str:
         return """SELECT
@@ -50,12 +54,12 @@ class AdReplyQuery:
                 , ar.list_id as list_id_nk
                 , now() as insert_date
                 , a.ad_id_pk as ad_id_fk
-                FROM stg.ad_reply ar
+                FROM {} ar
                 inner join ods.ad a on ar.ad_id = a.ad_id_nk
                 inner join ods.buyer b on  b.buyer_id_nk = ar.sender_email
                 group by sender_email,b.buyer_id_pk ,added_at, list_id, a.ad_id_pk
                 order by added_at
-            """
+            """.format(TEMP_TABLE)
 
     def blocket_ad_reply(self) -> str:
         """
@@ -125,8 +129,8 @@ class AdReplyQuery:
                         sender_email as email,
                         min(added_at) as buyer_creation_date ,
                         now() as insert_date
-                    FROM stg.ad_reply , ods.ad
+                    FROM {} , ods.ad
                     WHERE list_id = ad.list_id_nk
                     GROUP BY sender_email) ad
-            LEFT JOIN ods.buyer b on ad.email = b.buyer_id_nk;"""
+            LEFT JOIN ods.buyer b on ad.email = b.buyer_id_nk;""".format(TEMP_TABLE)
         return query

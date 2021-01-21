@@ -160,8 +160,11 @@ class AdReply(AdReplyQuery):
         self.insert_to_stg()
         # Reading stg to perform ods buyers data
         self.logger.info('Starting ods_buyer step')
-        self.data_buyers = self.config.db
-        self.insert_buyers_to_ods()
+
+        # BUYERS BLOCK, UNCOMMENT LATER
+        #self.data_buyers = self.config.db
+        #self.insert_buyers_to_ods()
+
         self.logger.info('Ending ods_buyer step')
         # Reading stg with ods all togeter
         self.dwh_stg_data_reply = self.config.db
