@@ -76,10 +76,10 @@ class AdReply(AdReplyQuery):
                    "ad_id": "Int64"}
         cleaned_data = cleaned_data.astype(astypes)
         dwh = Database(conf=self.config.db)
+        dwh.execute_command(self.clean_stg_ad_reply())
         self.logger.info("First records as evidence to STG")
         self.logger.info(cleaned_data.head())
-        dwh.execute_command(self.clean_stg_ad_reply())
-        dwh.insert_copy(cleaned_data, "stg", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "stg_ad_reply")
 
     def update_rank(self):
         def set_rank(x, ods):
@@ -95,7 +95,9 @@ class AdReply(AdReplyQuery):
         chunked = round(len(buyers) / CHUNCKED_BLOCKS)
 
         dwh.execute_command(self.clean_ods_ad_reply_ranks(
-            cleaned_data['ad_reply_id_pk'].astype("str").unique().tolist()))
+                cleaned_data['ad_reply_id_pk'].astype("str").unique().tolist()
+            )
+        )
 
         self.logger.info("Ods ad reply data retrieved")
         self.logger.info("Calculating ranks")
@@ -124,7 +126,7 @@ class AdReply(AdReplyQuery):
         astypes["ad_reply_id_pk"] = "Int64"
         astypes["ad_reply_id_nk"] = "Int64"
         cleaned_data = cleaned_data.astype(astypes)
-        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
 
     def insert_buyers_to_ods(self) -> None:
         db = Database(conf=self.config.db)
@@ -151,7 +153,7 @@ class AdReply(AdReplyQuery):
         dwh.execute_command(self.clean_ods_ad_reply())
         self.logger.info("First records as evidence to ODS")
         self.logger.info(cleaned_data.head())
-        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
         self.ods_data = cleaned_data
 
 

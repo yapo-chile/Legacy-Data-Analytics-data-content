@@ -2,7 +2,7 @@
 # utf-8
 
 MAIN_TABLE='"temp".ad_reply'
-TEMP_TABLE='"temp".ad_reply'
+TEMP_TABLE='"temp".stg_ad_reply'
 
 
 class AdReplyQuery:
