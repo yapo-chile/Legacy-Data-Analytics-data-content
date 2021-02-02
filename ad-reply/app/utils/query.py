@@ -19,7 +19,7 @@ class AdReplyQuery:
         return """select distinct on(buyer_id_fk) buyer_id_fk, "rank"
             from {}
             where buyer_id_fk in ({}) and rank is not null 
-            order by buyer_id_fk, "rank" desc""".format(MAIN_TABLE, ",".join(ids))
+            order by buyer_id_fk, "rank" desc""".format("ods.ad_reply", ",".join(ids))
 
     def clean_stg_ad_reply(self) -> str:
         return """truncate {};""".format(TEMP_TABLE)

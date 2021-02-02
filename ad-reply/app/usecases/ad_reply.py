@@ -82,8 +82,25 @@ class AdReply(AdReplyQuery):
         dwh.insert_copy(cleaned_data, "temp", "stg_ad_reply")
 
     def update_rank(self):
-        def set_rank(x, ods):
-            x['rank'] = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].get(0, 1) + 1
+        def set_rank(x, ods, data):
+            def calculate_rank(ods_rank=0, data_rank=0):
+                rank = 0
+                if data_rank == None:
+                    data_rank = 0
+                if ods_rank == 0 and data_rank == 0:
+                    rank = 1
+                elif ods_rank > data_rank:
+                    rank = ods_rank + 1
+                elif data_rank > ods_rank:
+                    rank = data_rank + 1
+                return rank
+
+            ods_rank = ods[ods['buyer_id_fk'] == x['buyer_id_fk']]['rank'].get(0, 0)
+            data_rank = data[
+                    data['buyer_id_fk'] == x['buyer_id_fk']
+                ].sort_values(by='rank', ascending=False)['rank'].get(0, 0)
+
+            x['rank'] = calculate_rank(ods_rank, data_rank)
             return x
 
         cleaned_data = self.ods_data_reply
@@ -115,7 +132,7 @@ class AdReply(AdReplyQuery):
                 self.logger.info("Processed items: {}".format(len(cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)])))
                 cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)] = \
                     cleaned_data[cleaned_data['buyer_id_fk'].isin(ods_buyers)] \
-                        .apply(set_rank, ods=ods, axis=1)
+                        .apply(set_rank, ods=ods, data=cleaned_data[['buyer_id_fk', 'rank']], axis=1)
                 del buyers[:CHUNCKED_BLOCKS]
                 del ods_buyers
                 del ods
