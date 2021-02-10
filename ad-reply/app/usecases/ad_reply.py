@@ -79,7 +79,7 @@ class AdReply(AdReplyQuery):
         dwh.execute_command(self.clean_stg_ad_reply())
         self.logger.info("First records as evidence to STG")
         self.logger.info(cleaned_data.head())
-        dwh.insert_copy(cleaned_data, "temp", "stg_ad_reply")
+        dwh.insert_copy(cleaned_data, "stg", "ad_reply")
 
     def update_rank(self):
         self.ranks = {}
@@ -147,7 +147,7 @@ class AdReply(AdReplyQuery):
         astypes["ad_reply_id_nk"] = "Int64"
         cleaned_data = cleaned_data.astype(astypes)
         del cleaned_data['data_id']
-        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
+        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
 
     def insert_buyers_to_ods(self) -> None:
         db = Database(conf=self.config.db)
@@ -174,7 +174,7 @@ class AdReply(AdReplyQuery):
         dwh.execute_command(self.clean_ods_ad_reply())
         self.logger.info("First records as evidence to ODS")
         self.logger.info(cleaned_data.head())
-        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
+        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
         self.ods_data = cleaned_data
 
 
@@ -185,8 +185,8 @@ class AdReply(AdReplyQuery):
         self.logger.info('Starting ods_buyer step')
 
         # BUYERS BLOCK, UNCOMMENT LATER
-        #self.data_buyers = self.config.db
-        #self.insert_buyers_to_ods()
+        self.data_buyers = self.config.db
+        self.insert_buyers_to_ods()
 
         self.logger.info('Ending ods_buyer step')
         # Reading stg with ods all togeter
