@@ -37,11 +37,15 @@ class AdReply(AdReplyQuery):
     def data_buyers(self, config):
         db_source = Database(conf=config)
         data_buyers_ = db_source.select_to_dict(self.get_ad_reply_stg())
+        self.logger.info(data_buyers_.head())
         data_buyers_ = data_buyers_[data_buyers_.buyer_id_pk_aux == 0]
+        self.logger.info(data_buyers_.head())
         data_buyers_.drop(
             ['buyer_id_pk_aux'],
             axis=1,
             inplace=True)
+        
+        self.logger.info(data_buyers_.head())
         db_source.close_connection()
         self.__data_buyers = data_buyers_
 
@@ -79,7 +83,7 @@ class AdReply(AdReplyQuery):
         self.logger.info("First records as evidence to STG")
         self.logger.info(cleaned_data.head())
         dwh.execute_command(self.clean_stg_ad_reply())
-        dwh.insert_copy(cleaned_data, "stg", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "stg_ad_reply")
 
     def update_rank(self):
         def set_rank(x, ods):
@@ -124,14 +128,16 @@ class AdReply(AdReplyQuery):
         astypes["ad_reply_id_pk"] = "Int64"
         astypes["ad_reply_id_nk"] = "Int64"
         cleaned_data = cleaned_data.astype(astypes)
-        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
 
     def insert_buyers_to_ods(self) -> None:
         db = Database(conf=self.config.db)
+        self.logger.info("First records as evidence to Buyers")
+        self.logger.info(self.data_buyers.head())
         db.insert_copy(
             df=self.data_buyers,
-            schema='ods',
-            table='buyer'
+            schema="temp",
+            table="buyer"
         )
         db.close_connection()
 
@@ -151,7 +157,7 @@ class AdReply(AdReplyQuery):
         dwh.execute_command(self.clean_ods_ad_reply())
         self.logger.info("First records as evidence to ODS")
         self.logger.info(cleaned_data.head())
-        dwh.insert_copy(cleaned_data, "ods", "ad_reply")
+        dwh.insert_copy(cleaned_data, "temp", "ad_reply")
         self.ods_data = cleaned_data
 
 
@@ -161,9 +167,8 @@ class AdReply(AdReplyQuery):
         # Reading stg to perform ods buyers data
         self.logger.info('Starting ods_buyer step')
 
-        # BUYERS BLOCK, UNCOMMENT LATER
-        #self.data_buyers = self.config.db
-        #self.insert_buyers_to_ods()
+        self.data_buyers = self.config.db
+        self.insert_buyers_to_ods()
 
         self.logger.info('Ending ods_buyer step')
         # Reading stg with ods all togeter

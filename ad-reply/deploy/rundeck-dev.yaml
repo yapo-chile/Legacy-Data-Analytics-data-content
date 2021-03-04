@@ -5,7 +5,7 @@
                       -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                       -e APP_BLOCKET_SECRET=/app/db-blocket \
                       -e APP_DB_SECRET=/app/db-secret \
-                         containers.mpi-internal.com/yapo/ad-reply:feat_ad-reply
+                         containers.mpi-internal.com/yapo/ad-reply:test_ad-reply-buyers
   executionEnabled: true
   group: DOCKER/CONTENT
   loglevel: DEBUG
@@ -25,12 +25,12 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/ad-reply:feat_ad-reply
+        sudo docker pull containers.mpi-internal.com/yapo/ad-reply:test_ad-reply-buyers
         sudo docker run --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
                             -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                             -e APP_BLOCKET_SECRET=/app/db-blocket \
                             -e APP_DB_SECRET=/app/db-secret \
-                              containers.mpi-internal.com/yapo/ad-reply:feat_ad-reply \
+                              containers.mpi-internal.com/yapo/ad-reply:test_ad-reply-buyers \
                               -date_from="2020-11-14" \
                               -date_to="2020-11-14"
     keepgoing: false

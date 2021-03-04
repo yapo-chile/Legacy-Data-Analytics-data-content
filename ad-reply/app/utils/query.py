@@ -2,7 +2,7 @@
 # utf-8
 
 MAIN_TABLE='"temp".ad_reply'
-TEMP_TABLE='"temp".ad_reply'
+TEMP_TABLE='"temp".stg_ad_reply'
 
 
 class AdReplyQuery:
@@ -19,7 +19,7 @@ class AdReplyQuery:
         return """select distinct on(buyer_id_fk) buyer_id_fk, "rank"
             from {}
             where buyer_id_fk in ({}) and rank is not null 
-            order by buyer_id_fk, "rank" desc""".format(MAIN_TABLE, ",".join(ids))
+            order by buyer_id_fk, "rank" desc""".format("ods.ad_reply", ",".join(ids))
 
     def clean_stg_ad_reply(self) -> str:
         return """truncate {};""".format(TEMP_TABLE)
@@ -132,5 +132,5 @@ class AdReplyQuery:
                     FROM {} , ods.ad
                     WHERE list_id = ad.list_id_nk
                     GROUP BY sender_email) ad
-            LEFT JOIN ods.buyer b on ad.email = b.buyer_id_nk;""".format(TEMP_TABLE)
+            LEFT JOIN "temp".buyer b on ad.email = b.buyer_id_nk;""".format(TEMP_TABLE)
         return query
