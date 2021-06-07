@@ -41,10 +41,10 @@ class SendEmailSellersPackLeak():
         else:
             FROM = self.params.email_from
         if self.params.email_to == []:
-            TO = ['claudia.castro@adevinta.com',
+            TO = ['claudia.castro@yapo.cl',
                   'experiencia@yapo.cl',
-                  'sofia.fernandez@adevinta.com',
-                  'data_team@adevinta.com']
+                  'sofia.fernandez@yapo.cl',
+                  'gp_data_analytics@yapo.cl']
         else:
             TO = self.params.email_to
         CSV_FILE = self.file_name
