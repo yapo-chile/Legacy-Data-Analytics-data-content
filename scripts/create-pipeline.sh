@@ -17,4 +17,3 @@ else
     grep -rl "data-base-pipeline" ${BASE_PIPELINE_NAME}/* | xargs sed -i '' "s/data-base-pipeline/${BASE_PIPELINE_NAME}/g"
     sed -i '' "s/#\ Base\ pipeline/#\ $1\ pipeline/g" ${BASE_PIPELINE_NAME}/README.md
 fi
-
