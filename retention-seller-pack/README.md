@@ -16,7 +16,7 @@ This pipeline accept parameters that can be included in rundeck execution
 - date_from: Initial date of lapse time that considers the query to the database, must be first day of month. By default considers first day of last month 
 - date_to: End date of lapse time that considers the query to the database, must be first day of month of next month of the entered value in date_from. By default considers first day of the current month
 - email_from: Email address from where the email is sent. By default noreply@yapo.cl
-- email_to: Email address to which the email is sent, if more than one email is included per flag. By default this process sends to claudia.castro@adevinta.com, experiencia@yapo.cl, sofia.fernandez@adevinta.com, data_team@adevinta.com
+- email_to: Email address to which the email is sent, if more than one email is included per flag. By default this process sends to claudia.castro@adevinta.com, experiencia@yapo.cl, sofia.fernandez@adevinta.com, gp_data_analytics@yapo.cl
 
 
 ## Pipeline Implementation Details
