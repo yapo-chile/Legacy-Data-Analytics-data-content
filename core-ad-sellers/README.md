@@ -44,7 +44,7 @@ sudo docker run --rm --net=host \
                         -e APP_SMTP_SECRET=/app/smtp-secret \
                         containers.mpi-internal.com/yapo/core-ad-sellers:latest \
                         -email_from="noreply@yapo.cl" \
-                        -email_to="data_team@adevinta.com"
+                        -email_to="gp_data_analytics@yapo.cl"
 ```
 
 ### Run micro services with parameters
@@ -60,7 +60,7 @@ sudo docker run --rm --net=host \
                         -e APP_SMTP_SECRET=/app/smtp-secret \
                         containers.mpi-internal.com/yapo/core-ad-sellers:latest \
                         -email_from="noreply@yapo.cl" \
-                        -email_to="data_team@adevinta.com"
+                        -email_to="gp_data_analytics@yapo.cl"
                         -date_from=YYYY-MM-DD \
                         -date_to=YYYY-MM-DD
 ```

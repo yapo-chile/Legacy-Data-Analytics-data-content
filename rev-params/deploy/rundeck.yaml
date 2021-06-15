@@ -23,12 +23,14 @@
   notification:
     onfailure:
       email:
-        recipients: data_team@adevinta.com
+        recipients: gp_data_analytics@yapo.cl
         subject: ${job.execid} ${execution.status} ${job.name} - Fallo definitivo
-    onretryablefailure:
-      email:
-        recipients: data_team@adevinta.com
-        subject: ${job.execid} ${execution.status} ${job.name} - Fallo por reintento
+      plugin:
+        configuration:
+          slack_channel: ''
+          webhook_base_url: https://hooks.slack.com/services
+          webhook_token: T02U92SBN/B024F0M8EF5/6jLC6tWl4QNrYFpnyoLqqQZI
+        type: SlackNotification
   notifyAvgDurationThreshold: null
   schedule:
     month: '*'

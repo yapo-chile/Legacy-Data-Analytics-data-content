@@ -22,13 +22,13 @@
   notification:
     onfailure:
       email:
-        recipients: data_team@adevinta.com
+        recipients: gp_data_analytics@yapo.cl
         subject: ${job.execid} ${execution.status} ${job.name} - Fallo definitivo
       plugin:
         configuration:
           slack_channel: ''
           webhook_base_url: https://hooks.slack.com/services
-          webhook_token: T017F9KHA1Y/B01BL7C1CSY/Ai9NzdCrBUA5Ru5sa8JHYrjR
+          webhook_token: T02U92SBN/B024F0M8EF5/6jLC6tWl4QNrYFpnyoLqqQZI
         type: SlackNotification
   notifyAvgDurationThreshold: null
   retry:
@@ -57,7 +57,7 @@
                         -e APP_SMTP_SECRET=/app/smtp-secret \
                         containers.mpi-internal.com/yapo/core-ad-sellers:latest \
                         -email_from="noreply@yapo.cl" \
-                        -email_to="data_team@adevinta.com"
+                        -email_to="gp_data_analytics@yapo.cl"
     - description: Ad create daily reference
       jobref:
         group: CORE

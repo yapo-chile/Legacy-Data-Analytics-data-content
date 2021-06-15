@@ -139,7 +139,7 @@ class ReadParams:
         if self.email_from is None:
             self.email_from = "noreply@yapo.cl"
         if self.email_to == []:
-            self.email_to = ['data_team@adevinta.com']
+            self.email_to = ['gp_data_analytics@yapo.cl']
 
         self.logger.info('Date from : %s', self.date_from)
         self.logger.info('Date to   : %s', self.date_to)

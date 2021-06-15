@@ -234,7 +234,7 @@ class SendEmailBesedo():
         else:
             FROM = self.params.email_from
         if self.params.email_to == []:
-            TO = ['data_team@adevinta.com']
+            TO = ['gp_data_analytics@yapo.cl']
         else:
             TO = self.params.email_to
         BODY = """Estimad@s,
