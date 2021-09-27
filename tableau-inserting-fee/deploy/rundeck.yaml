@@ -1,21 +1,13 @@
 - defaultTab: nodes
   description: |-
-        <Add specific URL or path of the pipeline in github>
-        sudo docker run --rm --net=host \
-                    -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                    -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                    -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                    -e APP_PULSE_SECRET=/app/pulse-secret \
-                    -e APP_DB_SECRET=/app/db-secret \
-                    -e APP_SMTP_SECRET=/app/smtp-secret \
-                    containers.mpi-internal.com/yapo/tableau-inserting-fee:latest \
-                    -email_from="noreply@yapo.cl -- if put this options replace default email from" \
-                    -email_to="email 1 to send data -- if put this options replace default emails to" \
-                    -email_to="email n to send data"
+        Retrieves data to be used in tableau online for inserting fee \
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/tableau-inserting-fee:latest
   executionEnabled: true
-  group: DOCKER/<FOLDER RUNDECK LOCATION>
+  group: DOCKER/CONTENT
   loglevel: DEBUG
-  name: <FOLDER RUNDECK LOCATION> - Project Name Template
+  name: CONTENT - Tableau inserting fee
   nodeFilterEditable: false
   nodefilters:
     dispatch:
@@ -29,19 +21,19 @@
   notification:
     onfailure:
       email:
-        recipients: data_team@adevinta.com
+        recipients: gp_data_analytics@yapo.cl
         subject: ${job.execid} ${execution.status} ${job.name} - Fallo definitivo
       plugin:
         configuration:
           slack_channel: ''
           webhook_base_url: https://hooks.slack.com/services
-          webhook_token: T017F9KHA1Y/B01BL7C1CSY/Ai9NzdCrBUA5Ru5sa8JHYrjR
+          webhook_token: T02U92SBN/B024F0M8EF5/6jLC6tWl4QNrYFpnyoLqqQZI
         type: SlackNotification
   notifyAvgDurationThreshold: null
   schedule:
     month: '*'
     time:
-      hour: '03'
+      hour: '9'
       minute: '0'
       seconds: '0'
     weekday:
@@ -52,16 +44,9 @@
     commands:
     - script: |-
         sudo docker pull containers.mpi-internal.com/yapo/tableau-inserting-fee:latest
-        sudo docker run --rm --net=host \
-                        -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
-                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
-                        -v /home/bnbiuser/secrets/smtp:/app/smtp-secret \
-                        -e APP_PULSE_SECRET=/app/pulse-secret \
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        -e APP_SMTP_SECRET=/app/smtp-secret \
-                        containers.mpi-internal.com/yapo/tableau-inserting-fee:latest \
-                        -email_from="noreply@yapo.cl" \
-                        -email_to="data_team@adevinta.com"
+                        containers.mpi-internal.com/yapo/tableau-inserting-fee:latest
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
