@@ -3,6 +3,11 @@
 
 
 class TableauInsertingFeeQuery:
+    def clean_inserting_fee(self) -> str:
+        return """delete from dm_analysis.temp_tableau_inserting_fee 
+                    where date_id::date between '{}'::date 
+                    and '{}'::date""".format(self.params.get_date_from(),
+                       self.params.get_date_to())
 
     def select_inferting_fee(self) -> str:
         """
