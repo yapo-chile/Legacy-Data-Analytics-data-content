@@ -27,7 +27,8 @@ class TableauInsertingFee(TableauInsertingFeeQuery):
         self.__dwh_inserting_fee = dwh_inserting_fee
 
     def insert_to_table(self):
-        dwh = Database(conf=self.config.db)        
+        dwh = Database(conf=self.config.db)
+        dwh.execute_command(self.clean_inserting_fee())    
         dwh.insert_copy(self.cleaned_data, "dm_analysis", "temp_tableau_inserting_fee")
 
     def generate(self):
