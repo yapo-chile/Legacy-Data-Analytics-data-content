@@ -1,0 +1,32 @@
+- defaultTab: nodes
+  description: |-
+        Retrieves data to be used in tableau online for inserting fee \
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/tableau-kpi-fraude:latest
+  executionEnabled: true
+  group: DOCKER/CONTENT
+  loglevel: DEBUG
+  name: CONTENT - Tableau Kpi Fraude
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  notifyAvgDurationThreshold: null
+  scheduleEnabled: false
+  sequence:
+    commands:
+    - script: |-
+        sudo docker pull containers.mpi-internal.com/yapo/tableau-kpi-fraude:latest
+        sudo docker run --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        containers.mpi-internal.com/yapo/tableau-kpi-fraude:latest
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
