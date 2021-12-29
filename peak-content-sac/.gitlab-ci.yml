@@ -1,0 +1,24 @@
+# One .gitlab-ci.yml file for each project must be present.
+# In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
+# into the project root folder (`ln -s ./app/dockerfile ./Dockerfile`).
+
+# TODO: build and push a Docker image to the GitLab package registry.
+
+include:
+  - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
+    ref: main
+    file: 'gitlab-ci.yml'
+
+
+stages:
+  - build-docker
+
+docker-push-hash:
+  extends: .docker-push-hash
+  only:
+    - dev
+
+docker-push-release:
+  extends: .docker-push-release
+  only:
+    - master

@@ -1,3 +1,24 @@
 # TODO: pipelines for docker build 
 # each folder has its own image
 
+---
+
+include:
+#  - local: 'ad-reply/.gitlab-ci.yml'
+#  - local: 'core-ad-sellers/.gitlab-ci.yml'
+#  - local: 'core-ads-created-daily/.gitlab-ci.yml'
+#  - local: 'evasion-moderation/.gitlab-ci.yml'
+#  - local: 'lead-and-unique-lead/.gitlab-ci.yml'
+#  - local: 'peak-content-metrics/.gitlab-ci.yml'
+#  - local: 'peak-content-naa-region-metrics/.gitlab-ci.yml'
+  - local: 'peak-content-sac/.gitlab-ci.yml'
+#  - local: 'peak-new-approved-ads/.gitlab-ci.yml'
+#  - local: 'peak-revenues/.gitlab-ci.yml'
+#  - local: 'peak-revenues-advertising/.gitlab-ci.yml'
+#  - local: 'retention-seller-pack/.gitlab-ci.yml'
+#  - local: 'rev-params/.gitlab-ci.yml'
+#  - local: 'seller-return-over-current/.gitlab-ci.yml'
+#  - local: 'send_email_besedo/.gitlab-ci.yml'
+#  - local: 'tableau-inserting-fee/.gitlab-ci.yml'
+#  - local: 'tableau-kpi-fraude/.gitlab-ci.yml'
+
