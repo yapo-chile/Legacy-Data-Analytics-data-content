@@ -17,8 +17,16 @@ docker-push-hash:
   extends: .docker-push-hash
   only:
     - dev
+  variables:
+    CI_COMMIT_TAG: '$CI_COMMIT_TAG+peak-content-sac'
+  script:
+    - echo $CI_COMMIT_TAG
 
 docker-push-release:
   extends: .docker-push-release
   only:
     - master
+  variables:
+    CI_COMMIT_TAG: '$CI_COMMIT_TAG+peak-content-sac'
+  script:
+    - echo $CI_COMMIT_TAG
