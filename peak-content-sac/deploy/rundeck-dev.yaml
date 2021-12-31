@@ -5,7 +5,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/peak-content-sac:[git-branch]
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:[git-branch]
   executionEnabled: true
   group: DOCKER/<FOLDER RUNDECK LOCATION>
   loglevel: DEBUG
@@ -25,12 +25,12 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/peak-content-sac:[git-branch]
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:[git-branch]
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/peak-content-sac:[git-branch]
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:[git-branch]
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
