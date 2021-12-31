@@ -36,7 +36,7 @@ docker run -v /local-path/secrets/pulse:/app/pulse-secret \
            -v /local-path/secrets/db-secret:/app/db-secret \
            -e APP_PULSE_SECRET=/app/pulse-secret \
            -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/peak-content-sac:latest
+           registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:latest+peak-content-sac
 ```
 
 ### Run micro services with parameters
@@ -46,7 +46,7 @@ docker run -v /local-path/secrets/pulse:/app/pulse-secret \
            -v /local-path/secrets/db-secret:/app/db-secret \
            -e APP_PULSE_SECRET=/app/pulse-secret \
            -e APP_DB_SECRET=/app/db-secret \
-           containers.mpi-internal.com/yapo/peak-content-sac:latest
+           registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:latest+peak-content-sac
 ```
 
 ### Adding Rundeck token to Travis
