@@ -24,5 +24,5 @@ docker-push-release:
     # make a symlink named data-content/Dockerfile pointing to data-content/peak-content-sac/Dockerfile
     - ln -s ./peak-content-sac/Dockerfile Dockerfile
     - mkdir -p ./peak-content-sac/docker/
-    - ln -s ./peak-content-sac/docker/Dockerfile ./peak-content-sac/Dockerfile
+    - ln -s ./peak-content-sac/Dockerfile ./peak-content-sac/docker/Dockerfile
     - cd ./peak-content-sac/
