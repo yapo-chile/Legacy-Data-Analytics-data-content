@@ -4,25 +4,22 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
+default:
+  before_script:
+    - cd ./peak-content-sac/
+
 include:
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
-    ref: main
+    ref: master
     file: 'gitlab-ci.yml'
 
 
 stages:
   - build-docker
 
-docker-push-hash:
-  extends: .docker-push-hash
-  only:
-    - dev
-  variables:
-    CI_COMMIT_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
-
 docker-push-release:
   extends: .docker-push-release
   only:
     - master
   variables:
-    CI_COMMIT_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
+    IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
