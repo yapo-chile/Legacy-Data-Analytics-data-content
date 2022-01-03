@@ -22,4 +22,6 @@ docker-push-release:
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_peak-content-sac"
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
+    - echo $CI_REGISTRY_USER
+    - echo $CI_REGISTRY_PASSWORD
     - cd ./peak-content-sac/
