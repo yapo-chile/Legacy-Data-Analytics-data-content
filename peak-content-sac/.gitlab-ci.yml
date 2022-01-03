@@ -12,7 +12,7 @@ default:
 
 include:
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
-    ref: master
+    ref: main
     file: 'gitlab-ci.yml'
 
 
@@ -25,3 +25,7 @@ docker-push-release:
     - master
   variables:
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
+  before_script:
+    # make a symlink named data-content/Dockerfile pointing to data-content/peak-content-sac/Dockerfile
+    - ln -s Dockerfile ./peak-content-sac/Dockerfile
+    - cd ./peak-content-sac/
