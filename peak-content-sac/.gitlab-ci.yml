@@ -18,7 +18,7 @@ docker-push-release:
   only:
     - master
   variables:
-    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
+    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}.peak-content-sac"
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
     # make a symlink named data-content/Dockerfile pointing to data-content/peak-content-sac/Dockerfile
