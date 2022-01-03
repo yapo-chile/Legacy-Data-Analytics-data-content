@@ -1,11 +1,13 @@
 # One .gitlab-ci.yml file for each project must be present.
 # In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
-# into the project root folder (`ln -s ./app/dockerfile ./Dockerfile`).
+# into data-content/peak-content-sac/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
 default:
   before_script:
+    # make a symlink named data-content/Dockerfile pointing to data-content/peak-content-sac/Dockerfile
+    - ln -s Dockerfile ./peak-content-sac/Dockerfile
     - cd ./peak-content-sac/
 
 include:
