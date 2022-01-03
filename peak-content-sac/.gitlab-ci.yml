@@ -22,11 +22,12 @@ docker-push-release:
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
     # make a symlink named data-content/Dockerfile pointing to data-content/peak-content-sac/Dockerfile
-    - ln -s ./peak-content-sac/Dockerfile Dockerfile
+    #- ln -s ./peak-content-sac/Dockerfile Dockerfile
     - mkdir -p ./peak-content-sac/docker/
-    - ln -s ./peak-content-sac ./peak-content-sac/docker/peak-content-sac
-    - ln -s ./peak-content-sac/Dockerfile ./peak-content-sac/docker/dockerfile
+    #- ln -s ./peak-content-sac ./peak-content-sac/docker/peak-content-sac
+    #- ln -s ./peak-content-sac/Dockerfile ./peak-content-sac/docker/dockerfile
+    - ln -s ./peak-content-sac/app/dockerfile ./peak-content-sac/docker/dockerfile
     - pwd
     - ls -lah
-    - ls -lah ./peak-content-sac/docker/
+    #- ls -lah ./peak-content-sac/docker/
     - cd ./peak-content-sac/
