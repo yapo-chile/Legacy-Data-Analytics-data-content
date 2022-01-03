@@ -18,8 +18,8 @@ docker-push-release:
   only:
     - master
   variables:
-    CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}.peak-content-sac"
-    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}.peak-content-sac"
+    CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_peak-content-sac"
+    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_peak-content-sac"
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
     - cd ./peak-content-sac/
