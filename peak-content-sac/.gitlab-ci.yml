@@ -22,6 +22,6 @@ docker-push-hash:
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_peak-content-sac"
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
-    - export CI_REGISTRY_USER=${SRE_REGISTRY_USER}
-    - export CI_REGISTRY_PASSWORD=${SRE_REGISTRY_TOKEN}
     - cd ./peak-content-sac/
+    - sleep 5
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
