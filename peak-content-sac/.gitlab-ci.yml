@@ -13,8 +13,8 @@ include:
 stages:
   - build-docker
 
-docker-push-release:
-  extends: .docker-push-release
+docker-push-hash:
+  extends: .docker-push-hash
   only:
     - master
   variables:
