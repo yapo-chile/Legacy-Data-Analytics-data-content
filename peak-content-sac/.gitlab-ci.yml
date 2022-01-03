@@ -19,9 +19,6 @@ docker-push-hash:
     - dev
   variables:
     CI_COMMIT_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
-  script:
-    - echo $CI_COMMIT_SHORT_SHA
-    - echo $CI_COMMIT_TAG
 
 docker-push-release:
   extends: .docker-push-release
@@ -29,6 +26,3 @@ docker-push-release:
     - master
   variables:
     CI_COMMIT_TAG: "${CI_COMMIT_SHORT_SHA}+peak-content-sac"
-  script:
-    - echo $CI_COMMIT_SHORT_SHA
-    - echo $CI_COMMIT_TAG
