@@ -24,6 +24,7 @@ download-secrets:
     - cat /tmp/gcloud-service-key.json
     - gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
   script:
+    - pwd
     - gcloud secrets versions access latest --secret="projects/874770295019/secrets/rundeck-APP_DW_SECRET" > ./app/db-secret
     - gcloud secrets versions access latest --secret="projects/874770295019/secrets/rundeck-APP_ZENDESK_API_SECRET" > ./app/zendesk-api-secret
     - gcloud secrets versions access latest --secret="projects/874770295019/secrets/rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
