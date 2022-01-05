@@ -19,9 +19,9 @@ download-secrets:
   stage: inject-secrets
   artifacts:
     paths:
-      - app/db-secret
-      - app/zendesk-api-secret
-      - app/surveypal-api-secret
+      - peak-content-sac/app/db-secret
+      - peak-content-sac/app/zendesk-api-secret
+      - peak-content-sac/app/surveypal-api-secret
   before_script:
     - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS" | base64 --decode > ${HOME}/gcloud-service-key.json
     - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
