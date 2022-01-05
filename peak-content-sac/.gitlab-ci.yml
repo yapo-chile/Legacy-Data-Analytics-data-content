@@ -28,6 +28,8 @@ download-secrets:
 
 docker-push-release:
   extends: .docker-push-release
+  dependencies: 
+    - inject-secrets
   only:
     - master
   variables:
