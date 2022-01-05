@@ -18,9 +18,9 @@ download-secrets:
   image: google/cloud-sdk
   stage: inject-secrets
   before_script:
-    - echo "$BASE64_GOOGLE_CREDENTIALS" | base64 --decode > /tmp/gcloud-service-key.json
-    - echo "$BASE64_GOOGLE_CREDENTIALS"
-    - echo "$BASE64_GOOGLE_CREDENTIALS" | base64 --decode
+    - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS" | base64 --decode > /tmp/gcloud-service-key.json
+    - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS"
+    - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS" | base64 --decode
     - cat /tmp/gcloud-service-key.json
     - gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
   script:
