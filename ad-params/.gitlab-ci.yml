@@ -40,9 +40,9 @@ stages:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 "deploy-rundeck:ad-params":
+  stage: deploy
   dependencies:
     - docker-push-release:ad-params
-  stage: deploy
   only:
     - master
   variables:
@@ -54,7 +54,7 @@ stages:
     - sleep 5
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - >
+    - |
       source /dev/stdin <<<"$(cat deploy/rundeck.yaml; echo EOF;)" | \
       curl -X POST \
       'http://'${RUNDECK_ENDPOINT}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
