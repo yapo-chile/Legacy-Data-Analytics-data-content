@@ -3,6 +3,11 @@
 
 ---
 
+stages:
+  - inject-secrets
+  - build-docker
+  - deploy
+
 include:
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
     ref: main

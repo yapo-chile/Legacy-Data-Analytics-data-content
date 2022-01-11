@@ -4,10 +4,6 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
-stages:
-  - inject-secrets
-  - build-docker
-
 "download-secrets:peak-content-sac":
   image: google/cloud-sdk
   stage: inject-secrets

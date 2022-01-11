@@ -4,10 +4,6 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
-stages:
-  - inject-secrets
-  - build-docker
-
 "download-secrets:ad-params":
   image: google/cloud-sdk
   stage: inject-secrets
@@ -39,7 +35,7 @@ stages:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 "deploy-rundeck:ad-params":
-  stage: build-docker
+  stage: deploy
   dependencies:
     - docker-push-release:ad-params
   only:
