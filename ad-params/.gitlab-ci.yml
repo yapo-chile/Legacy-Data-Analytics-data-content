@@ -7,7 +7,7 @@
 stages:
   - inject-secrets
   - build-docker
-  - deploy-job
+  - deploy-rundeck:ad-params
 
 "download-secrets:ad-params":
   image: google/cloud-sdk
@@ -40,7 +40,7 @@ stages:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 "deploy-rundeck:ad-params":
-  stage: deploy-job
+#  stage: deploy-job
   dependencies:
     - docker-push-release:ad-params
   only:
