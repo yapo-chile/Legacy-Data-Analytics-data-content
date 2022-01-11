@@ -26,7 +26,7 @@ stages:
 "docker-push-release:ad-params":
   extends: .docker-push-release
   dependencies: 
-    - download-secrets
+    - download-secrets:ad-params
   only:
     - master
   variables:

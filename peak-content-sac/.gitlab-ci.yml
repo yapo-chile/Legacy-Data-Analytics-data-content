@@ -28,7 +28,7 @@ stages:
 "docker-push-release:peak-content-sac":
   extends: .docker-push-release
   dependencies: 
-    - download-secrets
+    - download-secrets:peak-content-sac
   only:
     - master
   variables:
