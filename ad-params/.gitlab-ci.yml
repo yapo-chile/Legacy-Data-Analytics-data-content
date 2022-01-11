@@ -7,7 +7,6 @@
 stages:
   - inject-secrets
   - build-docker
-  - deploy-rundeck:ad-params
 
 "download-secrets:ad-params":
   image: google/cloud-sdk
