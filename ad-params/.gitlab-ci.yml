@@ -4,12 +4,6 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
-include:
-  - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
-    ref: main
-    file: 'gitlab-ci.yml'
-
-
 stages:
   - inject-secrets
   - build-docker
