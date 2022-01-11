@@ -7,6 +7,7 @@
 stages:
   - inject-secrets
   - build-docker
+  - deploy
 
 "download-secrets:ad-params":
   image: google/cloud-sdk
@@ -37,3 +38,26 @@ stages:
     - cd ./ad-params/
     - sleep 5
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+"deploy-rundeck:ad-params":
+  dependencies:
+    - docker-push-release:ad-params
+  stage: deploy
+  only:
+    - master
+  variables:
+    CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
+    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_ad-params"
+    IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
+  before_script:
+    - cd ./ad-params/
+    - sleep 5
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - >
+      source /dev/stdin <<<"$(cat deploy/rundeck.yaml; echo EOF;)" | \
+      curl -X POST \
+      'http://'${RUNDECK_ENDPOINT}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
+      -H 'Content-Type: application/yaml' \
+      -H 'X-Rundeck-Auth-Token: '${RUNDECK_TOKEN}'' \s
+      --data-binary '@-'
