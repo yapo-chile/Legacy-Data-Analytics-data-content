@@ -52,7 +52,7 @@
     - |
       cat deploy/rundeck.yaml | envsubst | \
       curl -X POST \
-      'http://'${RUNDECK_ENDPOINT}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
+      'http://'${RUNDECK_HOST}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
       -H 'Content-Type: application/yaml' \
       -H 'X-Rundeck-Auth-Token: '${RUNDECK_TOKEN}'' \
       --data-binary '@-'
