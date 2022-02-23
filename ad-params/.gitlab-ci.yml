@@ -53,5 +53,5 @@
       curl -X POST \
       ${RUNDECK_API_PROTOCOL}'://'${RUNDECK_API_HOST}':'${RUNDECK_API_PORT}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
       -H 'Content-Type: application/yaml' \
-      -H 'X-Rundeck-Auth-Token: '${RUNDECK_TOKEN}'' \
+      -H 'X-Rundeck-Auth-Token: '${RUNDECK_API_TOKEN}'' \
       --data-binary '@-'
