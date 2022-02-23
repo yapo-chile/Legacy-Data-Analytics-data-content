@@ -2,8 +2,6 @@
 # In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
 # into data-content/ad-params/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
-# TODO: build and push a Docker image to the GitLab package registry.
-
 "download-secrets:ad-params":
   image: google/cloud-sdk
   stage: inject-secrets
@@ -37,6 +35,7 @@
 "deploy-rundeck:ad-params":
   image: alpine:3.15
   stage: deploy
+  when: manual
   dependencies:
     - docker-push-release:ad-params
   only:
