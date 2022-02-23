@@ -48,7 +48,7 @@
     - cd ./ad-params/
   script:
     - |
-      source /dev/stdin <<<"$(cat deploy/rundeck.yaml; echo EOF;)" | \
+      cat deploy/rundeck.yaml | envsubst | \
       curl -X POST \
       'http://'${RUNDECK_ENDPOINT}'/api/14/project/data_jobs/jobs/import?fileformat=yaml&dupeOption=update&uuidOption=preserve' \
       -H 'Content-Type: application/yaml' \
