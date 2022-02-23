@@ -46,8 +46,6 @@
     IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
   before_script:
     - cd ./ad-params/
-    - sleep 5
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - |
       source /dev/stdin <<<"$(cat deploy/rundeck.yaml; echo EOF;)" | \
