@@ -7,8 +7,8 @@
   stage: inject-secrets
   only:
     variables:
-        - $CI_COMMIT_MESSAGE =~ /ad-params$/
-        - $SUBFOLDER == "ad-params"
+      - $CI_COMMIT_MESSAGE =~ /ad-params$/
+      - $SUBFOLDER == "ad-params"
   artifacts:
     paths:
       - ad-params/app/db-secret
