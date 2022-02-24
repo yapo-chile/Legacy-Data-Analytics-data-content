@@ -2,12 +2,10 @@
 # In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
 # into data-content/ad-params/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
-workflow:
+"download-secrets:ad-params":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
     - if: '$SUBFOLDER == "ad-params"'
-
-"download-secrets:ad-params":
   image: google/cloud-sdk
   stage: inject-secrets
   artifacts:
@@ -23,6 +21,9 @@ workflow:
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
 
 "docker-push-release:ad-params":
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+    - if: '$SUBFOLDER == "ad-params"'
   extends: .docker-push-release
   dependencies: 
     - download-secrets:ad-params
@@ -38,6 +39,9 @@ workflow:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 "deploy-rundeck:ad-params":
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+    - if: '$SUBFOLDER == "ad-params"'
   image: alpine:3.15
   stage: deploy
   when: manual

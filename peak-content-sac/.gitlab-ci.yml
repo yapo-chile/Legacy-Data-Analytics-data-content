@@ -4,12 +4,10 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
-workflow:
+"download-secrets:peak-content-sac":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
     - if: '$SUBFOLDER == "peak-content-sac"'
-
-"download-secrets:peak-content-sac":
   image: google/cloud-sdk
   stage: inject-secrets
   artifacts:
@@ -27,6 +25,9 @@ workflow:
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
 
 "docker-push-release:peak-content-sac":
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
+    - if: '$SUBFOLDER == "peak-content-sac"'
   extends: .docker-push-release
   dependencies: 
     - download-secrets:peak-content-sac
