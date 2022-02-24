@@ -24,8 +24,8 @@
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_ZENDESK_API_SECRET" > ./app/zendesk-api-secret
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
 
-"docker-push-release:peak-content-sac":
-  extends: .docker-push-release
+"docker-push-hash:peak-content-sac":
+  extends: .docker-push-hash
   dependencies: 
     - download-secrets:peak-content-sac
   only:

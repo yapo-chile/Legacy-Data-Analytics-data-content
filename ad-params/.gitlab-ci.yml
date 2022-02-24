@@ -20,8 +20,8 @@
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_DW_SECRET" > ./app/db-secret
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
 
-"docker-push-release:ad-params":
-  extends: .docker-push-release
+"docker-push-hash:ad-params":
+  extends: .docker-push-hash
   dependencies: 
     - download-secrets:ad-params
   only:
@@ -40,7 +40,7 @@
   image: alpine:3.15
   stage: deploy
   dependencies:
-    - docker-push-release:ad-params
+    - docker-push-hash:ad-params
   when: manual
   only:
     variables:
