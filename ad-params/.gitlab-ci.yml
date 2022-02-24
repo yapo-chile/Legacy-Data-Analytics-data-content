@@ -4,7 +4,8 @@
 
 workflow:
   rules:
-    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/ || $SUBFOLDER = 'ad-params'
+    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+    - if: $SUBFOLDER = "ad-params"
 
 "download-secrets:ad-params":
   image: google/cloud-sdk
