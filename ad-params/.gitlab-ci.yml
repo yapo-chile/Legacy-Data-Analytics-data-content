@@ -40,7 +40,6 @@
 "deploy-rundeck:ad-params":
   image: alpine:3.15
   stage: deploy
-  when: manual
   dependencies:
     - docker-push-release:ad-params
   only:
