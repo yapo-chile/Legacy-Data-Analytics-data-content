@@ -5,9 +5,7 @@
 "download-secrets:ad-params":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-      when: always
     - if: '$SUBFOLDER == "ad-params"'
-      when: always
   image: google/cloud-sdk
   stage: inject-secrets
   artifacts:
@@ -24,15 +22,12 @@
 
 "docker-push-release:ad-params":
   rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-      when: always
     - if: '$SUBFOLDER == "ad-params"'
-      when: always
   extends: .docker-push-release
   dependencies: 
     - download-secrets:ad-params
-  only:
-    - master
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_ad-params"

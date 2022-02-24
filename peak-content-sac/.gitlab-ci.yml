@@ -29,14 +29,11 @@
 "docker-push-release:peak-content-sac":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
-      when: always
     - if: '$SUBFOLDER == "peak-content-sac"'
-      when: always
+    - if: '$CI_COMMIT_REF_NAME == "master"'
   extends: .docker-push-release
   dependencies: 
     - download-secrets:peak-content-sac
-  only:
-    - master
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_peak-content-sac"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_peak-content-sac"
