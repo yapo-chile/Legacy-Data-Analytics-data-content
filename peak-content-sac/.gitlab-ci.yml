@@ -7,9 +7,7 @@
 workflow:
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
-      when: always
     - if: '$SUBFOLDER == "peak-content-sac"'
-      when: always
 
 "download-secrets:peak-content-sac":
   image: google/cloud-sdk
