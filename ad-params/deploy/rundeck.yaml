@@ -5,7 +5,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/db-blocket \
                         -e APP_DB_SECRET=/app/db-secret \
-                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:master_ad-params
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
   executionEnabled: true
   group: DOCKER/CONTENT
   loglevel: DEBUG

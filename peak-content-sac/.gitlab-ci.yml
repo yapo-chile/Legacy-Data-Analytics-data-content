@@ -4,6 +4,10 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
+workflow:
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/ || $SUBFOLDER = 'peak-content-sac'
+
 "download-secrets:peak-content-sac":
   image: google/cloud-sdk
   stage: inject-secrets
