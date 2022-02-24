@@ -5,7 +5,9 @@
 "download-secrets:ad-params":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+      when: always
     - if: '$SUBFOLDER == "ad-params"'
+      when: always
   image: google/cloud-sdk
   stage: inject-secrets
   artifacts:
@@ -23,7 +25,9 @@
 "docker-push-release:ad-params":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+      when: always
     - if: '$SUBFOLDER == "ad-params"'
+      when: always
   extends: .docker-push-release
   dependencies: 
     - download-secrets:ad-params
@@ -41,7 +45,9 @@
 "deploy-rundeck:ad-params":
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
+      when: always
     - if: '$SUBFOLDER == "ad-params"'
+      when: always
   image: alpine:3.15
   stage: deploy
   when: manual
