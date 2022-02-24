@@ -30,7 +30,7 @@
     - download-secrets:peak-content-sac
   only:
     variables:
-      - '$CI_COMMIT_BRANCH == master'
+      - $CI_COMMIT_BRANCH == "master"
       - '$CI_COMMIT_MESSAGE =~ /peak-content-sac$/ || $SUBFOLDER == "peak-content-sac"'
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_peak-content-sac"
