@@ -9,8 +9,7 @@
   stage: inject-secrets
   only:
     variables:
-      - $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
-      - $SUBFOLDER == "peak-content-sac"
+      - '$CI_COMMIT_MESSAGE =~ /peak-content-sac$/ || $SUBFOLDER == "peak-content-sac"'
   artifacts:
     paths:
       - peak-content-sac/app/db-secret
@@ -32,8 +31,7 @@
   only:
     - master
     variables:
-      - $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
-      - $SUBFOLDER == "peak-content-sac"
+      - '$CI_COMMIT_MESSAGE =~ /peak-content-sac$/ || $SUBFOLDER == "peak-content-sac"'
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_peak-content-sac"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_peak-content-sac"
