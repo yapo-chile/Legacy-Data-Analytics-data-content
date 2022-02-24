@@ -25,8 +25,8 @@
   dependencies: 
     - download-secrets:ad-params
   only:
-    - master
     variables:
+      - $CI_COMMIT_BRANCH == master
       - '$CI_COMMIT_MESSAGE =~ /ad-params$/ || $SUBFOLDER == "ad-params"'
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
@@ -44,8 +44,8 @@
   dependencies:
     - docker-push-release:ad-params
   only:
-    - master
     variables:
+      - $CI_COMMIT_BRANCH == master
       - '$CI_COMMIT_MESSAGE =~ /ad-params$/ || $SUBFOLDER == "ad-params"'
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
