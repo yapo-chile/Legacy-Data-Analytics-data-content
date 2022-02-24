@@ -41,6 +41,7 @@
   stage: deploy
   dependencies:
     - docker-push-release:ad-params
+  when: manual
   only:
     variables:
       - '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /ad-params$/ || $SUBFOLDER == "ad-params")'
