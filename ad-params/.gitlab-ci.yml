@@ -3,12 +3,12 @@
 # into data-content/ad-params/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
 "download-secrets:ad-params":
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-    - if: '$SUBFOLDER == "ad-params"'
   image: google/cloud-sdk
   stage: inject-secrets
+  only:
+    variables:
+        - $CI_COMMIT_MESSAGE =~ /ad-params$/
+        - $SUBFOLDER == "ad-params"
   artifacts:
     paths:
       - ad-params/app/db-secret
@@ -22,13 +22,14 @@
     - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
 
 "docker-push-release:ad-params":
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-    - if: '$SUBFOLDER == "ad-params"'
   extends: .docker-push-release
   dependencies: 
     - download-secrets:ad-params
+  only:
+    - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /ad-params$/
+      - $SUBFOLDER == "ad-params"
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_ad-params"
@@ -39,15 +40,16 @@
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 "deploy-rundeck:ad-params":
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master"'
-    - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-    - if: '$SUBFOLDER == "ad-params"'
   image: alpine:3.15
   stage: deploy
   when: manual
   dependencies:
     - docker-push-release:ad-params
+  only:
+    - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /ad-params$/
+      - $SUBFOLDER == "ad-params"
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_ad-params"
