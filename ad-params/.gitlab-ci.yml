@@ -4,6 +4,7 @@
 
 "download-secrets:ad-params":
   rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
     - if: '$SUBFOLDER == "ad-params"'
   image: google/cloud-sdk
@@ -39,17 +40,14 @@
 
 "deploy-rundeck:ad-params":
   rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: $CI_COMMIT_MESSAGE =~ /ad-params$/
-      when: always
     - if: '$SUBFOLDER == "ad-params"'
-      when: always
   image: alpine:3.15
   stage: deploy
   when: manual
   dependencies:
     - docker-push-release:ad-params
-  only:
-    - master
   variables:
     CI_COMMIT_REF_NAME: "${CI_COMMIT_REF_NAME}_ad-params"
     CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_ad-params"

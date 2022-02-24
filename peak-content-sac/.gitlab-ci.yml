@@ -6,10 +6,9 @@
 
 "download-secrets:peak-content-sac":
   rules:
+    - if: '$CI_COMMIT_REF_NAME == "master"'
     - if: $CI_COMMIT_MESSAGE =~ /peak-content-sac$/
-      when: always    
     - if: '$SUBFOLDER == "peak-content-sac"'
-      when: always
   image: google/cloud-sdk
   stage: inject-secrets
   artifacts:
