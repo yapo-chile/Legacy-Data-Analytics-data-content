@@ -4,7 +4,6 @@
 ---
 
 stages:
-  - inject-secrets
   - build-docker
   - deploy
 

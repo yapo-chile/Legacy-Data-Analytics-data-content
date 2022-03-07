@@ -2,24 +2,6 @@
 # In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
 # into data-content/ad-params/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
-"download-secrets:ad-params":
-  image: google/cloud-sdk
-  stage: inject-secrets
-  only:
-    variables:
-      - '$CI_COMMIT_MESSAGE =~ /ad-params/ || $SUBFOLDER == "ad-params"'
-  artifacts:
-    paths:
-      - ad-params/app/db-secret
-      - ad-params/app/surveypal-api-secret
-  before_script:
-    - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS" | base64 --decode > ${HOME}/gcloud-service-key.json
-    - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-  script:
-    - cd ./ad-params/
-    - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_DW_SECRET" > ./app/db-secret
-    - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
-
 "docker-push-hash:ad-params":
   extends: .docker-push-hash
   dependencies: 

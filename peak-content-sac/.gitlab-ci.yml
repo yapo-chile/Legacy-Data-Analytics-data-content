@@ -4,26 +4,6 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
-"download-secrets:peak-content-sac":
-  image: google/cloud-sdk
-  stage: inject-secrets
-  only:
-    variables:
-      - '$CI_COMMIT_MESSAGE =~ /peak-content-sac/ || $SUBFOLDER == "peak-content-sac"'
-  artifacts:
-    paths:
-      - peak-content-sac/app/db-secret
-      - peak-content-sac/app/zendesk-api-secret
-      - peak-content-sac/app/surveypal-api-secret
-  before_script:
-    - echo "$BASE64_GOOGLE_SECRET_MANAGER_CREDENTIALS" | base64 --decode > ${HOME}/gcloud-service-key.json
-    - gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json
-  script:
-    - cd ./peak-content-sac/
-    - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_DW_SECRET" > ./app/db-secret
-    - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_ZENDESK_API_SECRET" > ./app/zendesk-api-secret
-    - gcloud secrets versions access latest --project=${GOOGLE_SECRET_MANAGER_PROJECT_ID} --secret="rundeck-APP_SURVEYPAL_API_SECRET" > ./app/surveypal-api-secret
-
 "docker-push-hash:peak-content-sac":
   extends: .docker-push-hash
   dependencies: 
