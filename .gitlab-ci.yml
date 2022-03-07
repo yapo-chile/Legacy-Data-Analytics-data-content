@@ -23,7 +23,7 @@ include:
   - local: 'peak-content-metrics/.gitlab-ci.yml'
   - local: 'peak-content-naa-region-metrics/.gitlab-ci.yml'
   - local: 'peak-content-sac/.gitlab-ci.yml'
-#  - local: 'peak-new-approved-ads/.gitlab-ci.yml'
+  - local: 'peak-new-approved-ads/.gitlab-ci.yml'
 #  - local: 'peak-revenues/.gitlab-ci.yml'
 #  - local: 'peak-revenues-advertising/.gitlab-ci.yml'
 #  - local: 'retention-seller-pack/.gitlab-ci.yml'
