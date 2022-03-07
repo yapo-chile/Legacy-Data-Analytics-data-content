@@ -1,6 +1,6 @@
 - defaultTab: nodes
   description: |-
-        sudo docker pull containers.mpi-internal.com/yapo/peak-content-metrics:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
 
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
@@ -8,7 +8,7 @@
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/blocket-secret \
                         -e APP_DW_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/peak-content-metrics:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
   executionEnabled: true
   group: GLOBAL-METRIC
   loglevel: DEBUG
@@ -51,7 +51,7 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/peak-content-metrics:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
 
         sudo docker run -v /home/bnbiuser/secrets/pulse_auth:/app/pulse-secret \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
@@ -59,7 +59,7 @@
                         -e APP_PULSE_SECRET=/app/pulse-secret \
                         -e APP_DB_SECRET=/app/blocket-secret \
                         -e APP_DW_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/peak-content-metrics:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
