@@ -2,7 +2,7 @@
   description: |-
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/retention-seller-pack:latest \
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG} \
                         -email_from="noreply@yapo.cl -- if put this options replace default email from" \
                         -email_to="email 1 to send data -- if put this options replace default emails to" \
                         -email_to="email 2 to send data" \
@@ -28,10 +28,10 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/retention-seller-pack:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
         sudo docker run --net=host --rm -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/retention-seller-pack:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
