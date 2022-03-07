@@ -1,12 +1,12 @@
 - defaultTab: nodes
   description: |-
-        Repository: https://github.mpi-internal.com/Yapo/data-content/tree/master/ad-reply \
+        Repository: https://gitlab.com/yapo_team/legacy/data-analytics/data-content/-/tree/master/ad-reply \
         Retrieves ad params from blocketDb and store them in dwh \
         sudo docker run --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/db-blocket \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/ad-reply:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
   executionEnabled: true
   group: DOCKER/CONTENT
   loglevel: DEBUG
@@ -46,12 +46,12 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/ad-reply:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
         sudo docker run --rm -v /home/bnbiuser/secrets/blocket_db:/app/db-blocket \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_BLOCKET_SECRET=/app/db-blocket \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/ad-reply:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago

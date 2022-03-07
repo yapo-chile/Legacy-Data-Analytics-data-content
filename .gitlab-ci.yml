@@ -15,7 +15,7 @@ include:
     ref: main
     file: 'gitlab-ci.yml'
   - local: 'ad-params/.gitlab-ci.yml'
-#  - local: 'ad-reply/.gitlab-ci.yml'
+  - local: 'ad-reply/.gitlab-ci.yml'
 #  - local: 'core-ad-sellers/.gitlab-ci.yml'
 #  - local: 'core-ads-created-daily/.gitlab-ci.yml'
 #  - local: 'evasion-moderation/.gitlab-ci.yml'
