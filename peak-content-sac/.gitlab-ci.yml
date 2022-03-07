@@ -4,6 +4,9 @@
 
 # TODO: build and push a Docker image to the GitLab package registry.
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
 "docker-push-hash:peak-content-sac":
   extends: .docker-push-hash
   only:

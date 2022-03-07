@@ -2,6 +2,9 @@
 # In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
 # into data-content/ad-params/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+
 "docker-push-hash:ad-params":
   extends: .docker-push-hash
   only:
