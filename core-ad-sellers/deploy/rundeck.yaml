@@ -1,6 +1,6 @@
 - defaultTab: nodes
   description: |-
-        REPO: Yapo / data-content/core-ad-sellers
+        REPO: Repository: https://gitlab.com/yapo_team/legacy/data-analytics/data-content/-/tree/master/core-ad-sellers
         Daily this pipeline makes available into DWH the data 
         related to sellers of ours ads whatever its classification 
         private or professional as well as a detail available related 
@@ -47,7 +47,7 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/core-ad-sellers:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
         sudo docker run --rm --net=host \
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -v /home/bnbiuser/secrets/blocket_db:/app/blocket-secret \
@@ -55,7 +55,7 @@
                         -e APP_DB_SECRET=/app/blocket-secret \
                         -e APP_DW_SECRET=/app/db-secret \
                         -e APP_SMTP_SECRET=/app/smtp-secret \
-                        containers.mpi-internal.com/yapo/core-ad-sellers:latest \
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG} \
                         -email_from="noreply@yapo.cl" \
                         -email_to="gp_data_analytics@yapo.cl"
     - description: Ad create daily reference
