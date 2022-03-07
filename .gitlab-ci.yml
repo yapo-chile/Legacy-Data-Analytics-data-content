@@ -29,7 +29,7 @@ include:
   - local: 'retention-seller-pack/.gitlab-ci.yml'
   - local: 'rev-params/.gitlab-ci.yml'
   - local: 'seller-return-over-current/.gitlab-ci.yml'
-#  - local: 'send_email_besedo/.gitlab-ci.yml'
+  - local: 'send_email_besedo/.gitlab-ci.yml'
 #  - local: 'tableau-inserting-fee/.gitlab-ci.yml'
 #  - local: 'tableau-kpi-fraude/.gitlab-ci.yml'
 

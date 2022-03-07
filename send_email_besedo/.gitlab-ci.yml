@@ -1,0 +1,32 @@
+# One .gitlab-ci.yml file for each project must be present.
+# In order to run the docker-pipeline-template, a Dockerfile symlink must be placed
+# into data-content/send_email_besedo/Dockerfile (`ln -s ./app/dockerfile ./Dockerfile`).
+
+"docker-push-hash:send_email_besedo":
+  extends: .docker-push-hash
+  only:
+    variables:
+      - '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /send_email_besedo/ || $SUBFOLDER == "send_email_besedo")'
+  variables:
+    CI_COMMIT_SHORT_SHA: "${CI_COMMIT_SHORT_SHA}_send_email_besedo"
+    IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
+  before_script:
+    - cd ./send_email_besedo/
+    - sleep 5
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+"deploy-rundeck:send_email_besedo":
+  extends: .deploy-rundeck
+  dependencies:
+    - docker-push-hash:send_email_besedo
+  when: manual
+  only:
+    variables:
+      - '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /send_email_besedo/ || $SUBFOLDER == "send_email_besedo")'
+  variables:
+    IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}_send_email_besedo"
+    RUNDECK_MANIFEST: "deploy/rundeck.yaml"
+    RUNDECK_PROJECT: "data_jobs"
+  before_script:
+    - apk add --no-cache curl gettext
+    - cd ./send_email_besedo/
