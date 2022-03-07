@@ -8,6 +8,7 @@ stages:
   - deploy
 
 include:
+  - template: Security/SAST.gitlab-ci.yml
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
     ref: main
     file: 'gitlab-ci.yml'
