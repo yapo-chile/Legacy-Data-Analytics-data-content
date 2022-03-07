@@ -50,10 +50,10 @@
   sequence:
     commands:
     - script: |-
-        sudo docker pull containers.mpi-internal.com/yapo/peak-content-naa-region-metrics:latest
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
         sudo docker run -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_DW_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/peak-content-naa-region-metrics:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago
