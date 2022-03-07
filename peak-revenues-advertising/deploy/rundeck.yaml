@@ -4,7 +4,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_GOOGLE_SECRET=/app/google_auth \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-content-peak-revenues-advertising:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
   executionEnabled: true
   group: GLOBAL-METRIC
   loglevel: DEBUG
@@ -49,7 +49,7 @@
                         -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
                         -e APP_GOOGLE_SECRET=/app/google_auth \
                         -e APP_DB_SECRET=/app/db-secret \
-                        containers.mpi-internal.com/yapo/data-content-peak-revenues-advertising:latest
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
     keepgoing: false
     strategy: node-first
   timeZone: America/Santiago

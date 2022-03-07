@@ -25,7 +25,7 @@ include:
   - local: 'peak-content-sac/.gitlab-ci.yml'
   - local: 'peak-new-approved-ads/.gitlab-ci.yml'
   - local: 'peak-revenues/.gitlab-ci.yml'
-#  - local: 'peak-revenues-advertising/.gitlab-ci.yml'
+  - local: 'peak-revenues-advertising/.gitlab-ci.yml'
 #  - local: 'retention-seller-pack/.gitlab-ci.yml'
 #  - local: 'rev-params/.gitlab-ci.yml'
 #  - local: 'seller-return-over-current/.gitlab-ci.yml'
