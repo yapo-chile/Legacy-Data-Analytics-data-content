@@ -4,8 +4,6 @@
 
 "docker-push-hash:ad-params":
   extends: .docker-push-hash
-  dependencies: 
-    - download-secrets:ad-params
   only:
     variables:
       - '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /ad-params/ || $SUBFOLDER == "ad-params")'

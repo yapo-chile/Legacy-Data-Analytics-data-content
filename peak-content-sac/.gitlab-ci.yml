@@ -6,8 +6,6 @@
 
 "docker-push-hash:peak-content-sac":
   extends: .docker-push-hash
-  dependencies: 
-    - download-secrets:peak-content-sac
   only:
     variables:
       - '$CI_COMMIT_BRANCH == "master" && ($CI_COMMIT_MESSAGE =~ /peak-content-sac/ || $SUBFOLDER == "peak-content-sac")'
