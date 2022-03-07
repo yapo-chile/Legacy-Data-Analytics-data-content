@@ -19,7 +19,7 @@ include:
   - local: 'core-ad-sellers/.gitlab-ci.yml'
   - local: 'core-ads-created-daily/.gitlab-ci.yml'
 #  - local: 'evasion-moderation/.gitlab-ci.yml'
-#  - local: 'lead-and-unique-lead/.gitlab-ci.yml'
+  - local: 'lead-and-unique-lead/.gitlab-ci.yml'
 #  - local: 'peak-content-metrics/.gitlab-ci.yml'
 #  - local: 'peak-content-naa-region-metrics/.gitlab-ci.yml'
   - local: 'peak-content-sac/.gitlab-ci.yml'
