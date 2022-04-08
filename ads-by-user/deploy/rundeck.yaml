@@ -1,0 +1,56 @@
+- defaultTab: nodes
+  description: |-
+        Retrieves ads by users from Datawarehouse ads and store them in ods.ads_by_user \
+        sudo docker run --rm -v /home/bnbiuser/secrets/stats_db:/app/db-stats \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_STATISTICS_SECRET=/app/db-stats \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
+  executionEnabled: true
+  group: DOCKER/CONTENT
+  loglevel: DEBUG
+  name: CONTENT - ADs by Users
+  nodeFilterEditable: false
+  nodefilters:
+    dispatch:
+      excludePrecedence: true
+      keepgoing: false
+      rankOrder: ascending
+      successOnEmptyNodeFilter: false
+      threadcount: '1'
+    filter: 'name: dockerhost'
+  nodesSelectedByDefault: true
+  notification:
+    onfailure:
+      email:
+        recipients: gp_data_analytics@yapo.cl
+        subject: ${job.execid} ${execution.status} ${job.name} - Fallo definitivo
+      plugin:
+        configuration:
+          slack_channel: ''
+          webhook_base_url: https://hooks.slack.com/services
+          webhook_token: T02U92SBN/B024F0M8EF5/6jLC6tWl4QNrYFpnyoLqqQZI
+        type: SlackNotification
+  notifyAvgDurationThreshold: null
+  schedule:
+    month: '*'
+    time:
+      hour: '1'
+      minute: '30'
+      seconds: '0'
+    weekday:
+      day: '*'
+    year: '*'
+  scheduleEnabled: true
+  sequence:
+    commands:
+    - script: |-
+        sudo docker pull registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
+        sudo docker run --rm -v /home/bnbiuser/secrets/stats_db:/app/db-stats \
+                        -v /home/bnbiuser/secrets/dw_db:/app/db-secret \
+                        -e APP_STATISTICS_SECRET=/app/db-stats \
+                        -e APP_DB_SECRET=/app/db-secret \
+                        registry.gitlab.com/yapo_team/legacy/data-analytics/data-content:${IMAGE_TAG}
+    keepgoing: false
+    strategy: node-first
+  timeZone: America/Santiago
