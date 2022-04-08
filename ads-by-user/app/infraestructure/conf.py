@@ -23,6 +23,10 @@ class AppConfig:
 
     @environ.config(prefix="STATISTICS")
     class StatisticDatabaseConfig:
+        """
+        StatisticDatabaseConfig Class representing the configuration to access the 
+        statistics database
+        """
         host: str = INI_STATS.secret(name="host", default=environ.var())
         port: int = INI_STATS.secret(name="port", default=environ.var())
         name: str = INI_STATS.secret(name="dbname", default=environ.var())
