@@ -1,6 +1,5 @@
 # pylint: disable=no-member
 # utf-8
-import logging
 from utils.read_params import ReadParams
 from usecases.ads import AdsByUser
 
@@ -18,3 +17,4 @@ class Process:
         self.ads_by_users = AdsByUser(self.config,
                                       self.params,
                                       self.logger).generate()
+        return True
