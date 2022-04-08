@@ -8,7 +8,7 @@ from usecases.process import Process
 
 if __name__ == '__main__':
     CONFIG = getConf()
-    LOGGER = logging.getLogger('ad-params')
+    LOGGER = logging.getLogger('ads-by-user')
     DATE_FORMAT = """%(asctime)s,%(msecs)d %(levelname)-2s """
     INFO_FORMAT = """[%(filename)s:%(lineno)d] %(message)s"""
     LOG_FORMAT = DATE_FORMAT + INFO_FORMAT
