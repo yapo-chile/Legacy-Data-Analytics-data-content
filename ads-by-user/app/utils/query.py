@@ -76,11 +76,11 @@ class Queries():
                                              END_DATE=self.params.end_date)
 
     def clean_dwh_table(self):
-        return """delete from temp.ads_by_user
+        return """delete from ods.ads_by_user
                     where date_time between '{}'::date and '{}'::date""".format(self.params.start_date,
                                                                                 self.params.end_date)
 
     def clean_statistics_table(self):
-       return """delete from public.ads_by_user2
+       return """delete from public.ads_by_user
                     where date_time between '{}'::date and '{}'::date""".format(self.params.start_date,
                                                                                 self.params.end_date)
