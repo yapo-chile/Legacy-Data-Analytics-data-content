@@ -15,8 +15,8 @@ class AdsByUser(Queries):
         self.params = params
         self.logger = logger
         self.stat_schema = "public"
-        self.stat_table = "ads_by_user2"
-        self.dwh_schema = "temp"
+        self.stat_table = "ads_by_user"
+        self.dwh_schema = "ods"
         self.dwh_table = "ads_by_user"
 
     @property
