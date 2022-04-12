@@ -40,10 +40,7 @@ class Queries():
                         *
                     from (
                     select 
-                        CASE
-                            WHEN action_type = 'import' THEN list_time::date
-                            ELSE approval_date::date 
-                            END AS date_time,
+                        creation_date,
                         email,
                         user_id,
                         category,
@@ -51,7 +48,7 @@ class Queries():
                         0 as nof_sold_ads
                     from (
                         select 
-                            a.approval_date::date ,
+                            a.creation_date::date,
                             list_time::date,
                             s.seller_id_nk as email,
                             s.seller_id_blocket_nk::int as user_id,
@@ -68,7 +65,9 @@ class Queries():
                         LEFT JOIN 
                             stg.big_sellers_detail AS bsd ON a.ad_id_nk = bsd.ad_id_nk
                         where
-                            ((a.approval_date::date between '{START_DATE}'::date and '{END_DATE}'::date) or (list_time::date between '{START_DATE}'::date and '{END_DATE}'::date))) z
+                            ((a.approval_date::date is not null) or (list_time::date is not null))
+                        and
+                            a.creation_date::date between '{START_DATE}'::date and '{END_DATE}'::date) z
                         group by 1, 2, 3,4 
                         order by 2,3,4 desc) t_ads 
                     ) union_ads
