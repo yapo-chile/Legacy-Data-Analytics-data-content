@@ -132,7 +132,7 @@ class ReadParams:
             self.master = 'local'
 
         self.logger.info('Date from : %s', self.date_from)
-        self.logger.info('Date to   : %s', self.date_to)
+        self.logger.info('Date to   :  %s', self.date_to)
         self.logger.info('Current year : %s', self.get_current_year())
         self.logger.info('Last year : %s', self.get_last_year())
         self.logger.info('Node : %s', self.master)
