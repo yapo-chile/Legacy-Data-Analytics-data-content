@@ -123,16 +123,16 @@ class ReadParams:
         self.logger.info('Validate params.')
         current_date = datetime.datetime.now()
         if self.date_from is None:
-            temp_date = current_date + timedelta(days=-1)
+            temp_date = current_date + timedelta(days=-2)
             self.date_from = temp_date
         if self.date_to is None:
-            temp_date = current_date + timedelta(days=-1)
+            temp_date = current_date + timedelta(days=-2)
             self.date_to = temp_date
         if self.master is None:
             self.master = 'local'
 
         self.logger.info('Date from : %s', self.date_from)
-        self.logger.info('Date to    : %s', self.date_to)
+        self.logger.info('Date to   :  %s', self.date_to)
         self.logger.info('Current year : %s', self.get_current_year())
         self.logger.info('Last year : %s', self.get_last_year())
         self.logger.info('Node : %s', self.master)
