@@ -5,7 +5,6 @@ import requests
 import json
 
 from lib.slack_msg import slack_msg_body
-
 from airflow import models
 from airflow.sensors.python import PythonSensor
 from airflow.contrib.operators.ssh_operator import SSHOperator
