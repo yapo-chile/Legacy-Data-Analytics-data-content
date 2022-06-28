@@ -78,8 +78,13 @@ with models.DAG(
 ) as dag:
 
     def check_partition(**kwargs):
-        test = requests.get(f"{SERVICE_SENSOR_URL}/{kwargs['table']}")
-        return True if json.loads(test.content)['body']['status_table'] == 'OK' else False
+        test = requests.post(
+            f"{SERVICE_SENSOR_URL}/{kwargs['table']}",
+            json=kwargs['dates']
+        )
+        return (
+            True if json.loads(test.content)["body"]["status_table"] == "OK" else False
+        )
 
 
     run_lead_and_unique_lead = SSHOperator(
@@ -101,7 +106,7 @@ with models.DAG(
             mode='reschedule',
             timeout=sensor_config_gbq['timeout'],
             python_callable=check_partition,
-            op_kwargs={'table': table}
+            op_kwargs={'table': table, "dates": get_date()}
         )
 
         check_table_partition_exists >> run_lead_and_unique_lead
