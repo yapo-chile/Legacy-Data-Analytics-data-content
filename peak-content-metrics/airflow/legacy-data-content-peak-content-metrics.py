@@ -77,8 +77,13 @@ with models.DAG(
 ) as dag:
 
     def check_partition(**kwargs):
-        test = requests.get(f"{SERVICE_SENSOR_URL}/{kwargs['table']}")
-        return True if json.loads(test.content)['body']['status_table'] == 'OK' else False
+        test = requests.post(
+            f"{SERVICE_SENSOR_URL}/{kwargs['table']}",
+            json=kwargs['dates']
+        )
+        return (
+            True if json.loads(test.content)["body"]["status_table"] == "OK" else False
+        )
 
     for table in ['dm_pulse_traffic_metrics']:
         check_table_partition_exists = PythonSensor(
@@ -87,7 +92,7 @@ with models.DAG(
             mode='reschedule',
             timeout=sensor_config_gbq['timeout'],
             python_callable=check_partition,
-            op_kwargs={'table': table}
+            op_kwargs={'table': table, "dates": get_date()}
         )
 
         run_peak_content_metrics = SSHOperator(
