@@ -13,7 +13,7 @@ from airflow.contrib.hooks.ssh_hook import SSHHook
 from airflow.models.variable import Variable
 from airflow.contrib.operators.slack_webhook_operator import SlackWebhookOperator
 
-sshHook = SSHHook(ssh_conn_id="ssh_public_rundeck")
+sshHook = SSHHook(ssh_conn_id="ssh_public_pentaho")
 connect_dockerhost = Variable.get('CONNECT_DOCKERHOST')
 docker_image = Variable.get('DOCKER_IMAGE_DATA_CONTENT_LEAD_AND_UNIQUE_LEAD')
 SLACK_CONN_ID = 'slack'
