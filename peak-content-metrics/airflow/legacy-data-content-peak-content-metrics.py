@@ -75,15 +75,22 @@ with models.DAG(
         max_active_runs=1,
         on_failure_callback=task_fail_slack_alert
 ) as dag:
-
+    
     def check_partition(**kwargs):
         test = requests.post(
             f"{SERVICE_SENSOR_URL}/{kwargs['table']}",
             json=kwargs['dates']
         )
-        return (
-            True if json.loads(test.content)["body"]["status_table"] == "OK" else False
-        )
+        print("Contenido de la respuesta:", test.content)
+        try:
+            response_data = json.loads(test.content)
+            if "body" in response_data and "status_table" in response_data["body"]:
+                return response_data["body"]["status_table"] == "OK"
+            else:
+                return False
+        except json.JSONDecodeError:
+            return False
+
 
     for table in ['dm_pulse_traffic_metrics']:
         check_table_partition_exists = PythonSensor(
