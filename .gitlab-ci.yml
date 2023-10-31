@@ -8,7 +8,7 @@ stages:
 
 include:
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/docker-pipeline-template'
-    ref: rundeck
+    ref: main
     file: 'gitlab-ci.yml'
   - project: 'yapo_team/yotf/sre-team/sre-services/ci-templates/rundeck-pipeline-template'
     ref: main
